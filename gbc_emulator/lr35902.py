@@ -49,8 +49,8 @@ class LR35902:
 
         # Instruction map
         self.instructions = [
-            Instruction(function=None, length_in_bytes=1, duration_in_cycles=4, mnemonic='NOP'), # 0x00
-            Instruction(function=lambda s: ld_n_nn(s, LR35902.REGISTER_BC), length_in_bytes=3, duration_in_cycles=12, mnemonic='LD BC,d16'), # 0x01
+            LR35902.Instruction(function=None, length_in_bytes=1, duration_in_cycles=4, mnemonic='NOP'), # 0x00
+            LR35902.Instruction(function=lambda s: ld_n_nn(s, LR35902.REGISTER_BC), length_in_bytes=3, duration_in_cycles=12, mnemonic='LD BC,d16'), # 0x01
         ]
 
     def clock(self):
@@ -133,8 +133,214 @@ class LR35902:
         else:
             raise RuntimeError('Invalid destination register "{}" specified!'.format(dst))
 
+    def ld_r1_r2_from_memory(self, src=None, dst=None):
+        """"GBCPUman.pdf page 66
+
+        Put value of memory at r2 into r1
+
+        r2 = src register pointing to memory
+        r1 = dst register
+        """
+        if src == LR35902.REGISTER_HL:
+            ptr = (self.H << 8) | self.L
+        else:
+            raise RuntimeError('Invalid source register "{}" specified!'.format(src))
+
+        if dst == LR35902.REGISTER_A: # (0x7E)
+            self.A = self.memory[ptr]
+        elif dst == LR35902.REGISTER_B:
+            self.B = self.memory[ptr]
+        elif dst == LR35902.REGISTER_C:
+            self.C = self.memory[ptr]
+        elif dst == LR35902.REGISTER_D:
+            self.D = self.memory[ptr]
+        elif dst == LR35902.REGISTER_E:
+            self.E = self.memory[ptr]
+        elif dst == LR35902.REGISTER_H:
+            self.H = self.memory[ptr]
+        elif dst == LR35902.REGISTER_L:
+            self.L = self.memory[ptr]
+        else:
+            raise RuntimeError('Invalid destination register "{}" specified!'.format(dst))
+
     def ld_r1_r2_to_memory(self, src=None, dst=None):
-        pass
+        """"GBCPUman.pdf page 66
+
+        Put value of r2 into memory at r1
+
+        r2 = src register
+        r1 = dst register pointing to memory
+        """
+        if src == LR35902.REGISTER_B:
+            val = self.B
+        elif src == LR35902.REGISTER_C:
+            val = self.C
+        elif src == LR35902.REGISTER_D:
+            val = self.D
+        elif src == LR35902.REGISTER_E:
+            val = self.E
+        elif src == LR35902.REGISTER_H:
+            val = self.H
+        elif src == LR35902.REGISTER_L:
+            val = self.L
+        else:
+            raise RuntimeError('Invalid source register "{}" specified!'.format(src))
+
+        if dst == LR35902.REGISTER_HL:
+            self.memory[(self.H << 8) | self.L] = val
+        else:
+            raise RuntimeError('Invalid destination register "{}" specified!'.format(dst))
+
+    def ld_r1_r2_immediate_to_memory(self, dst=None):
+        """"GBCPUman.pdf page 66
+
+        Put value of r2 into memory at r1
+
+        r1 = dst register pointing to memory
+        r2 = immediate 8-bit value
+        """
+        if dst == LR35902.REGISTER_HL:
+            self.memory[(self.H << 8) | self.L] = self.memory[self.PC + 1]
+        else:
+            raise RuntimeError('Invalid destination register "{}" specified!'.format(dst))
+
+    def ld_a_n_from_memory(self, src=None):
+        """"GBCPUman.pdf page 68
+
+        Put value of n into A
+
+        src = source register pointing to memory
+        """
+        if src == LR35902.REGISTER_BC:
+            ptr = (self.B << 8) | self.C
+        elif src == LR35902.REGISTER_DE:
+            ptr = (self.D << 8) | self.E
+        elif src == LR35902.REGISTER_HL:
+            ptr = (self.H << 8) | self.L
+        else:
+            raise RuntimeError('Invalid source register "{}" specified!'.format(src))
+
+        self.A = self.memory[ptr]
+
+    def ld_a_n_from_memory_immediate(self):
+        """"GBCPUman.pdf page 68
+
+        Put value memory at nn into A
+
+        nn - two byte immediate value
+        """
+        ptr = (self.memory[self.PC + 2] << 8) | self.memory[self.PC + 1]
+        self.A = self.memory[ptr]
+
+    def ld_n_a(self, src):
+        """"GBCPUman.pdf page 69
+
+        Put value of register into A.
+
+        src - source register
+        """
+        if src == LR35902.REGISTER_A:
+            val = self.A
+        elif src == LR35902.REGISTER_B:
+            val = self.B
+        elif src == LR35902.REGISTER_C:
+            val = self.C
+        elif src == LR35902.REGISTER_D:
+            val = self.D
+        elif src == LR35902.REGISTER_E:
+            val = self.E
+        elif src == LR35902.REGISTER_H:
+            val = self.H
+        elif src == LR35902.REGISTER_L:
+            val = self.L
+        else:
+            raise RuntimeError('Invalid source register "{}" specified!'.format(src))
+
+        self.A = val
+
+    def ld_a_c(self):
+        """"GBCPUman.pdf page 70
+
+        Put value at address 0xFF00 + C into register A
+        """
+        addr = 0xFF00 + self.C
+        self.A = self.memory[addr]
+
+    def ld_c_a(self):
+        """"GBCPUman.pdf page 70
+
+        Put value of register A into memory at address 0xFF00 + C.
+        """
+        addr = 0xFF00 + self.C
+        self.memory[addr] = self.A
+
+    def ld_a_hl_decrement(self):
+        """"GBCPUman.pdf page 71
+
+        Put value at address HL into A. Decrement HL.
+        """
+        addr = (self.H << 8) | self.L
+        self.A = self.memory[addr]
+
+        addr -= 1
+        self.H = ((addr & 0xFF00) >> 8) & 0xFF
+        self.L = addr & 0xFF
+
+    def ld_hl_a_decrement(self):
+        """"GBCPUman.pdf page 72
+
+        Put value at A into memory at address HL. Decrement HL.
+        """
+        addr = (self.H << 8) | self.L
+        self.memory[addr] = self.A
+
+        addr -= 1
+        self.H = ((addr & 0xFF00) >> 8) & 0xFF
+        self.L = addr & 0xFF
+
+    def ld_a_hl_increment(self):
+        """"GBCPUman.pdf page 73
+
+        Put value at address HL into A. Increment HL.
+        """
+        addr = (self.H << 8) | self.L
+        self.A = self.memory[addr]
+
+        addr += 1
+        self.H = ((addr & 0xFF00) >> 8) & 0xFF
+        self.L = addr & 0xFF
+
+    def ld_hl_a_increment(self):
+        """"GBCPUman.pdf page 74
+
+        Put value at A into memory at address HL. Increment HL.
+        """
+        addr = (self.H << 8) | self.L
+        self.memory[addr] = self.A
+
+        addr += 1
+        self.H = ((addr & 0xFF00) >> 8) & 0xFF
+        self.L = addr & 0xFF
+
+    def ldh_n_a(self):
+        """"GBCPUman.pdf page 75
+
+        Put value at A into memory at address n + 0xFF00
+
+        n is an immediate byte
+        """
+        addr = self.memory[self.PC + 1] + 0xFF00
+        self.memory[addr] = self.A
+
+    def ldh_n_a(self):
+        """"GBCPUman.pdf page 75
+
+        Put value at address n + 0xFF00 into register A
+
+        n is an immediate byte
+        """
+        addr = self.memory[self.PC + 1] + 0xFF00
+        self.A = self.memory[addr]
 
     # 16-bit load/store/move instructions
     def ld_n_nn(self, reg=None):
