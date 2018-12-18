@@ -242,11 +242,11 @@ class LR35902:
             None, # 0xBE
             None, # 0xBF
             None, # 0xC0
-            None, # 0xC1
+            LR35902.Instruction(function=lambda s: pop_nn(s, LR35902.REGISTER_BC), length_in_bytes=1, duration_in_cycles=12, mnemonic='POP BC'), # 0xC1
             None, # 0xC2
             None, # 0xC3
             None, # 0xC4
-            None, # 0xC5
+            LR35902.Instruction(function=lambda s: push_nn(s, LR35902.REGISTER_BC), length_in_bytes=1, duration_in_cycles=16, mnemonic='PUSH BC'), # 0xC5
             None, # 0xC6
             None, # 0xC7
             None, # 0xC8
@@ -258,11 +258,11 @@ class LR35902:
             None, # 0xCE
             None, # 0xCF
             None, # 0xD0
-            None, # 0xD1
+            LR35902.Instruction(function=lambda s: pop_nn(s, LR35902.REGISTER_DE), length_in_bytes=1, duration_in_cycles=12, mnemonic='POP DE'), # 0xD1
             None, # 0xD2
             None, # 0xD3
             None, # 0xD4
-            None, # 0xD5
+            LR35902.Instruction(function=lambda s: push_nn(s, LR35902.REGISTER_DE), length_in_bytes=1, duration_in_cycles=16, mnemonic='PUSH DE'), # 0xD5
             None, # 0xD6
             None, # 0xD7
             None, # 0xD8
@@ -274,11 +274,11 @@ class LR35902:
             None, # 0xDE
             None, # 0xDF
             LR35902.Instruction(function=ldh_n_a, length_in_bytes=2, duration_in_cycles=12, mnemonic='LDH (a8),A'), # 0xE0
-            None, # 0xE1
+            LR35902.Instruction(function=lambda s: pop_nn(s, LR35902.REGISTER_HL), length_in_bytes=1, duration_in_cycles=12, mnemonic='POP HL'), # 0xE1
             LR35902.Instruction(function=ld_c_a, length_in_bytes=1, duration_in_cycles=8, mnemonic='LD (C),A'), # 0xE2  # This disagrees with pastraiser length of 2 bytes
             None, # 0xE3
             None, # 0xE4
-            None, # 0xE5
+            LR35902.Instruction(function=lambda s: push_nn(s, LR35902.REGISTER_HL), length_in_bytes=1, duration_in_cycles=16, mnemonic='PUSH HL'), # 0xE5
             None, # 0xE6
             None, # 0xE7
             None, # 0xE8
@@ -290,15 +290,15 @@ class LR35902:
             None, # 0xEE
             None, # 0xEF
             LR35902.Instruction(function=ldh_a_n, length_in_bytes=2, duration_in_cycles=12, mnemonic='LDH A,(a8)'), # 0xF0
-            None, # 0xF1
+            LR35902.Instruction(function=lambda s: pop_nn(s, LR35902.REGISTER_AF), length_in_bytes=1, duration_in_cycles=12, mnemonic='POP AF'), # 0xF1
             LR35902.Instruction(function=ld_a_c, length_in_bytes=1, duration_in_cycles=8, mnemonic='LD A,(C)'), # 0xF2 # This disagrees with pastraiser length of 2 bytes
             None, # 0xF3
             None, # 0xF4
-            None, # 0xF5
+            LR35902.Instruction(function=lambda s: push_nn(s, LR35902.REGISTER_AF), length_in_bytes=1, duration_in_cycles=16, mnemonic='PUSH AF'), # 0xF5
             None, # 0xF6
             None, # 0xF7
-            None, # 0xF8
-            None, # 0xF9
+            LR35902.Instruction(function=ld_hl_sp_n, length_in_bytes=2, duration_in_cycles=12, mnemonic='LD HL,SP+r8'), # 0xF8
+            LR35902.Instruction(function=ld_sp_hl, length_in_bytes=1, duration_in_cycles=8, mnemonic='LD SP,HL'), # 0xF9
             LR35902.Instruction(function=ld_a_n_from_memory_immediate, length_in_bytes=3, duration_in_cycles=16, mnemonic='LD A,(a16)'), # 0xFA
             None, # 0xFB
             None, # 0xFC
@@ -697,11 +697,15 @@ class LR35902:
     def ld_sp_hl(self):
         """GBCPUman.pdf page 76
 
+        Opcode 0xF9
+
         Put HL into SP"""
         self.SP = (self.H << 8) | self.L
 
     def ld_hl_sp_n(self):
         """GBCPUman.pdf page 77
+
+        Opcode 0xF8
 
         Put SP + n into HL.
 
@@ -710,7 +714,10 @@ class LR35902:
         if n & 0x80:
             # Negative, must convert with 2's complement
             n = -((~n & 0xFF) + 1)
-        self.HL = self.SP + n
+        result = self.SP + n
+
+        self.H = (result >> 8) & 0xFF
+        Self.L = result & 0xFF
 
         # TODO: Set C and H flags correctly.
         # https://stackoverflow.com/a/7261149
@@ -732,10 +739,12 @@ class LR35902:
     def push_nn(self, reg=None):
         """GBCPUman.pdf page 78
 
+        Opcodes 0xC5, 0xD5, 0xE5, 0xF5
+
         Push register pair onto stack.
         Decrement SP twice.
 
-        TODO: Keeping lower byte at lower address. Hopefully this is correct.
+        TODO: Keeping lower byte at lower address. Verify this is correct.
         """
 
         if reg == LR35902.REGISTER_BC:
@@ -758,25 +767,246 @@ class LR35902:
     def pop_nn(self, reg=None):
         """GBCPUman.pdf page 79
 
+        Opcodes 0xC1, 0xD1, 0xE1, 0xF1
+
         Pop two bytes off of stack into register pair
         Increment SP twice.
 
-        TODO: Keeping lower byte at lower address. Hopefully this is correct.
+        TODO: Keeping lower byte at lower address. Verify this is correct.
         """
+
+        self.SP += 2
 
         if reg == LR35902.REGISTER_BC:
             self.B = self.memory[self.SP]
-            self.C = self.memory[self.SP + 1]
+            self.C = self.memory[self.SP - 1]
         elif reg == LR35902.REGISTER_DE:
             self.D = self.memory[self.SP]
-            self.E = self.memory[self.SP + 1]
+            self.E = self.memory[self.SP - 1]
         elif reg == LR35902.REGISTER_HL:
             self.H = self.memory[self.SP]
-            self.L = self.memory[self.SP + 1]
+            self.L = self.memory[self.SP - 1]
         elif reg == LR35902.REGISTER_AF:
             self.A = self.memory[self.SP]
-            self.F = self.memory[self.SP + 1]
+            self.F = self.memory[self.SP - 1]
         else:
             raise RuntimeError('Invalid register "{}" specified!'.format(reg))
 
-        self.SP += 2
+    # 8-bit arithmetic
+    def add_a_n_register(self, reg=None):
+        """GBCPUman.pdf page 80
+
+        Opcodes 0x80, 0x81, 0x82, 0x83, 0x84, 0x85, 0x87
+
+        Add register to A and store it in A.
+        """
+
+        if reg == LR35902.REGISTER_A:
+            addend = self.A
+        elif reg == LR35902.REGISTER_B:
+            addend = self.B
+        elif reg == LR35902.REGISTER_C:
+            addend = self.C
+        elif reg == LR35902.REGISTER_D:
+            addend = self.D
+        elif reg == LR35902.REGISTER_E:
+            addend = self.E
+        elif reg == LR35902.REGISTER_H:
+            addend = self.H
+        elif reg == LR35902.REGISTER_L:
+            addend = self.L
+        else:
+            raise RuntimeError('Invalid register "{}" specified!'.format(reg))
+
+        new_flags = 0
+
+        # Process half carry
+        if ((self.A & 0xF) + (addend & 0xF)) & 0x10:
+            new_flags |= (1 << LR3590s.FLAG_H)
+
+        # Process carry
+        if ((self.A & 0xFF) + (addend & 0xFF)) & 0x100:
+            new_flags |= (1 << LR3590s.FLAG_C)
+
+        # Perform addition
+        self.A = (self.A + addend) & 0xFF
+
+        # Process zero
+        if self.A == 0:
+            new_flags |= (1 << LR3590s.FLAG_Z)
+
+        # Set Flags
+        self.F = new_flags
+
+    def add_a_n_memory(self):
+        """GBCPUman.pdf page 80
+
+        Opcodes 0x86
+
+        Add value from memory at location HL to register A and store it in register A.
+        """
+
+        addr = (self.H << 8) | self.L
+        addend = self.memory[addr]
+
+        new_flags = 0
+
+        # Process half carry
+        if ((self.A & 0xF) + (addend & 0xF)) & 0x10:
+            new_flags |= (1 << LR3590s.FLAG_H)
+
+        # Process carry
+        if ((self.A & 0xFF) + (addend & 0xFF)) & 0x100:
+            new_flags |= (1 << LR3590s.FLAG_C)
+
+        # Perform addition
+        self.A = (self.A + addend) & 0xFF
+
+        # Process zero
+        if self.A == 0:
+            new_flags |= (1 << LR3590s.FLAG_Z)
+
+        # Set Flags
+        self.F = new_flags
+
+    def add_a_n_immediate(self):
+        """GBCPUman.pdf page 80
+
+        Opcodes 0xC6
+
+        Add immediate byte to register A and store it in register A.
+        """
+
+        addend = self.memory[self.PC + 1]
+
+        new_flags = 0
+
+        # Process half carry
+        if ((self.A & 0xF) + (addend & 0xF)) & 0x10:
+            new_flags |= (1 << LR3590s.FLAG_H)
+
+        # Process carry
+        if ((self.A & 0xFF) + (addend & 0xFF)) & 0x100:
+            new_flags |= (1 << LR3590s.FLAG_C)
+
+        # Perform addition
+        self.A = (self.A + addend) & 0xFF
+
+        # Process zero
+        if self.A == 0:
+            new_flags |= (1 << LR3590s.FLAG_Z)
+
+        # Set Flags
+        self.F = new_flags
+
+    def adc_a_n_register(self, reg=None):
+        """GBCPUman.pdf page 81
+
+        Opcodes 0x88, 0x89, 0x8A, 0x8B, 0x8C, 0x8D, 0x8F
+
+        Add register and carry bit to A and store it in A.
+        """
+
+        if reg == LR35902.REGISTER_A:
+            addend = self.A
+        elif reg == LR35902.REGISTER_B:
+            addend = self.B
+        elif reg == LR35902.REGISTER_C:
+            addend = self.C
+        elif reg == LR35902.REGISTER_D:
+            addend = self.D
+        elif reg == LR35902.REGISTER_E:
+            addend = self.E
+        elif reg == LR35902.REGISTER_H:
+            addend = self.H
+        elif reg == LR35902.REGISTER_L:
+            addend = self.L
+        else:
+            raise RuntimeError('Invalid register "{}" specified!'.format(reg))
+
+        carry_bit = (self.F & (1 << LR3590s.FLAG_C)) >> LR3590s.FLAG_C
+
+        new_flags = 0
+
+        # Process half carry
+        if ((self.A & 0xF) + (addend & 0xF) + carry_bit) & 0x10:
+            new_flags |= (1 << LR3590s.FLAG_H)
+
+        # Process carry
+        if ((self.A & 0xFF) + (addend & 0xFF) + carry_bit) & 0x100:
+            new_flags |= (1 << LR3590s.FLAG_C)
+
+        # Perform addition
+        self.A = (self.A + addend + carry_bit) & 0xFF
+
+        # Process zero
+        if self.A == 0:
+            new_flags |= (1 << LR3590s.FLAG_Z)
+
+        # Set Flags
+        self.F = new_flags
+
+    def adc_a_n_memory(self):
+        """GBCPUman.pdf page 81
+
+        Opcodes 0x8E
+
+        Add value from memory at location HL and carry bit to register A and store it in register A.
+        """
+
+        addr = (self.H << 8) | self.L
+        addend = self.memory[addr]
+
+        carry_bit = (self.F & (1 << LR3590s.FLAG_C)) >> LR3590s.FLAG_C
+
+        new_flags = 0
+
+        # Process half carry
+        if ((self.A & 0xF) + (addend & 0xF) + carry_bit) & 0x10:
+            new_flags |= (1 << LR3590s.FLAG_H)
+
+        # Process carry
+        if ((self.A & 0xFF) + (addend & 0xFF) + carry_bit) & 0x100:
+            new_flags |= (1 << LR3590s.FLAG_C)
+
+        # Perform addition
+        self.A = (self.A + addend + carry_bit) & 0xFF
+
+        # Process zero
+        if self.A == 0:
+            new_flags |= (1 << LR3590s.FLAG_Z)
+
+        # Set Flags
+        self.F = new_flags
+
+    def adc_a_n_immediate(self):
+        """GBCPUman.pdf page 81
+
+        Opcodes 0xCE
+
+        Add immediate byte  and carry bit to register A and store it in register A.
+        """
+
+        addend = self.memory[self.PC + 1]
+
+        carry_bit = (self.F & (1 << LR3590s.FLAG_C)) >> LR3590s.FLAG_C
+
+        new_flags = 0
+
+        # Process half carry
+        if ((self.A & 0xF) + (addend & 0xF) + carry_bit) & 0x10:
+            new_flags |= (1 << LR3590s.FLAG_H)
+
+        # Process carry
+        if ((self.A & 0xFF) + (addend & 0xFF) + carry_bit) & 0x100:
+            new_flags |= (1 << LR3590s.FLAG_C)
+
+        # Perform addition
+        self.A = (self.A + addend + carry_bit) & 0xFF
+
+        # Process zero
+        if self.A == 0:
+            new_flags |= (1 << LR3590s.FLAG_Z)
+
+        # Set Flags
+        self.F = new_flags
