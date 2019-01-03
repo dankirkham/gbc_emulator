@@ -984,7 +984,7 @@ class LR35902:
 
         Opcodes 0xCE
 
-        Add immediate byte  and carry bit to register A and store it in register A.
+        Add immediate byte and carry bit to register A and store it in register A.
         """
 
         addend = self.memory[self.PC + 1]
@@ -1006,6 +1006,742 @@ class LR35902:
 
         # Process zero
         if self.A == 0:
+            new_flags |= (1 << LR3590s.FLAG_Z)
+
+        # Set Flags
+        self.F = new_flags
+
+    def sub_n_register(self, reg=None):
+        """GBCPUman.pdf page 82
+
+        Opcodes 0x90, 0x91, 0x92, 0x93, 0x94, 0x95, 0x97
+
+        Subtract register reg from register A.
+        """
+
+        if reg == LR35902.REGISTER_A:
+            subtrahend = self.A
+        elif reg == LR35902.REGISTER_B:
+            subtrahend = self.B
+        elif reg == LR35902.REGISTER_C:
+            subtrahend = self.C
+        elif reg == LR35902.REGISTER_D:
+            subtrahend = self.D
+        elif reg == LR35902.REGISTER_E:
+            subtrahend = self.E
+        elif reg == LR35902.REGISTER_H:
+            subtrahend = self.H
+        elif reg == LR35902.REGISTER_L:
+            subtrahend = self.L
+        else:
+            raise RuntimeError('Invalid register "{}" specified!'.format(reg))
+
+        # N is always set
+        new_flags = (1 << LR3590s.FLAG_N)
+
+        # Process half borrow
+        if ((self.A & 0xF) - (subtrahend & 0xF)) >= 0:
+            new_flags |= (1 << LR3590s.FLAG_H)
+
+        # Process borrow
+        if ((self.A & 0xFF) - (subtrahend & 0xFF)) >= 0:
+            new_flags |= (1 << LR3590s.FLAG_C)
+
+        # Perform subtraction
+        self.A = (self.A - subtrahend) & 0xFF
+
+        # Process zero
+        if self.A == 0:
+            new_flags |= (1 << LR3590s.FLAG_Z)
+
+        # Set Flags
+        self.F = new_flags
+
+    def sub_n_memory(self):
+        """GBCPUman.pdf page 82
+
+        Opcodes 0x96
+
+        Subtract value pointed to by register HL from register A.
+        """
+
+        addr = (self.H << 8) | self.L
+        subtrahend = self.memory[addr]
+
+        # N is always set
+        new_flags = (1 << LR3590s.FLAG_N)
+
+        # Process half borrow
+        if ((self.A & 0xF) - (subtrahend & 0xF)) >= 0:
+            new_flags |= (1 << LR3590s.FLAG_H)
+
+        # Process borrow
+        if ((self.A & 0xFF) - (subtrahend & 0xFF)) >= 0:
+            new_flags |= (1 << LR3590s.FLAG_C)
+
+        # Perform subtraction
+        self.A = (self.A - subtrahend) & 0xFF
+
+        # Process zero
+        if self.A == 0:
+            new_flags |= (1 << LR3590s.FLAG_Z)
+
+        # Set Flags
+        self.F = new_flags
+
+    def sub_n_immediate(self):
+        """GBCPUman.pdf page 82
+
+        Opcodes 0xD6
+
+        Subtract immediate byte from register A.
+        """
+
+        subtrahend = self.memory[self.PC + 1]
+
+        # N is always set
+        new_flags = (1 << LR3590s.FLAG_N)
+
+        # Process half borrow
+        if ((self.A & 0xF) - (subtrahend & 0xF)) >= 0:
+            new_flags |= (1 << LR3590s.FLAG_H)
+
+        # Process borrow
+        if ((self.A & 0xFF) - (subtrahend & 0xFF)) >= 0:
+            new_flags |= (1 << LR3590s.FLAG_C)
+
+        # Perform subtraction
+        self.A = (self.A - subtrahend) & 0xFF
+
+        # Process zero
+        if self.A == 0:
+            new_flags |= (1 << LR3590s.FLAG_Z)
+
+        # Set Flags
+        self.F = new_flags
+
+    def subc_n_register(self, reg=None):
+        """GBCPUman.pdf page 83
+
+        Opcodes 0x98, 0x99, 0x9A, 0x9B, 0x9C, 0x9D, 0x9F
+
+        Subtract register reg and carry bit from register A.
+        """
+
+        if reg == LR35902.REGISTER_A:
+            subtrahend = self.A
+        elif reg == LR35902.REGISTER_B:
+            subtrahend = self.B
+        elif reg == LR35902.REGISTER_C:
+            subtrahend = self.C
+        elif reg == LR35902.REGISTER_D:
+            subtrahend = self.D
+        elif reg == LR35902.REGISTER_E:
+            subtrahend = self.E
+        elif reg == LR35902.REGISTER_H:
+            subtrahend = self.H
+        elif reg == LR35902.REGISTER_L:
+            subtrahend = self.L
+        else:
+            raise RuntimeError('Invalid register "{}" specified!'.format(reg))
+
+        carry_bit = (self.F & (1 << LR3590s.FLAG_C)) >> LR3590s.FLAG_C
+
+        # N is always set
+        new_flags = (1 << LR3590s.FLAG_N)
+
+        # Process half borrow
+        if ((self.A & 0xF) - (subtrahend & 0xF) - carry_bit) >= 0:
+            new_flags |= (1 << LR3590s.FLAG_H)
+
+        # Process borrow
+        if ((self.A & 0xFF) - (subtrahend & 0xFF) - carry_bit) >= 0:
+            new_flags |= (1 << LR3590s.FLAG_C)
+
+        # Perform subtraction
+        self.A = (self.A - subtrahend - carry_bit) & 0xFF
+
+        # Process zero
+        if self.A == 0:
+            new_flags |= (1 << LR3590s.FLAG_Z)
+
+        # Set Flags
+        self.F = new_flags
+
+    def subc_n_memory(self):
+        """GBCPUman.pdf page 83
+
+        Opcodes 0x9E
+
+        Subtract value pointed to by register HL and carry bit from register A.
+        """
+
+        addr = (self.H << 8) | self.L
+        subtrahend = self.memory[addr]
+
+        carry_bit = (self.F & (1 << LR3590s.FLAG_C)) >> LR3590s.FLAG_C
+
+        # N is always set
+        new_flags = (1 << LR3590s.FLAG_N)
+
+        # Process half borrow
+        if ((self.A & 0xF) - (subtrahend & 0xF) - carry_bit) >= 0:
+            new_flags |= (1 << LR3590s.FLAG_H)
+
+        # Process borrow
+        if ((self.A & 0xFF) - (subtrahend & 0xFF) - carry_bit) >= 0:
+            new_flags |= (1 << LR3590s.FLAG_C)
+
+        # Perform subtraction
+        self.A = (self.A - subtrahend - carry_bit) & 0xFF
+
+        # Process zero
+        if self.A == 0:
+            new_flags |= (1 << LR3590s.FLAG_Z)
+
+        # Set Flags
+        self.F = new_flags
+
+    def subc_n_immediate(self):
+        """GBCPUman.pdf page 83
+
+        Opcodes 0xDE
+
+        Subtract immediate byte and carry bit from register A.
+
+        Note: GBCPUman.pdf does not list an opcode for this, but pastraiser does.
+        """
+
+        subtrahend = self.memory[self.PC + 1]
+
+        carry_bit = (self.F & (1 << LR3590s.FLAG_C)) >> LR3590s.FLAG_C
+
+        # N is always set
+        new_flags = (1 << LR3590s.FLAG_N)
+
+        # Process half borrow
+        if ((self.A & 0xF) - (subtrahend & 0xF) - carry_bit) >= 0:
+            new_flags |= (1 << LR3590s.FLAG_H)
+
+        # Process borrow
+        if ((self.A & 0xFF) - (subtrahend & 0xFF) - carry_bit) >= 0:
+            new_flags |= (1 << LR3590s.FLAG_C)
+
+        # Perform subtraction
+        self.A = (self.A - subtrahend - carry_bit) & 0xFF
+
+        # Process zero
+        if self.A == 0:
+            new_flags |= (1 << LR3590s.FLAG_Z)
+
+        # Set Flags
+        self.F = new_flags
+
+    def and_n_register(self, reg=None):
+        """GBCPUman.pdf page 84
+
+        Opcodes 0xA0, 0xA1, 0xA2, 0xA3, 0xA4, 0xA5, 0xA7
+
+        And register reg with A and store it in A.
+        """
+
+        if reg == LR35902.REGISTER_A:
+            operand = self.A
+        elif reg == LR35902.REGISTER_B:
+            operand = self.B
+        elif reg == LR35902.REGISTER_C:
+            operand = self.C
+        elif reg == LR35902.REGISTER_D:
+            operand = self.D
+        elif reg == LR35902.REGISTER_E:
+            operand = self.E
+        elif reg == LR35902.REGISTER_H:
+            operand = self.H
+        elif reg == LR35902.REGISTER_L:
+            operand = self.L
+        else:
+            raise RuntimeError('Invalid register "{}" specified!'.format(reg))
+
+        # H is always set
+        new_flags = (1 << LR3590s.FLAG_H)
+
+        # Perform arithmetic
+        self.A = (self.A & operand) & 0xFF
+
+        # Process zero
+        if self.A == 0:
+            new_flags |= (1 << LR3590s.FLAG_Z)
+
+        # Set Flags
+        self.F = new_flags
+
+    def and_n_memory(self):
+        """GBCPUman.pdf page 84
+
+        Opcodes 0xA6
+
+        And value pointed to by register HL with A and store it in A
+        """
+
+        addr = (self.H << 8) | self.L
+        operand = self.memory[addr]
+
+        # H is always set
+        new_flags = (1 << LR3590s.FLAG_H)
+
+        # Perform arithmetic
+        self.A = (self.A & operand) & 0xFF
+
+        # Process zero
+        if self.A == 0:
+            new_flags |= (1 << LR3590s.FLAG_Z)
+
+        # Set Flags
+        self.F = new_flags
+
+    def and_n_immediate(self):
+        """GBCPUman.pdf page 84
+
+        Opcodes 0xE6
+
+        And immediate byte with A and store it in A
+        """
+
+        operand = self.memory[self.PC + 1]
+
+        # H is always set
+        new_flags = (1 << LR3590s.FLAG_H)
+
+        # Perform arithmetic
+        self.A = (self.A & operand) & 0xFF
+
+        # Process zero
+        if self.A == 0:
+            new_flags |= (1 << LR3590s.FLAG_Z)
+
+        # Set Flags
+        self.F = new_flags
+
+    def or_n_register(self, reg=None):
+        """GBCPUman.pdf page 85
+
+        Opcodes 0xB0, 0xB1, 0xB2, 0xB3, 0xB4, 0xB5, 0xB7
+
+        OR register reg with A and store it in A.
+        """
+
+        if reg == LR35902.REGISTER_A:
+            operand = self.A
+        elif reg == LR35902.REGISTER_B:
+            operand = self.B
+        elif reg == LR35902.REGISTER_C:
+            operand = self.C
+        elif reg == LR35902.REGISTER_D:
+            operand = self.D
+        elif reg == LR35902.REGISTER_E:
+            operand = self.E
+        elif reg == LR35902.REGISTER_H:
+            operand = self.H
+        elif reg == LR35902.REGISTER_L:
+            operand = self.L
+        else:
+            raise RuntimeError('Invalid register "{}" specified!'.format(reg))
+
+        # Clear all flags
+        new_flags = 0
+
+        # Perform arithmetic
+        self.A = (self.A | operand) & 0xFF
+
+        # Process zero
+        if self.A == 0:
+            new_flags |= (1 << LR3590s.FLAG_Z)
+
+        # Set Flags
+        self.F = new_flags
+
+    def or_n_memory(self):
+        """GBCPUman.pdf page 85
+
+        Opcodes 0xB6
+
+        OR value pointed to by register HL with A and store it in A
+        """
+
+        addr = (self.H << 8) | self.L
+        operand = self.memory[addr]
+
+        # Clear all flags
+        new_flags = 0
+
+        # Perform arithmetic
+        self.A = (self.A | operand) & 0xFF
+
+        # Process zero
+        if self.A == 0:
+            new_flags |= (1 << LR3590s.FLAG_Z)
+
+        # Set Flags
+        self.F = new_flags
+
+    def or_n_immediate(self):
+        """GBCPUman.pdf page 85
+
+        Opcodes 0xF6
+
+        OR immediate byte with A and store it in A
+        """
+
+        operand = self.memory[self.PC + 1]
+
+        # Clear all flags
+        new_flags = 0
+
+        # Perform arithmetic
+        self.A = (self.A | operand) & 0xFF
+
+        # Process zero
+        if self.A == 0:
+            new_flags |= (1 << LR3590s.FLAG_Z)
+
+        # Set Flags
+        self.F = new_flags
+
+    def xor_n_register(self, reg=None):
+        """GBCPUman.pdf page 86
+
+        Opcodes 0xA8, 0xA9, 0xAA, 0xAB, 0xAC, 0xAD, 0xAF
+
+        XOR register reg with A and store it in A.
+        """
+
+        if reg == LR35902.REGISTER_A:
+            operand = self.A
+        elif reg == LR35902.REGISTER_B:
+            operand = self.B
+        elif reg == LR35902.REGISTER_C:
+            operand = self.C
+        elif reg == LR35902.REGISTER_D:
+            operand = self.D
+        elif reg == LR35902.REGISTER_E:
+            operand = self.E
+        elif reg == LR35902.REGISTER_H:
+            operand = self.H
+        elif reg == LR35902.REGISTER_L:
+            operand = self.L
+        else:
+            raise RuntimeError('Invalid register "{}" specified!'.format(reg))
+
+        # Clear all flags
+        new_flags = 0
+
+        # Perform arithmetic
+        self.A = (self.A ^ operand) & 0xFF
+
+        # Process zero
+        if self.A == 0:
+            new_flags |= (1 << LR3590s.FLAG_Z)
+
+        # Set Flags
+        self.F = new_flags
+
+    def xor_n_memory(self):
+        """GBCPUman.pdf page 86
+
+        Opcodes 0xAE
+
+        XOR value pointed to by register HL with A and store it in A
+        """
+
+        addr = (self.H << 8) | self.L
+        operand = self.memory[addr]
+
+        # Clear all flags
+        new_flags = 0
+
+        # Perform arithmetic
+        self.A = (self.A ^ operand) & 0xFF
+
+        # Process zero
+        if self.A == 0:
+            new_flags |= (1 << LR3590s.FLAG_Z)
+
+        # Set Flags
+        self.F = new_flags
+
+    def xor_n_immediate(self):
+        """GBCPUman.pdf page 85
+
+        Opcodes 0xEE
+
+        XOR immediate byte with A and store it in A
+        """
+
+        operand = self.memory[self.PC + 1]
+
+        # Clear all flags
+        new_flags = 0
+
+        # Perform arithmetic
+        self.A = (self.A ^ operand) & 0xFF
+
+        # Process zero
+        if self.A == 0:
+            new_flags |= (1 << LR3590s.FLAG_Z)
+
+        # Set Flags
+        self.F = new_flags
+
+    def cp_n_register(self, reg=None):
+        """GBCPUman.pdf page 87
+
+        Opcodes 0xB8, 0xB9, 0xBA, 0xBB, 0xBC, 0xBD, 0xBF
+
+        Comparee register reg with register A.
+        """
+
+        if reg == LR35902.REGISTER_A:
+            operand = self.A
+        elif reg == LR35902.REGISTER_B:
+            operand = self.B
+        elif reg == LR35902.REGISTER_C:
+            operand = self.C
+        elif reg == LR35902.REGISTER_D:
+            operand = self.D
+        elif reg == LR35902.REGISTER_E:
+            operand = self.E
+        elif reg == LR35902.REGISTER_H:
+            operand = self.H
+        elif reg == LR35902.REGISTER_L:
+            operand = self.L
+        else:
+            raise RuntimeError('Invalid register "{}" specified!'.format(reg))
+
+        # N is always set
+        new_flags = (1 << LR3590s.FLAG_N)
+
+        # Process half borrow
+        if ((self.A & 0xF) - (operand & 0xF)) >= 0:
+            new_flags |= (1 << LR3590s.FLAG_H)
+
+        # Process borrow
+        if ((self.A & 0xFF) - (operand & 0xFF)) >= 0:
+            new_flags |= (1 << LR3590s.FLAG_C)
+
+        # Perform subtraction
+        result = (self.A - operand) & 0xFF
+
+        # Process zero
+        if result == 0:
+            new_flags |= (1 << LR3590s.FLAG_Z)
+
+        # Set Flags
+        self.F = new_flags
+
+    def cp_n_memory(self):
+        """GBCPUman.pdf page 87
+
+        Opcodes 0xBE
+
+        Compare value pointed to by register HL with register A.
+        """
+
+        addr = (self.H << 8) | self.L
+        operand = self.memory[addr]
+
+        # N is always set
+        new_flags = (1 << LR3590s.FLAG_N)
+
+        # Process half borrow
+        if ((self.A & 0xF) - (operand & 0xF)) >= 0:
+            new_flags |= (1 << LR3590s.FLAG_H)
+
+        # Process borrow
+        if ((self.A & 0xFF) - (operand & 0xFF)) >= 0:
+            new_flags |= (1 << LR3590s.FLAG_C)
+
+        # Perform subtraction
+        result = (self.A - operand) & 0xFF
+
+        # Process zero
+        if result == 0:
+            new_flags |= (1 << LR3590s.FLAG_Z)
+
+        # Set Flags
+        self.F = new_flags
+
+    def cp_n_immediate(self):
+        """GBCPUman.pdf page 87
+
+        Opcodes 0xFE
+
+        Compare immediate byte with register A.
+        """
+
+        operand = self.memory[self.PC + 1]
+
+        # N is always set
+        new_flags = (1 << LR3590s.FLAG_N)
+
+        # Process half borrow
+        if ((self.A & 0xF) - (operand & 0xF)) >= 0:
+            new_flags |= (1 << LR3590s.FLAG_H)
+
+        # Process borrow
+        if ((self.A & 0xFF) - (operand & 0xFF)) >= 0:
+            new_flags |= (1 << LR3590s.FLAG_C)
+
+        # Perform subtraction
+        result = (self.A - operand) & 0xFF
+
+        # Process zero
+        if result == 0:
+            new_flags |= (1 << LR3590s.FLAG_Z)
+
+        # Set Flags
+        self.F = new_flags
+
+    def inc_n_register(self, reg=None):
+        """GBCPUman.pdf page 88
+
+        Opcodes 0x04, 0x0C, 0x14, 0x1C, 0x24, 0x2C, 0x3C
+
+        Increment register reg
+        """
+
+        if reg == LR35902.REGISTER_A:
+            reg_attr = 'A'
+        elif reg == LR35902.REGISTER_B:
+            reg_attr = 'B'
+        elif reg == LR35902.REGISTER_C:
+            reg_attr = 'C'
+        elif reg == LR35902.REGISTER_D:
+            reg_attr = 'D'
+        elif reg == LR35902.REGISTER_E:
+            reg_attr = 'E'
+        elif reg == LR35902.REGISTER_H:
+            reg_attr = 'H'
+        elif reg == LR35902.REGISTER_L:
+            reg_attr = 'L'
+        else:
+            raise RuntimeError('Invalid register "{}" specified!'.format(reg))
+
+        # Keep C flag
+        new_flags = 0 | (self.F & (1 << LR3590s.FLAG_C))
+
+        # Process half carry
+        if ((getattr(self, reg_attr) & 0xF) + 1) & 0x10:
+            new_flags |= (1 << LR3590s.FLAG_H)
+
+        # Perform increment
+        setattr(
+            self,
+            reg_attr,
+            (getattr(self, reg_attr) + 1) & 0xFF
+        )
+
+        # Process zero
+        if getattr(self, reg_attr) == 0:
+            new_flags |= (1 << LR3590s.FLAG_Z)
+
+        # Set Flags
+        self.F = new_flags
+
+    def inc_n_memory(self):
+        """GBCPUman.pdf page 88
+
+        Opcodes 0x34
+
+        Increment value at memory location HL
+        """
+
+        addr = (self.H << 8) | self.L
+
+        # Keep C flag
+        new_flags = 0 | (self.F & (1 << LR3590s.FLAG_C))
+
+        # Process half carry
+        if ((self.memory[addr] & 0xF) + 1) & 0x10:
+            new_flags |= (1 << LR3590s.FLAG_H)
+
+        # Perform addition
+        self.memory[addr] = (self.memory[addr] + 1) & 0xFF
+
+        # Process zero
+        if self.memory[addr] == 0:
+            new_flags |= (1 << LR3590s.FLAG_Z)
+
+        # Set Flags
+        self.F = new_flags
+
+    def dec_n_register(self, reg=None):
+        """GBCPUman.pdf page 89
+
+        Opcodes 0x05, 0x0D, 0x15, 0x1D, 0x25, 0x2D, 0x3D
+
+        Decrement register reg
+        """
+
+        if reg == LR35902.REGISTER_A:
+            reg_attr = 'A'
+        elif reg == LR35902.REGISTER_B:
+            reg_attr = 'B'
+        elif reg == LR35902.REGISTER_C:
+            reg_attr = 'C'
+        elif reg == LR35902.REGISTER_D:
+            reg_attr = 'D'
+        elif reg == LR35902.REGISTER_E:
+            reg_attr = 'E'
+        elif reg == LR35902.REGISTER_H:
+            reg_attr = 'H'
+        elif reg == LR35902.REGISTER_L:
+            reg_attr = 'L'
+        else:
+            raise RuntimeError('Invalid register "{}" specified!'.format(reg))
+
+        # Keep C flag
+        new_flags = 0 | (self.F & (1 << LR3590s.FLAG_C))
+
+        # Process half carry
+        if getattr(self, reg_attr) & 0xF == 0:
+            new_flags |= (1 << LR3590s.FLAG_H)
+
+        # Perform decrement
+        setattr(
+            self,
+            reg_attr,
+            (getattr(self, reg_attr) - 1) & 0xFF
+        )
+
+        # Process zero
+        if getattr(self, reg_attr) == 0:
+            new_flags |= (1 << LR3590s.FLAG_Z)
+
+        # Set Flags
+        self.F = new_flags
+
+    def dec_n_memory(self):
+        """GBCPUman.pdf page 89
+
+        Opcodes 0x35
+
+        Decrement value at memory location HL
+        """
+
+        addr = (self.H << 8) | self.L
+
+        # Keep C flag
+        new_flags = 0 | (self.F & (1 << LR3590s.FLAG_C))
+
+        # Process half carry
+        if self.memory[addr] & 0xF == 0:
+            new_flags |= (1 << LR3590s.FLAG_H)
+
+        # Perform decrement
+        self.memory[addr] = (self.memory[addr] - 1) & 0xFF
+
+        # Process zero
+        if self.memory[addr] == 0:
             new_flags |= (1 << LR3590s.FLAG_Z)
 
         # Set Flags
