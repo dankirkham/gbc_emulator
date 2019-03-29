@@ -52,15 +52,15 @@ class LR35902:
             LR35902.Instruction(function=None, length_in_bytes=1, duration_in_cycles=4, mnemonic='NOP'), # 0x00
             LR35902.Instruction(function=lambda s: ld_n_nn(s, LR35902.REGISTER_BC), length_in_bytes=3, duration_in_cycles=12, mnemonic='LD BC,d16'), # 0x01
             LR35902.Instruction(function=lambda s: ld_n_a_pointer(s, LR35902.REGISTER_BC), length_in_bytes=1, duration_in_cycles=8, mnemonic='LD (BC),A'), # 0x02
-            None, # 0x03
+            LR35902.Instruction(function=lambda s: inc_nn(s, LR35902.REGISTER_BC), length_in_bytes=1, duration_in_cycles=8, mnemonic='INC BC'), # 0x03
             None, # 0x04
             None, # 0x05
             LR35902.Instruction(function=lambda s: ld_nn_n(s, LR35902.REGISTER_B), length_in_bytes=2, duration_in_cycles=8, mnemonic='LD B,d8'), # 0x06
             None, # 0x07
             LR35902.Instruction(function=ld_nn_sp, length_in_bytes=3, duration_in_cycles=20, mnemonic='LD (a16),SP'), # 0x08
-            None, # 0x09
+            LR35902.Instruction(function=lambda s: add_hl_n(s, LR35902.REGISTER_BC), length_in_bytes=1, duration_in_cycles=8, mnemonic='ADD HL,BC'), # 0x09
             LR35902.Instruction(function=lambda s: ld_a_n_from_memory(s, LR35902.REGISTER_BC), length_in_bytes=1, duration_in_cycles=8, mnemonic='LD A,(BC)'), # 0x0A
-            None, # 0x0B
+            LR35902.Instruction(function=lambda s: dec_nn(s, LR35902.REGISTER_BC), length_in_bytes=1, duration_in_cycles=8, mnemonic='DEC BC'), # 0x0B
             None, # 0x0C
             None, # 0x0D
             LR35902.Instruction(function=lambda s: ld_nn_n(s, LR35902.REGISTER_C), length_in_bytes=2, duration_in_cycles=8, mnemonic='LD C,d8'), # 0x0E
@@ -68,15 +68,15 @@ class LR35902:
             None, # 0x10
             LR35902.Instruction(function=lambda s: ld_n_nn(s, LR35902.REGISTER_DE), length_in_bytes=3, duration_in_cycles=12, mnemonic='LD DE,d16'), # 0x11
             LR35902.Instruction(function=lambda s: ld_n_a_pointer(s, LR35902.REGISTER_DE), length_in_bytes=1, duration_in_cycles=8, mnemonic='LD (DE),A'), # 0x12
-            None, # 0x13
+            LR35902.Instruction(function=lambda s: inc_nn(s, LR35902.REGISTER_DE), length_in_bytes=1, duration_in_cycles=8, mnemonic='INC DE'), # 0x13
             None, # 0x14
             None, # 0x15
             LR35902.Instruction(function=lambda s: ld_nn_n(s, LR35902.REGISTER_D), length_in_bytes=2, duration_in_cycles=8, mnemonic='LD D,d8'), # 0x16
             None, # 0x17
             None, # 0x18
-            None, # 0x19
+            LR35902.Instruction(function=lambda s: add_hl_n(s, LR35902.REGISTER_DE), length_in_bytes=1, duration_in_cycles=8, mnemonic='ADD HL,DE'), # 0x19
             LR35902.Instruction(function=lambda s: ld_a_n_from_memory(s, LR35902.REGISTER_DE), length_in_bytes=1, duration_in_cycles=8, mnemonic='LD A,(DE)'), # 0x1A
-            None, # 0x1B
+            LR35902.Instruction(function=lambda s: dec_nn(s, LR35902.REGISTER_DE), length_in_bytes=1, duration_in_cycles=8, mnemonic='DEC DE'), # 0x1B
             None, # 0x1C
             None, # 0x1D
             LR35902.Instruction(function=lambda s: ld_nn_n(s, LR35902.REGISTER_E), length_in_bytes=2, duration_in_cycles=8, mnemonic='LD E,d8'), # 0x1E
@@ -84,15 +84,15 @@ class LR35902:
             None, # 0x20
             LR35902.Instruction(function=lambda s: ld_n_nn(s, LR35902.REGISTER_HL), length_in_bytes=3, duration_in_cycles=12, mnemonic='LD HL,d16'), # 0x21
             LR35902.Instruction(function=ld_hl_a_increment, length_in_bytes=1, duration_in_cycles=8, mnemonic='LD (HL+),A'), # 0x22
-            None, # 0x23
+            LR35902.Instruction(function=lambda s: inc_nn(s, LR35902.REGISTER_HL), length_in_bytes=1, duration_in_cycles=8, mnemonic='INC HL'), # 0x23
             None, # 0x24
             None, # 0x25
             LR35902.Instruction(function=lambda s: ld_nn_n(s, LR35902.REGISTER_H), length_in_bytes=2, duration_in_cycles=8, mnemonic='LD H,d8'), # 0x26
             None, # 0x27
             None, # 0x28
-            None, # 0x29
+            LR35902.Instruction(function=lambda s: add_hl_n(s, LR35902.REGISTER_HL), length_in_bytes=1, duration_in_cycles=8, mnemonic='ADD HL,HL'), # 0x29
             LR35902.Instruction(function=ld_a_hl_increment, length_in_bytes=1, duration_in_cycles=8, mnemonic='LD A,(HL+)'), # 0x2A
-            None, # 0x2B
+            LR35902.Instruction(function=lambda s: dec_nn(s, LR35902.REGISTER_HL), length_in_bytes=1, duration_in_cycles=8, mnemonic='DEC HL'), # 0x2B
             None, # 0x2C
             None, # 0x2D
             LR35902.Instruction(function=lambda s: ld_nn_n(s, LR35902.REGISTER_L), length_in_bytes=2, duration_in_cycles=8, mnemonic='LD L,d8'), # 0x2E
@@ -100,15 +100,15 @@ class LR35902:
             None, # 0x30
             LR35902.Instruction(function=lambda s: ld_n_nn(s, LR35902.REGISTER_SP), length_in_bytes=3, duration_in_cycles=12, mnemonic='LD SP,d16'), # 0x31
             LR35902.Instruction(function=ld_hl_a_decrement, length_in_bytes=1, duration_in_cycles=8, mnemonic='LD (HL-),A'), # 0x32
-            None, # 0x33
+            LR35902.Instruction(function=lambda s: inc_nn(s, LR35902.REGISTER_SP), length_in_bytes=1, duration_in_cycles=8, mnemonic='INC SP'), # 0x33
             None, # 0x34
             None, # 0x35
             LR35902.Instruction(function=lambda s: ld_r1_r2_immediate_to_memory(s, LR35902.REGISTER_HL), length_in_bytes=2, duration_in_cycles=12, mnemonic='LD (HL),d8'), # 0x36
             None, # 0x37
             None, # 0x38
-            None, # 0x39
+            LR35902.Instruction(function=lambda s: add_hl_n(s, LR35902.REGISTER_SP), length_in_bytes=1, duration_in_cycles=8, mnemonic='ADD HL,SP'), # 0x39
             LR35902.Instruction(function=ld_a_hl_decrement, length_in_bytes=1, duration_in_cycles=8, mnemonic='LD A,(HL-)'), # 0x3A
-            None, # 0x3B
+            LR35902.Instruction(function=lambda s: dec_nn(s, LR35902.REGISTER_SP), length_in_bytes=1, duration_in_cycles=8, mnemonic='DEC SP'), # 0x3B
             None, # 0x3C
             None, # 0x3D
             LR35902.Instruction(function=lambda s: ld_nn_n(s, LR35902.REGISTER_A), length_in_bytes=2, duration_in_cycles=8, mnemonic='LD A,d8'), # 0x3E
@@ -281,7 +281,7 @@ class LR35902:
             LR35902.Instruction(function=lambda s: push_nn(s, LR35902.REGISTER_HL), length_in_bytes=1, duration_in_cycles=16, mnemonic='PUSH HL'), # 0xE5
             None, # 0xE6
             None, # 0xE7
-            None, # 0xE8
+            LR35902.Instruction(function=add_sp_n, length_in_bytes=2, duration_in_cycles=16, mnemonic='ADD SP,r8'), # 0xE8
             None, # 0xE9
             LR35902.Instruction(function=ld_n_a_immediate, length_in_bytes=3, duration_in_cycles=16, mnemonic='LD (a16),A'), # 0xEA
             None, # 0xEB
@@ -322,11 +322,8 @@ class LR35902:
     # 8-bit load/store/move instructions
     def ld_nn_n(self, reg=None):
         """GBCPUman.pdf page 65
-
         Opcodes 0x06, 0x0E, 0x16, 0x1E, 0x26, 0x2E, 0x3E
-
         Put 8-bit immediate value into 8-bit register.
-
         NOTE: This is also implements 0x3E from LD A, # from page 68.
         """
 
@@ -349,7 +346,6 @@ class LR35902:
 
     def ld_r1_r2_between_registers(self, src=None, dst=None):
         """"GBCPUman.pdf page 66
-
         Opcodes
         A - 0x78, 0x79, 0x7A, 0x7B, 0x7C, 0x7D
         B - 0x40, 0x41, 0x42, 0x43, 0x44, 0x45
@@ -358,12 +354,9 @@ class LR35902:
         E - 0x58, 0x59, 0x5A, 0x5B, 0x5C, 0x5D
         H - 0x60, 0x61, 0x62, 0x63, 0x64, 0x65
         L - 0x68, 0x69, 0x6A, 0x6B, 0x6C, 0x6D
-
         Put value of r2 into r1
-
         r2 = src register
         r1 = dst register
-
         Note: A is not a valid source for this function. It is documented in
         ld_n_a page 69.
         """
@@ -401,11 +394,8 @@ class LR35902:
 
     def ld_r1_r2_from_memory(self, src=None, dst=None):
         """"GBCPUman.pdf page 66
-
         Opcodes 0x46, 0x4E, 0x56, 0x5E, 0x66, 0x6E, 0x7E
-
         Put value of memory at r2 into r1
-
         r2 = src register pointing to memory
         r1 = dst register
         """
@@ -433,11 +423,8 @@ class LR35902:
 
     def ld_r1_r2_to_memory(self, src=None, dst=None):
         """"GBCPUman.pdf page 66
-
         Opcodes 0x70, 0x71, 0x72, 0x73, 0x74, 0x75
-
         Put value of r2 into memory at r1
-
         r2 = src register
         r1 = dst register pointing to memory
         """
@@ -463,11 +450,8 @@ class LR35902:
 
     def ld_r1_r2_immediate_to_memory(self, dst=None):
         """"GBCPUman.pdf page 66
-
         Opcode 0x36
-
         Put value of r2 into memory at r1
-
         r1 = dst register pointing to memory
         r2 = immediate 8-bit value
         """
@@ -478,11 +462,8 @@ class LR35902:
 
     def ld_a_n_from_memory(self, src=None):
         """"GBCPUman.pdf page 68
-
         Opcodes 0x0A, 0x1A, 0x7E
-
         Put value of n into A
-
         src = source register pointing to memory
         """
         if src == LR35902.REGISTER_BC:
@@ -498,11 +479,8 @@ class LR35902:
 
     def ld_a_n_from_memory_immediate(self):
         """"GBCPUman.pdf page 68
-
         Opcode 0xFA
-
         Put value memory at nn into A
-
         nn - two byte immediate value
         """
         ptr = (self.memory[self.PC + 2] << 8) | self.memory[self.PC + 1]
@@ -510,11 +488,8 @@ class LR35902:
 
     def ld_n_a(self, dst):
         """"GBCPUman.pdf page 69
-
         Opcodes 0x47, 0x4F, 0x57, 0x5F, 0x67, 0x6F, 0x7F
-
         Put value of A into register
-
         dst - source register
         """
         if dst == LR35902.REGISTER_A:
@@ -537,11 +512,8 @@ class LR35902:
 
     def ld_n_a_pointer(self, dst):
         """"GBCPUman.pdf page 69
-
         Opcodes 0x02, 0x12, 0x77
-
         Put value of A into memory at register pointer
-
         dst - source register
         """
         if dst == LR35902.REGISTER_BC:
@@ -557,9 +529,7 @@ class LR35902:
 
     def ld_n_a_immediate(self):
         """"GBCPUman.pdf page 69
-
         Opcodes 0xEA
-
         Put value of A into memory at immediate 16-bit address
         """
         addr = (self.memory[self.PC + 2] << 8) | self.memory[self.PC + 1]
@@ -568,9 +538,7 @@ class LR35902:
 
     def ld_a_c(self):
         """"GBCPUman.pdf page 70
-
         Opcode 0xF2
-
         Put value at address 0xFF00 + C into register A
         """
         addr = 0xFF00 + self.C
@@ -578,9 +546,7 @@ class LR35902:
 
     def ld_c_a(self):
         """"GBCPUman.pdf page 70
-
         Opcode 0xE2
-
         Put value of register A into memory at address 0xFF00 + C.
         """
         addr = 0xFF00 + self.C
@@ -588,9 +554,7 @@ class LR35902:
 
     def ld_a_hl_decrement(self):
         """"GBCPUman.pdf page 71
-
         Opcode 0x3A
-
         Put value at address HL into A. Decrement HL.
         """
         addr = (self.H << 8) | self.L
@@ -602,9 +566,7 @@ class LR35902:
 
     def ld_hl_a_decrement(self):
         """"GBCPUman.pdf page 72
-
         Opcode 0x32
-
         Put value at A into memory at address HL. Decrement HL.
         """
         addr = (self.H << 8) | self.L
@@ -616,9 +578,7 @@ class LR35902:
 
     def ld_a_hl_increment(self):
         """"GBCPUman.pdf page 73
-
         Opcode 0x2A
-
         Put value at address HL into A. Increment HL.
         """
         addr = (self.H << 8) | self.L
@@ -630,9 +590,7 @@ class LR35902:
 
     def ld_hl_a_increment(self):
         """"GBCPUman.pdf page 74
-
         Opcode 0x22
-
         Put value at A into memory at address HL. Increment HL.
         """
         addr = (self.H << 8) | self.L
@@ -644,11 +602,8 @@ class LR35902:
 
     def ldh_n_a(self):
         """"GBCPUman.pdf page 75
-
         Opcode 0xE0
-
         Put value at A into memory at address n + 0xFF00
-
         n is an immediate byte
         """
         addr = self.memory[self.PC + 1] + 0xFF00
@@ -656,11 +611,8 @@ class LR35902:
 
     def ldh_a_n(self):
         """"GBCPUman.pdf page 75
-
         Opcode 0xF0
-
         Put value at address n + 0xFF00 into register A
-
         n is an immediate byte
         """
         addr = self.memory[self.PC + 1] + 0xFF00
@@ -669,11 +621,8 @@ class LR35902:
     # 16-bit load/store/move instructions
     def ld_n_nn(self, reg=None):
         """GBCPUman.pdf page 76
-
         Opcodes 0x01, 0x11, 0x21, 0x31
-
         Loads 16-bit immediate value into 16-bit register.
-
         n = register
         nn = 16-bit value"""
         val_h = self.memory[self.PC + 2]
@@ -696,19 +645,14 @@ class LR35902:
 
     def ld_sp_hl(self):
         """GBCPUman.pdf page 76
-
         Opcode 0xF9
-
         Put HL into SP"""
         self.SP = (self.H << 8) | self.L
 
     def ld_hl_sp_n(self):
         """GBCPUman.pdf page 77
-
         Opcode 0xF8
-
         Put SP + n into HL.
-
         n is a signed byte"""
         n = self.memory[self.PC + 1]
         if n & 0x80:
@@ -726,11 +670,8 @@ class LR35902:
 
     def ld_nn_sp(self):
         """GBCPUman.pdf page 78
-
         Opcode 0x08
-
         Put SP at address nn
-
         nn is two bytes."""
         nn = (self.memory[self.PC + 2] << 8) | self.memory[self.PC + 1]
         self.memory[nn] = self.SP & 0xFF
@@ -738,12 +679,9 @@ class LR35902:
 
     def push_nn(self, reg=None):
         """GBCPUman.pdf page 78
-
         Opcodes 0xC5, 0xD5, 0xE5, 0xF5
-
         Push register pair onto stack.
         Decrement SP twice.
-
         TODO: Keeping lower byte at lower address. Verify this is correct.
         """
 
@@ -766,12 +704,9 @@ class LR35902:
 
     def pop_nn(self, reg=None):
         """GBCPUman.pdf page 79
-
         Opcodes 0xC1, 0xD1, 0xE1, 0xF1
-
         Pop two bytes off of stack into register pair
         Increment SP twice.
-
         TODO: Keeping lower byte at lower address. Verify this is correct.
         """
 
@@ -795,9 +730,7 @@ class LR35902:
     # 8-bit arithmetic
     def add_a_n_register(self, reg=None):
         """GBCPUman.pdf page 80
-
         Opcodes 0x80, 0x81, 0x82, 0x83, 0x84, 0x85, 0x87
-
         Add register to A and store it in A.
         """
 
@@ -840,9 +773,7 @@ class LR35902:
 
     def add_a_n_memory(self):
         """GBCPUman.pdf page 80
-
         Opcodes 0x86
-
         Add value from memory at location HL to register A and store it in register A.
         """
 
@@ -871,9 +802,7 @@ class LR35902:
 
     def add_a_n_immediate(self):
         """GBCPUman.pdf page 80
-
         Opcodes 0xC6
-
         Add immediate byte to register A and store it in register A.
         """
 
@@ -901,9 +830,7 @@ class LR35902:
 
     def adc_a_n_register(self, reg=None):
         """GBCPUman.pdf page 81
-
         Opcodes 0x88, 0x89, 0x8A, 0x8B, 0x8C, 0x8D, 0x8F
-
         Add register and carry bit to A and store it in A.
         """
 
@@ -948,9 +875,7 @@ class LR35902:
 
     def adc_a_n_memory(self):
         """GBCPUman.pdf page 81
-
         Opcodes 0x8E
-
         Add value from memory at location HL and carry bit to register A and store it in register A.
         """
 
@@ -981,9 +906,7 @@ class LR35902:
 
     def adc_a_n_immediate(self):
         """GBCPUman.pdf page 81
-
         Opcodes 0xCE
-
         Add immediate byte and carry bit to register A and store it in register A.
         """
 
@@ -1013,9 +936,7 @@ class LR35902:
 
     def sub_n_register(self, reg=None):
         """GBCPUman.pdf page 82
-
         Opcodes 0x90, 0x91, 0x92, 0x93, 0x94, 0x95, 0x97
-
         Subtract register reg from register A.
         """
 
@@ -1059,9 +980,7 @@ class LR35902:
 
     def sub_n_memory(self):
         """GBCPUman.pdf page 82
-
         Opcodes 0x96
-
         Subtract value pointed to by register HL from register A.
         """
 
@@ -1091,9 +1010,7 @@ class LR35902:
 
     def sub_n_immediate(self):
         """GBCPUman.pdf page 82
-
         Opcodes 0xD6
-
         Subtract immediate byte from register A.
         """
 
@@ -1122,9 +1039,7 @@ class LR35902:
 
     def subc_n_register(self, reg=None):
         """GBCPUman.pdf page 83
-
         Opcodes 0x98, 0x99, 0x9A, 0x9B, 0x9C, 0x9D, 0x9F
-
         Subtract register reg and carry bit from register A.
         """
 
@@ -1170,9 +1085,7 @@ class LR35902:
 
     def subc_n_memory(self):
         """GBCPUman.pdf page 83
-
         Opcodes 0x9E
-
         Subtract value pointed to by register HL and carry bit from register A.
         """
 
@@ -1204,11 +1117,8 @@ class LR35902:
 
     def subc_n_immediate(self):
         """GBCPUman.pdf page 83
-
         Opcodes 0xDE
-
         Subtract immediate byte and carry bit from register A.
-
         Note: GBCPUman.pdf does not list an opcode for this, but pastraiser does.
         """
 
@@ -1239,9 +1149,7 @@ class LR35902:
 
     def and_n_register(self, reg=None):
         """GBCPUman.pdf page 84
-
         Opcodes 0xA0, 0xA1, 0xA2, 0xA3, 0xA4, 0xA5, 0xA7
-
         And register reg with A and store it in A.
         """
 
@@ -1277,9 +1185,7 @@ class LR35902:
 
     def and_n_memory(self):
         """GBCPUman.pdf page 84
-
         Opcodes 0xA6
-
         And value pointed to by register HL with A and store it in A
         """
 
@@ -1301,9 +1207,7 @@ class LR35902:
 
     def and_n_immediate(self):
         """GBCPUman.pdf page 84
-
         Opcodes 0xE6
-
         And immediate byte with A and store it in A
         """
 
@@ -1324,9 +1228,7 @@ class LR35902:
 
     def or_n_register(self, reg=None):
         """GBCPUman.pdf page 85
-
         Opcodes 0xB0, 0xB1, 0xB2, 0xB3, 0xB4, 0xB5, 0xB7
-
         OR register reg with A and store it in A.
         """
 
@@ -1362,9 +1264,7 @@ class LR35902:
 
     def or_n_memory(self):
         """GBCPUman.pdf page 85
-
         Opcodes 0xB6
-
         OR value pointed to by register HL with A and store it in A
         """
 
@@ -1386,9 +1286,7 @@ class LR35902:
 
     def or_n_immediate(self):
         """GBCPUman.pdf page 85
-
         Opcodes 0xF6
-
         OR immediate byte with A and store it in A
         """
 
@@ -1409,9 +1307,7 @@ class LR35902:
 
     def xor_n_register(self, reg=None):
         """GBCPUman.pdf page 86
-
         Opcodes 0xA8, 0xA9, 0xAA, 0xAB, 0xAC, 0xAD, 0xAF
-
         XOR register reg with A and store it in A.
         """
 
@@ -1447,9 +1343,7 @@ class LR35902:
 
     def xor_n_memory(self):
         """GBCPUman.pdf page 86
-
         Opcodes 0xAE
-
         XOR value pointed to by register HL with A and store it in A
         """
 
@@ -1471,9 +1365,7 @@ class LR35902:
 
     def xor_n_immediate(self):
         """GBCPUman.pdf page 85
-
         Opcodes 0xEE
-
         XOR immediate byte with A and store it in A
         """
 
@@ -1494,9 +1386,7 @@ class LR35902:
 
     def cp_n_register(self, reg=None):
         """GBCPUman.pdf page 87
-
         Opcodes 0xB8, 0xB9, 0xBA, 0xBB, 0xBC, 0xBD, 0xBF
-
         Comparee register reg with register A.
         """
 
@@ -1540,9 +1430,7 @@ class LR35902:
 
     def cp_n_memory(self):
         """GBCPUman.pdf page 87
-
         Opcodes 0xBE
-
         Compare value pointed to by register HL with register A.
         """
 
@@ -1572,9 +1460,7 @@ class LR35902:
 
     def cp_n_immediate(self):
         """GBCPUman.pdf page 87
-
         Opcodes 0xFE
-
         Compare immediate byte with register A.
         """
 
@@ -1603,9 +1489,7 @@ class LR35902:
 
     def inc_n_register(self, reg=None):
         """GBCPUman.pdf page 88
-
         Opcodes 0x04, 0x0C, 0x14, 0x1C, 0x24, 0x2C, 0x3C
-
         Increment register reg
         """
 
@@ -1649,9 +1533,7 @@ class LR35902:
 
     def inc_n_memory(self):
         """GBCPUman.pdf page 88
-
         Opcodes 0x34
-
         Increment value at memory location HL
         """
 
@@ -1676,9 +1558,7 @@ class LR35902:
 
     def dec_n_register(self, reg=None):
         """GBCPUman.pdf page 89
-
         Opcodes 0x05, 0x0D, 0x15, 0x1D, 0x25, 0x2D, 0x3D
-
         Decrement register reg
         """
 
@@ -1722,9 +1602,7 @@ class LR35902:
 
     def dec_n_memory(self):
         """GBCPUman.pdf page 89
-
         Opcodes 0x35
-
         Decrement value at memory location HL
         """
 
@@ -1746,3 +1624,103 @@ class LR35902:
 
         # Set Flags
         self.F = new_flags
+
+    def add_hl_n(self, reg=None):
+        """GBCPUman.pdf page 90
+        Opcodes 0x09, 0x19, 0x29, 0x39
+        Add 16-bit register to register HL
+        """
+
+        hl_val = (self.H << 8) | self.L
+
+        if reg == LR35902.REGISTER_BC:
+            val = (self.B << 8) | self.C
+        elif reg == LR35902.REGISTER_DE:
+            val = (self.D << 8) | self.E
+        elif reg == LR35902.REGISTER_HL:
+            val = hl_val
+        elif reg == LR35902.REGISTER_SP:
+            val = self.SP
+        else:
+            raise RuntimeError('Invalid register "{}" specified!'.format(reg))
+
+        hv_val += val
+
+        self.H = ((hl_val & 0xFF00) >> 8) & 0xFF
+        self.L = hl_val & 0xFF
+
+    def add_sp_n(self):
+        """GBCPUman.pdf page 91
+        Opcode 0xE8
+        Add immediate byte to SP.
+        """
+
+        operand = self.memory[self.PC + 1]
+
+        self.SP = (self.SP + operand) & 0xFFFF
+
+    def inc_nn(self, reg=None):
+        """GBCPUman.pdf page 92
+        Opcodes 0x03, 0x13, 0x23, 0x33
+        Increment 16-bit register
+        """
+
+        if reg == LR35902.REGISTER_BC:
+            val = (self.B << 8) | self.C
+        elif reg == LR35902.REGISTER_DE:
+            val = (self.D << 8) | self.E
+        elif reg == LR35902.REGISTER_HL:
+            val = (self.H << 8) | self.L
+        elif reg == LR35902.REGISTER_SP:
+            val = self.SP
+        else:
+            raise RuntimeError('Invalid register "{}" specified!'.format(reg))
+
+        val = (val + 1) & 0xFFFF
+
+        if reg == LR35902.REGISTER_BC:
+            self.B = ((val & 0xFF00) >> 8) & 0xFF
+            self.C = val & 0xFF
+        elif reg == LR35902.REGISTER_DE:
+            self.D = ((val & 0xFF00) >> 8) & 0xFF
+            self.E = val & 0xFF
+        elif reg == LR35902.REGISTER_HL:
+            self.H = ((val & 0xFF00) >> 8) & 0xFF
+            self.L = val & 0xFF
+        elif reg == LR35902.REGISTER_SP:
+            self.SP = val
+        else:
+            raise RuntimeError('Invalid register "{}" specified!'.format(reg))
+
+    def dec_nn(self, reg=None):
+        """GBCPUman.pdf page 93
+        Opcodes 0x0B, 0x1B, 0x2B, 0x3B
+        Increment 16-bit register
+        """
+
+        if reg == LR35902.REGISTER_BC:
+            val = (self.B << 8) | self.C
+        elif reg == LR35902.REGISTER_DE:
+            val = (self.D << 8) | self.E
+        elif reg == LR35902.REGISTER_HL:
+            val = (self.H << 8) | self.L
+        elif reg == LR35902.REGISTER_SP:
+            val = self.SP
+        else:
+            raise RuntimeError('Invalid register "{}" specified!'.format(reg))
+
+        val = (val - 1) & 0xFFFF
+
+        if reg == LR35902.REGISTER_BC:
+            self.B = ((val & 0xFF00) >> 8) & 0xFF
+            self.C = val & 0xFF
+        elif reg == LR35902.REGISTER_DE:
+            self.D = ((val & 0xFF00) >> 8) & 0xFF
+            self.E = val & 0xFF
+        elif reg == LR35902.REGISTER_HL:
+            self.H = ((val & 0xFF00) >> 8) & 0xFF
+            self.L = val & 0xFF
+        elif reg == LR35902.REGISTER_SP:
+            self.SP = val
+        else:
+            raise RuntimeError('Invalid register "{}" specified!'.format(reg))
