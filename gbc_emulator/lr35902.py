@@ -65,6 +65,22 @@ class LR35902:
             None, # 0x0D
             LR35902.Instruction(function=lambda s: ld_nn_n(s, LR35902.REGISTER_C), length_in_bytes=2, duration_in_cycles=8, mnemonic='LD C,d8'), # 0x0E
             None, # 0x0F
+            LR35902.Instruction(function=None, length_in_bytes=1, duration_in_cycles=4, mnemonic='NOP'), # 0x20
+            LR35902.Instruction(function=lambda s: ld_n_nn(s, LR35902.REGISTER_BC), length_in_bytes=3, duration_in_cycles=12, mnemonic='LD BC,d16'), # 0x21
+            LR35902.Instruction(function=lambda s: ld_n_a_pointer(s, LR35902.REGISTER_BC), length_in_bytes=1, duration_in_cycles=8, mnemonic='LD (BC),A'), # 0x22
+            LR35902.Instruction(function=lambda s: inc_nn(s, LR35902.REGISTER_BC), length_in_bytes=1, duration_in_cycles=8, mnemonic='INC BC'), # 0x23
+            None, # 0x24
+            None, # 0x25
+            LR35902.Instruction(function=lambda s: ld_nn_n(s, LR35902.REGISTER_B), length_in_bytes=2, duration_in_cycles=8, mnemonic='LD B,d8'), # 0x26
+            None, # 0x27
+            LR35902.Instruction(function=ld_nn_sp, length_in_bytes=3, duration_in_cycles=20, mnemonic='LD (a16),SP'), # 0x28
+            LR35902.Instruction(function=lambda s: add_hl_n(s, LR35902.REGISTER_BC), length_in_bytes=1, duration_in_cycles=8, mnemonic='ADD HL,BC'), # 0x29
+            LR35902.Instruction(function=lambda s: ld_a_n_from_memory(s, LR35902.REGISTER_BC), length_in_bytes=1, duration_in_cycles=8, mnemonic='LD A,(BC)'), # 0x2A
+            LR35902.Instruction(function=lambda s: dec_nn(s, LR35902.REGISTER_BC), length_in_bytes=1, duration_in_cycles=8, mnemonic='DEC BC'), # 0x2B
+            None, # 0x2C
+            None, # 0x2D
+            LR35902.Instruction(function=lambda s: ld_nn_n(s, LR35902.REGISTER_C), length_in_bytes=2, duration_in_cycles=8, mnemonic='LD C,d8'), # 0x2E
+            None, # 0x2F
             None, # 0x10
             LR35902.Instruction(function=lambda s: ld_n_nn(s, LR35902.REGISTER_DE), length_in_bytes=3, duration_in_cycles=12, mnemonic='LD DE,d16'), # 0x11
             LR35902.Instruction(function=lambda s: ld_n_a_pointer(s, LR35902.REGISTER_DE), length_in_bytes=1, duration_in_cycles=8, mnemonic='LD (DE),A'), # 0x12
@@ -307,6 +323,272 @@ class LR35902:
             None, # 0xFF
         ]
 
+        # Instruction map
+        self.cb_instructions = [
+            None, # 0x00
+            None, # 0x01
+            None, # 0x02
+            None, # 0x03
+            None, # 0x04
+            None, # 0x05
+            None, # 0x06
+            None, # 0x07
+            None, # 0x08
+            None, # 0x09
+            None, # 0x0A
+            None, # 0x0B
+            None, # 0x0C
+            None, # 0x0D
+            None, # 0x0E
+            None, # 0x0F
+            None, # 0x10
+            None, # 0x11
+            None, # 0x12
+            None, # 0x13
+            None, # 0x14
+            None, # 0x15
+            None, # 0x16
+            None, # 0x17
+            None, # 0x18
+            None, # 0x19
+            None, # 0x1A
+            None, # 0x1B
+            None, # 0x1C
+            None, # 0x1D
+            None, # 0x1E
+            None, # 0x1F
+            None, # 0x20
+            None, # 0x21
+            None, # 0x22
+            None, # 0x23
+            None, # 0x24
+            None, # 0x25
+            None, # 0x26
+            None, # 0x27
+            None, # 0x28
+            None, # 0x29
+            None, # 0x2A
+            None, # 0x2B
+            None, # 0x2C
+            None, # 0x2D
+            None, # 0x2E
+            None, # 0x2F
+            LR35902.Instruction(function=lambda s: swap(s, LR35902.REGISTER_B), length_in_bytes=2, duration_in_cycles=8, mnemonic='SWAP B'), # 0x30
+            LR35902.Instruction(function=lambda s: swap(s, LR35902.REGISTER_C), length_in_bytes=2, duration_in_cycles=8, mnemonic='SWAP C'), # 0x31
+            LR35902.Instruction(function=lambda s: swap(s, LR35902.REGISTER_D), length_in_bytes=2, duration_in_cycles=8, mnemonic='SWAP D'), # 0x32
+            LR35902.Instruction(function=lambda s: swap(s, LR35902.REGISTER_E), length_in_bytes=2, duration_in_cycles=8, mnemonic='SWAP E'), # 0x33
+            LR35902.Instruction(function=lambda s: swap(s, LR35902.REGISTER_H), length_in_bytes=2, duration_in_cycles=8, mnemonic='SWAP H'), # 0x34
+            LR35902.Instruction(function=lambda s: swap(s, LR35902.REGISTER_L), length_in_bytes=2, duration_in_cycles=8, mnemonic='SWAP L'), # 0x35
+            LR35902.Instruction(function=lambda s: swap_memory(s), length_in_bytes=2, duration_in_cycles=16, mnemonic='SWAP (HL)'), # 0x36
+            LR35902.Instruction(function=lambda s: swap(s, LR35902.REGISTER_A), length_in_bytes=2, duration_in_cycles=8, mnemonic='SWAP A'), # 0x37
+            None, # 0x38
+            None, # 0x39
+            None, # 0x3A
+            None, # 0x3B
+            None, # 0x3C
+            None, # 0x3D
+            None, # 0x3E
+            None, # 0x3F
+            None, # 0x40
+            None, # 0x41
+            None, # 0x42
+            None, # 0x43
+            None, # 0x44
+            None, # 0x45
+            None, # 0x46
+            None, # 0x47
+            None, # 0x48
+            None, # 0x49
+            None, # 0x4A
+            None, # 0x4B
+            None, # 0x4C
+            None, # 0x4D
+            None, # 0x4E
+            None, # 0x4F
+            None, # 0x50
+            None, # 0x51
+            None, # 0x52
+            None, # 0x53
+            None, # 0x54
+            None, # 0x55
+            None, # 0x56
+            None, # 0x57
+            None, # 0x58
+            None, # 0x59
+            None, # 0x5A
+            None, # 0x5B
+            None, # 0x5C
+            None, # 0x5D
+            None, # 0x5E
+            None, # 0x5F
+            None, # 0x60
+            None, # 0x61
+            None, # 0x62
+            None, # 0x63
+            None, # 0x64
+            None, # 0x65
+            None, # 0x66
+            None, # 0x67
+            None, # 0x68
+            None, # 0x69
+            None, # 0x6A
+            None, # 0x6B
+            None, # 0x6C
+            None, # 0x6D
+            None, # 0x6E
+            None, # 0x6F
+            None, # 0x70
+            None, # 0x71
+            None, # 0x72
+            None, # 0x73
+            None, # 0x74
+            None, # 0x75
+            None, # 0x76
+            None, # 0x77
+            None, # 0x78
+            None, # 0x79
+            None, # 0x7A
+            None, # 0x7B
+            None, # 0x7C
+            None, # 0x7D
+            None, # 0x7E
+            None, # 0x7F
+            None, # 0x80
+            None, # 0x81
+            None, # 0x82
+            None, # 0x83
+            None, # 0x84
+            None, # 0x85
+            None, # 0x86
+            None, # 0x87
+            None, # 0x88
+            None, # 0x89
+            None, # 0x8A
+            None, # 0x8B
+            None, # 0x8C
+            None, # 0x8D
+            None, # 0x8E
+            None, # 0x8F
+            None, # 0x90
+            None, # 0x91
+            None, # 0x92
+            None, # 0x93
+            None, # 0x94
+            None, # 0x95
+            None, # 0x96
+            None, # 0x97
+            None, # 0x98
+            None, # 0x99
+            None, # 0x9A
+            None, # 0x9B
+            None, # 0x9C
+            None, # 0x9D
+            None, # 0x9E
+            None, # 0x9F
+            None, # 0xA0
+            None, # 0xA1
+            None, # 0xA2
+            None, # 0xA3
+            None, # 0xA4
+            None, # 0xA5
+            None, # 0xA6
+            None, # 0xA7
+            None, # 0xA8
+            None, # 0xA9
+            None, # 0xAA
+            None, # 0xAB
+            None, # 0xAC
+            None, # 0xAD
+            None, # 0xAE
+            None, # 0xAF
+            None, # 0xB0
+            None, # 0xB1
+            None, # 0xB2
+            None, # 0xB3
+            None, # 0xB4
+            None, # 0xB5
+            None, # 0xB6
+            None, # 0xB7
+            None, # 0xB8
+            None, # 0xB9
+            None, # 0xBA
+            None, # 0xBB
+            None, # 0xBC
+            None, # 0xBD
+            None, # 0xBE
+            None, # 0xBF
+            None, # 0xC0
+            None, # 0xC1
+            None, # 0xC2
+            None, # 0xC3
+            None, # 0xC4
+            None, # 0xC5
+            None, # 0xC6
+            None, # 0xC7
+            None, # 0xC8
+            None, # 0xC9
+            None, # 0xCA
+            None, # 0xCB
+            None, # 0xCC
+            None, # 0xCD
+            None, # 0xCE
+            None, # 0xCF
+            None, # 0xD0
+            None, # 0xD1
+            None, # 0xD2
+            None, # 0xD3
+            None, # 0xD4
+            None, # 0xD5
+            None, # 0xD6
+            None, # 0xD7
+            None, # 0xD8
+            None, # 0xD9
+            None, # 0xDA
+            None, # 0xDB
+            None, # 0xDC
+            None, # 0xDD
+            None, # 0xDE
+            None, # 0xDF
+            None, # 0xE0
+            None, # 0xE1
+            None, # 0xE2
+            None, # 0xE3
+            None, # 0xE4
+            None, # 0xE5
+            None, # 0xE6
+            None, # 0xE7
+            None, # 0xE8
+            None, # 0xE9
+            None, # 0xEA
+            None, # 0xEB
+            None, # 0xEC
+            None, # 0xED
+            None, # 0xEE
+            None, # 0xEF
+            None, # 0xF0
+            None, # 0xF1
+            None, # 0xF2
+            None, # 0xF3
+            None, # 0xF4
+            None, # 0xF5
+            None, # 0xF6
+            None, # 0xF7
+            None, # 0xF8
+            None, # 0xF9
+            None, # 0xFA
+            None, # 0xFB
+            None, # 0xFC
+            None, # 0xFD
+            None, # 0xFE
+            None, # 0xFF
+        ]
+
+    def set_zero(self, value):
+        if value == 0:
+            self.F |= (1 << LR35902.FLAG_Z)
+        else:
+            self.F &= ~(1 << LR35902.FLAG_Z)
+
     def clock(self):
         if self.wait > 0:
             self.wait -= 1
@@ -318,6 +600,10 @@ class LR35902:
         # Decode
 
         # Execute
+
+    def bit_extension(self):
+        # Handle bit manipulation instruction on 0xCB prefix'd instructions
+        pass
 
     # 8-bit load/store/move instructions
     def ld_nn_n(self, reg=None):
@@ -1724,3 +2010,48 @@ class LR35902:
             self.SP = val
         else:
             raise RuntimeError('Invalid register "{}" specified!'.format(reg))
+
+    def swap(self, reg=None)::
+        """GBCPUman.pdf page 94
+        0xCB Opcodes 0x30, 0x31, 0x32, 0x33, 0x34, 0x35 0x37
+        Swap upper and lower nibbles of n
+        """
+
+        self.F = 0 # Clear flags
+
+        if reg == LR35902.REGISTER_A:
+            self.A = (((self.A & 0x0F) << 4) | ((self.A & 0xF0) >> 4)) & 0xFF
+            self.set_zero(self.A)
+        elif reg == LR35902.REGISTER_B:
+            self.B = (((self.B & 0x0F) << 4) | ((self.B & 0xF0) >> 4)) & 0xFF
+            self.set_zero(self.B)
+        elif reg == LR35902.REGISTER_C:
+            self.C = (((self.C & 0x0F) << 4) | ((self.A & 0xF0) >> 4)) & 0xFF
+            self.set_zero(self.C)
+        elif reg == LR35902.REGISTER_D:
+            self.D = (((self.D & 0x0F) << 4) | ((self.A & 0xF0) >> 4)) & 0xFF
+            self.set_zero(self.D)
+        elif reg == LR35902.REGISTER_E:
+            self.E = (((self.E & 0x0F) << 4) | ((self.A & 0xF0) >> 4)) & 0xFF
+            self.set_zero(self.E)
+        elif reg == LR35902.REGISTER_H:
+            self.H = (((self.H & 0x0F) << 4) | ((self.A & 0xF0) >> 4)) & 0xFF
+            self.set_zero(self.H)
+        elif reg == LR35902.REGISTER_L:
+            self.L = (((self.L & 0x0F) << 4) | ((self.A & 0xF0) >> 4)) & 0xFF
+            self.set_zero(self.L)
+        else:
+            raise RuntimeError('Invalid register "{}" specified!'.format(reg))
+
+    def swap_memory(self)::
+        """GBCPUman.pdf page 94
+        0xCB Opcodes 0x36
+        Swap upper and lower nibbles of byte stored at n
+        """
+
+        self.F = 0 # Clear flags
+
+        addr = (self.H << 8) | self.L
+        self.memory[addr] = (((self.memory[addr] & 0x0F) << 4) | ((self.memory[addr] & 0xF0) >> 4)) & 0xFF
+
+        self.set_zero(self.memory[addr])
