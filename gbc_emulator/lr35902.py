@@ -49,7 +49,7 @@ class LR35902:
 
         # Instruction map
         self.instructions = [
-            LR35902.Instruction(function=None, length_in_bytes=1, duration_in_cycles=4, mnemonic='NOP'), # 0x00
+            LR35902.Instruction(function=nop, length_in_bytes=1, duration_in_cycles=4, mnemonic='NOP'), # 0x00
             LR35902.Instruction(function=lambda s: ld_n_nn(s, LR35902.REGISTER_BC), length_in_bytes=3, duration_in_cycles=12, mnemonic='LD BC,d16'), # 0x01
             LR35902.Instruction(function=lambda s: ld_n_a_pointer(s, LR35902.REGISTER_BC), length_in_bytes=1, duration_in_cycles=8, mnemonic='LD (BC),A'), # 0x02
             LR35902.Instruction(function=lambda s: inc_nn(s, LR35902.REGISTER_BC), length_in_bytes=1, duration_in_cycles=8, mnemonic='INC BC'), # 0x03
@@ -104,7 +104,7 @@ class LR35902:
             None, # 0x24
             None, # 0x25
             LR35902.Instruction(function=lambda s: ld_nn_n(s, LR35902.REGISTER_H), length_in_bytes=2, duration_in_cycles=8, mnemonic='LD H,d8'), # 0x26
-            None, # 0x27
+            LR35902.Instruction(function=daa, length_in_bytes=1, duration_in_cycles=4, mnemonic='DAA'), # 0x27
             None, # 0x28
             LR35902.Instruction(function=lambda s: add_hl_n(s, LR35902.REGISTER_HL), length_in_bytes=1, duration_in_cycles=8, mnemonic='ADD HL,HL'), # 0x29
             LR35902.Instruction(function=ld_a_hl_increment, length_in_bytes=1, duration_in_cycles=8, mnemonic='LD A,(HL+)'), # 0x2A
@@ -112,7 +112,7 @@ class LR35902:
             None, # 0x2C
             None, # 0x2D
             LR35902.Instruction(function=lambda s: ld_nn_n(s, LR35902.REGISTER_L), length_in_bytes=2, duration_in_cycles=8, mnemonic='LD L,d8'), # 0x2E
-            None, # 0x2F
+            LR35902.Instruction(function=cpl, length_in_bytes=1, duration_in_cycles=4, mnemonic='CPL'), # 0x2F
             None, # 0x30
             LR35902.Instruction(function=lambda s: ld_n_nn(s, LR35902.REGISTER_SP), length_in_bytes=3, duration_in_cycles=12, mnemonic='LD SP,d16'), # 0x31
             LR35902.Instruction(function=ld_hl_a_decrement, length_in_bytes=1, duration_in_cycles=8, mnemonic='LD (HL-),A'), # 0x32
@@ -120,7 +120,7 @@ class LR35902:
             None, # 0x34
             None, # 0x35
             LR35902.Instruction(function=lambda s: ld_r1_r2_immediate_to_memory(s, LR35902.REGISTER_HL), length_in_bytes=2, duration_in_cycles=12, mnemonic='LD (HL),d8'), # 0x36
-            None, # 0x37
+            LR35902.Instruction(function=scf, length_in_bytes=1, duration_in_cycles=4, mnemonic='SCF'), # 0x37
             None, # 0x38
             LR35902.Instruction(function=lambda s: add_hl_n(s, LR35902.REGISTER_SP), length_in_bytes=1, duration_in_cycles=8, mnemonic='ADD HL,SP'), # 0x39
             LR35902.Instruction(function=ld_a_hl_decrement, length_in_bytes=1, duration_in_cycles=8, mnemonic='LD A,(HL-)'), # 0x3A
@@ -128,7 +128,7 @@ class LR35902:
             None, # 0x3C
             None, # 0x3D
             LR35902.Instruction(function=lambda s: ld_nn_n(s, LR35902.REGISTER_A), length_in_bytes=2, duration_in_cycles=8, mnemonic='LD A,d8'), # 0x3E
-            None, # 0x3F
+            LR35902.Instruction(function=ccf, length_in_bytes=1, duration_in_cycles=4, mnemonic='CCF'), # 0x3F
             LR35902.Instruction(function=lambda s: ld_r1_r2_between_registers(s, src=LR35902.REGISTER_B, dst=LR35902.REGISTER_B), length_in_bytes=1, duration_in_cycles=4, mnemonic='LD B,B'), # 0x40
             LR35902.Instruction(function=lambda s: ld_r1_r2_between_registers(s, src=LR35902.REGISTER_C, dst=LR35902.REGISTER_B), length_in_bytes=1, duration_in_cycles=4, mnemonic='LD B,C'), # 0x41
             LR35902.Instruction(function=lambda s: ld_r1_r2_between_registers(s, src=LR35902.REGISTER_D, dst=LR35902.REGISTER_B), length_in_bytes=1, duration_in_cycles=4, mnemonic='LD B,D'), # 0x42
@@ -2087,3 +2087,41 @@ class LR35902:
 
         self.set_zero(self.A)
         self.set_flag(LR35902.FLAG_H, False)
+
+    def cpl(self):
+        """GBCPUman.pdf page 95
+        Opcode 0x2F
+        Complement (flip all bits) in A register
+        """
+
+        self.A = (~self.A) & 0xFF
+
+        self.set_flag(LR35902.FLAG_N, True)
+        self.set_flag(LR35902.FLAG_H, True)
+
+    def ccf(self):
+        """GBCPUman.pdf page 96
+        Opcode 0x3F
+        Complement carry flag
+        """
+
+        self.set_flag(LR35902.FLAG_N, False)
+        self.set_flag(LR35902.FLAG_H, False)
+        self.set_flag(LR35902.FLAG_C, ((self.F >> LR35902.FLAG_C) & 1) == 0)
+
+    def scf(self):
+        """GBCPUman.pdf page 96
+        Opcode 0x37
+        Set carry flag
+        """
+
+        self.set_flag(LR35902.FLAG_N, False)
+        self.set_flag(LR35902.FLAG_H, False)
+        self.set_flag(LR35902.FLAG_C, True)
+
+    def nop(self):
+        """GBCPUman.pdf page 97
+        Opcode 0x00
+        Do nothing
+        """
+        pass
