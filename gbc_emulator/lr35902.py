@@ -589,6 +589,12 @@ class LR35902:
         else:
             self.F &= ~(1 << LR35902.FLAG_Z)
 
+    def set_flag(self, register, value):
+        if True:
+            self.F |= (1 << register)
+        else:
+            self.F &= ~(1 << register)
+
     def clock(self):
         if self.wait > 0:
             self.wait -= 1
@@ -2055,3 +2061,29 @@ class LR35902:
         self.memory[addr] = (((self.memory[addr] & 0x0F) << 4) | ((self.memory[addr] & 0xF0) >> 4)) & 0xFF
 
         self.set_zero(self.memory[addr])
+
+    def daa(self):
+        """GBCPUman.pdf page 95
+        Opcode 0x27
+        Decimal adjust A register
+
+        Source: https://forums.nesdev.com/viewtopic.php?f=20&t=15944
+        """
+
+        if (self.F >> LR35902.FLAG_N) & 1 == 0:
+            # Last operation was an additon
+            if ((self.F >> LR35902.FLAG_C) & 1) or self.A > 0x99:
+                self.A += 0x60
+                self.set_flag(LR35902.FLAG_C, True)
+
+            if ((self.F >> LR35902.FLAG_H) & 1) or (self.A & 0xF) > 0x9:
+                self.A += 0x6
+        else:
+            # Last operation was a subtraction
+            if ((self.F >> LR35902.FLAG_C) & 1):
+                self.A -= 0x60
+            if ((self.F >> LR35902.FLAG_H) & 1):
+                self.A -= 0x06
+
+        self.set_zero(self.A)
+        self.set_flag(LR35902.FLAG_H, False)
