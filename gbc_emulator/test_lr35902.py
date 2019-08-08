@@ -27,7 +27,7 @@ class TestLR35902(unittest.TestCase):
 
         cpu.clock()
 
-        self.assertEquals(cpu.B, 0x53)
+        self.assertEqual(cpu.B, 0x53)
 
     def test_cb_swap(self):
         memory = [
