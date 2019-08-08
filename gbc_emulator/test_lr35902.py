@@ -17,15 +17,14 @@ class TestLR35902(unittest.TestCase):
 
         cpu.clock()
 
-    def test_ld_a_n_from_memory_immediate(self):
+    def test_ld_nn_n(self):
         memory = [
-            0xFA,
-            0x53,
-            0xCA
+            0x06,
+            0x53
         ]
 
         cpu = LR35902(memory)
 
         cpu.clock()
 
-        self.assertEquals(cpu.A, 0xCA53)
+        self.assertEquals(cpu.B, 0x53)

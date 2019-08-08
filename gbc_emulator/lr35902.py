@@ -764,8 +764,8 @@ class LR35902:
         Put value memory at nn into A
         nn - two byte immediate value
         """
-        value = (self.memory[self.PC + 2] << 8) | self.memory[self.PC + 1]
-        self.A = value
+        ptr = (self.memory[self.PC + 2] << 8) | self.memory[self.PC + 1]
+        self.A = self.memory[ptr]
 
     def ld_n_a(self, dst):
         """"GBCPUman.pdf page 69
