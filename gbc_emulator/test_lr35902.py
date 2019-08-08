@@ -42,4 +42,40 @@ class TestLR35902(unittest.TestCase):
         for _ in range(16):
             cpu.clock()
 
-        self.assertEquals(cpu.B, 0x35)
+        self.assertEqual(cpu.B, 0x35)
+
+    def test_interrupt_toggle(self):
+        memory = [
+            0x06, # 8
+            0x53,
+            0x06, # 8
+            0x53,
+            0xFB, # 4
+            0x06, # 8
+            0x53,
+            0xF3, # 4
+            0x06, # 8
+            0x53
+        ]
+
+        cpu = LR35902(memory)
+
+        for _ in range(16):
+            cpu.clock()
+        self.assertFalse(cpu.interrupts['enabled'])
+
+        for _ in range(4):
+            cpu.clock()
+        self.assertFalse(cpu.interrupts['enabled'])
+
+        for _ in range(8):
+            cpu.clock()
+        self.assertTrue(cpu.interrupts['enabled'])
+
+        for _ in range(4):
+            cpu.clock()
+        self.assertTrue(cpu.interrupts['enabled'])
+
+        for _ in range(8):
+            cpu.clock()
+        self.assertFalse(cpu.interrupts['enabled'])

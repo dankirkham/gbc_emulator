@@ -55,6 +55,11 @@ class LR35902:
 
         self.state = LR35902.State.RUNNING
 
+        self.interrupts = {
+            "enabled": False,
+            "change_in": 0
+        }
+
         # Instruction map
         self.instructions = [
             LR35902.Instruction(function=lambda s: s.nop(), length_in_bytes=1, duration_in_cycles=4, mnemonic='NOP'), # 0x00
@@ -300,7 +305,7 @@ class LR35902:
             LR35902.Instruction(function=lambda s: s.ldh_a_n(), length_in_bytes=2, duration_in_cycles=12, mnemonic='LDH A,(a8)'), # 0xF0
             LR35902.Instruction(function=lambda s: s.pop_nn(LR35902.REGISTER_AF), length_in_bytes=1, duration_in_cycles=12, mnemonic='POP AF'), # 0xF1
             LR35902.Instruction(function=lambda s: s.ld_a_c(), length_in_bytes=1, duration_in_cycles=8, mnemonic='LD A,(C)'), # 0xF2 # This disagrees with pastraiser length of 2 bytes
-            None, # 0xF3
+            LR35902.Instruction(function=lambda s: s.di(), length_in_bytes=1, duration_in_cycles=4, mnemonic='DI'), # 0xF3
             None, # 0xF4
             LR35902.Instruction(function=lambda s: s.push_nn(LR35902.REGISTER_AF), length_in_bytes=1, duration_in_cycles=16, mnemonic='PUSH AF'), # 0xF5
             None, # 0xF6
@@ -308,7 +313,7 @@ class LR35902:
             LR35902.Instruction(function=lambda s: s.ld_hl_sp_n(), length_in_bytes=2, duration_in_cycles=12, mnemonic='LD HL,SP+r8'), # 0xF8
             LR35902.Instruction(function=lambda s: s.ld_sp_hl(), length_in_bytes=1, duration_in_cycles=8, mnemonic='LD SP,HL'), # 0xF9
             LR35902.Instruction(function=lambda s: s.ld_a_n_from_memory_immediate(), length_in_bytes=3, duration_in_cycles=16, mnemonic='LD A,(a16)'), # 0xFA
-            None, # 0xFB
+            LR35902.Instruction(function=lambda s: s.ei(), length_in_bytes=1, duration_in_cycles=4, mnemonic='EI'), # 0xFB
             None, # 0xFC
             None, # 0xFD
             None, # 0xFE
@@ -611,6 +616,13 @@ class LR35902:
         instruction.function(self)
         self.PC += instruction.length_in_bytes
         self.wait = instruction.duration_in_cycles - 1
+
+        # Interrupt change
+        if self.interrupts["change_in"] > 0:
+            self.interrupts["change_in"] -= 1
+
+            if self.interrupts["change_in"] == 0:
+                self.interrupts["enabled"] = not self.interrupts["enabled"]
 
     def bit_extension(self):
         # Handle bit manipulation instruction on 0xCB prefix'd instructions
@@ -2144,3 +2156,19 @@ class LR35902:
         Halt CPU and LCD until button is pressed.
         """
         self.state = LR35902.State.STOPPED
+
+    def di(self):
+        """GBCPUman.pdf page 98
+        Opcode 0xF3
+        Interrupts are disabled after the instruction after DI is executed
+        """
+        if self.interrupts["enabled"]:
+            self.interrupts["change_in"] = 2
+
+    def ei(self):
+        """GBCPUman.pdf page 98
+        Opcode 0xFB
+        Interrupts are enabled after the instruction after EI is executed
+        """
+        if not self.interrupts["enabled"]:
+            self.interrupts["change_in"] = 2
