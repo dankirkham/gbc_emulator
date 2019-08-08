@@ -589,7 +589,11 @@ class LR35902:
         opcode = self.memory[self.PC]
 
         # Decode
-        instruction = self.instructions[opcode]
+        if opcode != 0xCB:
+            instruction = self.instructions[opcode]
+        else:
+            cb_opcode = self.memory[self.PC + 1]
+            instruction = self.cb_instructions[cb_opcode]
 
         # Execute
         instruction.function(self)

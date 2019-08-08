@@ -28,3 +28,18 @@ class TestLR35902(unittest.TestCase):
         cpu.clock()
 
         self.assertEquals(cpu.B, 0x53)
+
+    def test_cb_swap(self):
+        memory = [
+            0x06,
+            0x53,
+            0xCB,
+            0x30
+        ]
+
+        cpu = LR35902(memory)
+
+        for _ in range(16):
+            cpu.clock()
+
+        self.assertEquals(cpu.B, 0x35)
