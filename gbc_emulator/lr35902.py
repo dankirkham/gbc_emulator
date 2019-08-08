@@ -1,4 +1,5 @@
 from collections import namedtuple
+from enum import Enum
 
 class LR35902:
     """Sharp LR35902 emulation. This is the CPU used in the Gameboy and Gameboy Color."""
@@ -25,6 +26,11 @@ class LR35902:
     REGISTER_SP = 12
     REGISTER_AF = 13
 
+    class State(Enum):
+        RUNNING = 0,
+        HALTED = 1,
+        STOPPED = 2
+
     Instruction = namedtuple('Instruction', ['function', 'length_in_bytes', 'duration_in_cycles', 'mnemonic'])
 
     def __init__(self, memory):
@@ -47,6 +53,8 @@ class LR35902:
         # How long to wait for instruction to complete
         self.wait = 0
 
+        self.state = LR35902.State.RUNNING
+
         # Instruction map
         self.instructions = [
             LR35902.Instruction(function=lambda s: s.nop(), length_in_bytes=1, duration_in_cycles=4, mnemonic='NOP'), # 0x00
@@ -65,7 +73,7 @@ class LR35902:
             None, # 0x0D
             LR35902.Instruction(function=lambda s: s.ld_nn_n(LR35902.REGISTER_C), length_in_bytes=2, duration_in_cycles=8, mnemonic='LD C,d8'), # 0x0E
             None, # 0x0F
-            None, # 0x10
+            LR35902.Instruction(function=lambda s: s.stop(), length_in_bytes=2, duration_in_cycles=4, mnemonic='STOP 0'), # 0x10
             LR35902.Instruction(function=lambda s: s.ld_n_nn(LR35902.REGISTER_DE), length_in_bytes=3, duration_in_cycles=12, mnemonic='LD DE,d16'), # 0x11
             LR35902.Instruction(function=lambda s: s.ld_n_a_pointer(LR35902.REGISTER_DE), length_in_bytes=1, duration_in_cycles=8, mnemonic='LD (DE),A'), # 0x12
             LR35902.Instruction(function=lambda s: s.inc_nn(LR35902.REGISTER_DE), length_in_bytes=1, duration_in_cycles=8, mnemonic='INC DE'), # 0x13
@@ -167,7 +175,7 @@ class LR35902:
             LR35902.Instruction(function=lambda s: s.ld_r1_r2_to_memory(src=LR35902.REGISTER_E, dst=LR35902.REGISTER_HL), length_in_bytes=1, duration_in_cycles=8, mnemonic='LD (HL),E'), # 0x73
             LR35902.Instruction(function=lambda s: s.ld_r1_r2_to_memory(src=LR35902.REGISTER_H, dst=LR35902.REGISTER_HL), length_in_bytes=1, duration_in_cycles=8, mnemonic='LD (HL),H'), # 0x74
             LR35902.Instruction(function=lambda s: s.ld_r1_r2_to_memory(src=LR35902.REGISTER_L, dst=LR35902.REGISTER_HL), length_in_bytes=1, duration_in_cycles=8, mnemonic='LD (HL),L'), # 0x75
-            None, # 0x76
+            LR35902.Instruction(function=lambda s: s.halt(), length_in_bytes=1, duration_in_cycles=4, mnemonic='HALT'), # 0x76
             LR35902.Instruction(function=lambda s: s.ld_n_a_pointer(LR35902.REGISTER_HL), length_in_bytes=1, duration_in_cycles=8, mnemonic='LD (HL),A'), # 0x77
             LR35902.Instruction(function=lambda s: s.ld_r1_r2_between_registers(src=LR35902.REGISTER_B, dst=LR35902.REGISTER_A), length_in_bytes=1, duration_in_cycles=4, mnemonic='LD A,B'), # 0x78
             LR35902.Instruction(function=lambda s: s.ld_r1_r2_between_registers(src=LR35902.REGISTER_C, dst=LR35902.REGISTER_A), length_in_bytes=1, duration_in_cycles=4, mnemonic='LD A,C'), # 0x79
@@ -583,6 +591,10 @@ class LR35902:
         # Idle if necessary
         if self.wait > 0:
             self.wait -= 1
+            return
+
+        # Do nothing if CPU is not running
+        if not self.state == LR35902.State.RUNNING:
             return
 
         # Fetch
@@ -2118,3 +2130,17 @@ class LR35902:
         Do nothing
         """
         pass
+
+    def halt(self):
+        """GBCPUman.pdf page 97
+        Opcode 0x76
+        Power down the CPU until an interrupt occurs
+        """
+        self.state = LR35902.State.HALTED
+
+    def stop(self):
+        """GBCPUman.pdf page 97
+        Opcode 0x10
+        Halt CPU and LCD until button is pressed.
+        """
+        self.state = LR35902.State.STOPPED
