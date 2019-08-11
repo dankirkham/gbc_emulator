@@ -66,64 +66,64 @@ class LR35902:
             LR35902.Instruction(function=lambda s: s.ld_n_nn(LR35902.REGISTER_BC), length_in_bytes=3, duration_in_cycles=12, mnemonic='LD BC,d16'), # 0x01
             LR35902.Instruction(function=lambda s: s.ld_n_a_pointer(LR35902.REGISTER_BC), length_in_bytes=1, duration_in_cycles=8, mnemonic='LD (BC),A'), # 0x02
             LR35902.Instruction(function=lambda s: s.inc_nn(LR35902.REGISTER_BC), length_in_bytes=1, duration_in_cycles=8, mnemonic='INC BC'), # 0x03
-            None, # 0x04
-            None, # 0x05
+            LR35902.Instruction(function=lambda s: s.inc_n_register(LR35902.REGISTER_B), length_in_bytes=1, duration_in_cycles=4, mnemonic='INC B'), # 0x04
+            LR35902.Instruction(function=lambda s: s.dec_n_register(LR35902.REGISTER_B), length_in_bytes=1, duration_in_cycles=4, mnemonic='DEC B'), # 0x05
             LR35902.Instruction(function=lambda s: s.ld_nn_n(LR35902.REGISTER_B), length_in_bytes=2, duration_in_cycles=8, mnemonic='LD B,d8'), # 0x06
             None, # 0x07
             LR35902.Instruction(function=lambda s: s.ld_nn_sp(), length_in_bytes=3, duration_in_cycles=20, mnemonic='LD (a16),SP'), # 0x08
             LR35902.Instruction(function=lambda s: s.add_hl_n(LR35902.REGISTER_BC), length_in_bytes=1, duration_in_cycles=8, mnemonic='ADD HL,BC'), # 0x09
             LR35902.Instruction(function=lambda s: s.ld_a_n_from_memory(LR35902.REGISTER_BC), length_in_bytes=1, duration_in_cycles=8, mnemonic='LD A,(BC)'), # 0x0A
             LR35902.Instruction(function=lambda s: s.dec_nn(LR35902.REGISTER_BC), length_in_bytes=1, duration_in_cycles=8, mnemonic='DEC BC'), # 0x0B
-            None, # 0x0C
-            None, # 0x0D
+            LR35902.Instruction(function=lambda s: s.inc_n_register(LR35902.REGISTER_C), length_in_bytes=1, duration_in_cycles=4, mnemonic='INC C'), # 0x0C
+            LR35902.Instruction(function=lambda s: s.dec_n_register(LR35902.REGISTER_C), length_in_bytes=1, duration_in_cycles=4, mnemonic='DEC C'), # 0x0D
             LR35902.Instruction(function=lambda s: s.ld_nn_n(LR35902.REGISTER_C), length_in_bytes=2, duration_in_cycles=8, mnemonic='LD C,d8'), # 0x0E
             None, # 0x0F
             LR35902.Instruction(function=lambda s: s.stop(), length_in_bytes=2, duration_in_cycles=4, mnemonic='STOP 0'), # 0x10
             LR35902.Instruction(function=lambda s: s.ld_n_nn(LR35902.REGISTER_DE), length_in_bytes=3, duration_in_cycles=12, mnemonic='LD DE,d16'), # 0x11
             LR35902.Instruction(function=lambda s: s.ld_n_a_pointer(LR35902.REGISTER_DE), length_in_bytes=1, duration_in_cycles=8, mnemonic='LD (DE),A'), # 0x12
             LR35902.Instruction(function=lambda s: s.inc_nn(LR35902.REGISTER_DE), length_in_bytes=1, duration_in_cycles=8, mnemonic='INC DE'), # 0x13
-            None, # 0x14
-            None, # 0x15
+            LR35902.Instruction(function=lambda s: s.inc_n_register(LR35902.REGISTER_D), length_in_bytes=1, duration_in_cycles=4, mnemonic='INC D'), # 0x14
+            LR35902.Instruction(function=lambda s: s.dec_n_register(LR35902.REGISTER_D), length_in_bytes=1, duration_in_cycles=4, mnemonic='DEC D'), # 0x15
             LR35902.Instruction(function=lambda s: s.ld_nn_n(LR35902.REGISTER_D), length_in_bytes=2, duration_in_cycles=8, mnemonic='LD D,d8'), # 0x16
             None, # 0x17
             None, # 0x18
             LR35902.Instruction(function=lambda s: s.add_hl_n(LR35902.REGISTER_DE), length_in_bytes=1, duration_in_cycles=8, mnemonic='ADD HL,DE'), # 0x19
             LR35902.Instruction(function=lambda s: s.ld_a_n_from_memory(LR35902.REGISTER_DE), length_in_bytes=1, duration_in_cycles=8, mnemonic='LD A,(DE)'), # 0x1A
             LR35902.Instruction(function=lambda s: s.dec_nn(LR35902.REGISTER_DE), length_in_bytes=1, duration_in_cycles=8, mnemonic='DEC DE'), # 0x1B
-            None, # 0x1C
-            None, # 0x1D
+            LR35902.Instruction(function=lambda s: s.inc_n_register(LR35902.REGISTER_E), length_in_bytes=1, duration_in_cycles=4, mnemonic='INC E'), # 0x1C
+            LR35902.Instruction(function=lambda s: s.dec_n_register(LR35902.REGISTER_E), length_in_bytes=1, duration_in_cycles=4, mnemonic='DEC E'), # 0x1D
             LR35902.Instruction(function=lambda s: s.ld_nn_n(LR35902.REGISTER_E), length_in_bytes=2, duration_in_cycles=8, mnemonic='LD E,d8'), # 0x1E
             None, # 0x1F
             None, # 0x20
             LR35902.Instruction(function=lambda s: s.ld_n_nn(LR35902.REGISTER_HL), length_in_bytes=3, duration_in_cycles=12, mnemonic='LD HL,d16'), # 0x21
             LR35902.Instruction(function=lambda s: s.ld_hl_a_increment(), length_in_bytes=1, duration_in_cycles=8, mnemonic='LD (HL+),A'), # 0x22
             LR35902.Instruction(function=lambda s: s.inc_nn(LR35902.REGISTER_HL), length_in_bytes=1, duration_in_cycles=8, mnemonic='INC HL'), # 0x23
-            None, # 0x24
-            None, # 0x25
+            LR35902.Instruction(function=lambda s: s.inc_n_register(LR35902.REGISTER_H), length_in_bytes=1, duration_in_cycles=4, mnemonic='INC H'), # 0x24
+            LR35902.Instruction(function=lambda s: s.dec_n_register(LR35902.REGISTER_H), length_in_bytes=1, duration_in_cycles=4, mnemonic='DEC H'), # 0x25
             LR35902.Instruction(function=lambda s: s.ld_nn_n(LR35902.REGISTER_H), length_in_bytes=2, duration_in_cycles=8, mnemonic='LD H,d8'), # 0x26
             LR35902.Instruction(function=lambda s: s.daa(), length_in_bytes=1, duration_in_cycles=4, mnemonic='DAA'), # 0x27
             None, # 0x28
             LR35902.Instruction(function=lambda s: s.add_hl_n(LR35902.REGISTER_HL), length_in_bytes=1, duration_in_cycles=8, mnemonic='ADD HL,HL'), # 0x29
             LR35902.Instruction(function=lambda s: s.ld_a_hl_increment(), length_in_bytes=1, duration_in_cycles=8, mnemonic='LD A,(HL+)'), # 0x2A
             LR35902.Instruction(function=lambda s: s.dec_nn(LR35902.REGISTER_HL), length_in_bytes=1, duration_in_cycles=8, mnemonic='DEC HL'), # 0x2B
-            None, # 0x2C
-            None, # 0x2D
+            LR35902.Instruction(function=lambda s: s.inc_n_register(LR35902.REGISTER_L), length_in_bytes=1, duration_in_cycles=4, mnemonic='INC L'), # 0x2C
+            LR35902.Instruction(function=lambda s: s.dec_n_register(LR35902.REGISTER_L), length_in_bytes=1, duration_in_cycles=4, mnemonic='DEC L'), # 0x2D
             LR35902.Instruction(function=lambda s: s.ld_nn_n(LR35902.REGISTER_L), length_in_bytes=2, duration_in_cycles=8, mnemonic='LD L,d8'), # 0x2E
             LR35902.Instruction(function=lambda s: s.cpl(), length_in_bytes=1, duration_in_cycles=4, mnemonic='CPL'), # 0x2F
             None, # 0x30
             LR35902.Instruction(function=lambda s: s.ld_n_nn(LR35902.REGISTER_SP), length_in_bytes=3, duration_in_cycles=12, mnemonic='LD SP,d16'), # 0x31
             LR35902.Instruction(function=lambda s: s.ld_hl_a_decrement(), length_in_bytes=1, duration_in_cycles=8, mnemonic='LD (HL-),A'), # 0x32
             LR35902.Instruction(function=lambda s: s.inc_nn(LR35902.REGISTER_SP), length_in_bytes=1, duration_in_cycles=8, mnemonic='INC SP'), # 0x33
-            None, # 0x34
-            None, # 0x35
+            LR35902.Instruction(function=lambda s: s.inc_n_memory(), length_in_bytes=1, duration_in_cycles=12, mnemonic='INC (HL)'), # 0x34
+            LR35902.Instruction(function=lambda s: s.dec_n_memory(), length_in_bytes=1, duration_in_cycles=12, mnemonic='DEC (HL)'), # 0x35
             LR35902.Instruction(function=lambda s: s.ld_r1_r2_immediate_to_memory(LR35902.REGISTER_HL), length_in_bytes=2, duration_in_cycles=12, mnemonic='LD (HL),d8'), # 0x36
             LR35902.Instruction(function=lambda s: s.scf(), length_in_bytes=1, duration_in_cycles=4, mnemonic='SCF'), # 0x37
             None, # 0x38
             LR35902.Instruction(function=lambda s: s.add_hl_n(LR35902.REGISTER_SP), length_in_bytes=1, duration_in_cycles=8, mnemonic='ADD HL,SP'), # 0x39
             LR35902.Instruction(function=lambda s: s.ld_a_hl_decrement(), length_in_bytes=1, duration_in_cycles=8, mnemonic='LD A,(HL-)'), # 0x3A
             LR35902.Instruction(function=lambda s: s.dec_nn(LR35902.REGISTER_SP), length_in_bytes=1, duration_in_cycles=8, mnemonic='DEC SP'), # 0x3B
-            None, # 0x3C
-            None, # 0x3D
+            LR35902.Instruction(function=lambda s: s.inc_n_register(LR35902.REGISTER_A), length_in_bytes=1, duration_in_cycles=4, mnemonic='INC A'), # 0x3C
+            LR35902.Instruction(function=lambda s: s.dec_n_register(LR35902.REGISTER_A), length_in_bytes=1, duration_in_cycles=4, mnemonic='DEC A'), # 0x3D
             LR35902.Instruction(function=lambda s: s.ld_nn_n(LR35902.REGISTER_A), length_in_bytes=2, duration_in_cycles=8, mnemonic='LD A,d8'), # 0x3E
             LR35902.Instruction(function=lambda s: s.ccf(), length_in_bytes=1, duration_in_cycles=4, mnemonic='CCF'), # 0x3F
             LR35902.Instruction(function=lambda s: s.ld_r1_r2_between_registers(src=LR35902.REGISTER_B, dst=LR35902.REGISTER_B), length_in_bytes=1, duration_in_cycles=4, mnemonic='LD B,B'), # 0x40
@@ -190,77 +190,77 @@ class LR35902:
             LR35902.Instruction(function=lambda s: s.ld_r1_r2_between_registers(src=LR35902.REGISTER_L, dst=LR35902.REGISTER_A), length_in_bytes=1, duration_in_cycles=4, mnemonic='LD A,L'), # 0x7D
             LR35902.Instruction(function=lambda s: s.ld_a_n_from_memory(LR35902.REGISTER_HL), length_in_bytes=1, duration_in_cycles=8, mnemonic='LD A,(HL)'), # 0x7E
             LR35902.Instruction(function=lambda s: s.ld_n_a(LR35902.REGISTER_A), length_in_bytes=1, duration_in_cycles=4, mnemonic='LD A,A'), # 0x7F
-            None, # 0x80
-            None, # 0x81
-            None, # 0x82
-            None, # 0x83
-            None, # 0x84
-            None, # 0x85
-            None, # 0x86
-            None, # 0x87
-            None, # 0x88
-            None, # 0x89
-            None, # 0x8A
-            None, # 0x8B
-            None, # 0x8C
-            None, # 0x8D
-            None, # 0x8E
-            None, # 0x8F
-            None, # 0x90
-            None, # 0x91
-            None, # 0x92
-            None, # 0x93
-            None, # 0x94
-            None, # 0x95
-            None, # 0x96
-            None, # 0x97
-            None, # 0x98
-            None, # 0x99
-            None, # 0x9A
-            None, # 0x9B
-            None, # 0x9C
-            None, # 0x9D
-            None, # 0x9E
-            None, # 0x9F
-            None, # 0xA0
-            None, # 0xA1
-            None, # 0xA2
-            None, # 0xA3
-            None, # 0xA4
-            None, # 0xA5
-            None, # 0xA6
-            None, # 0xA7
-            None, # 0xA8
-            None, # 0xA9
-            None, # 0xAA
-            None, # 0xAB
-            None, # 0xAC
-            None, # 0xAD
-            None, # 0xAE
-            None, # 0xAF
-            None, # 0xB0
-            None, # 0xB1
-            None, # 0xB2
-            None, # 0xB3
-            None, # 0xB4
-            None, # 0xB5
-            None, # 0xB6
-            None, # 0xB7
-            None, # 0xB8
-            None, # 0xB9
-            None, # 0xBA
-            None, # 0xBB
-            None, # 0xBC
-            None, # 0xBD
-            None, # 0xBE
-            None, # 0xBF
+            LR35902.Instruction(function=lambda s: s.add_a_n_register(LR35902.REGISTER_B), length_in_bytes=1, duration_in_cycles=4, mnemonic='ADD A,B'), # 0x80
+            LR35902.Instruction(function=lambda s: s.add_a_n_register(LR35902.REGISTER_C), length_in_bytes=1, duration_in_cycles=4, mnemonic='ADD A,C'), # 0x81
+            LR35902.Instruction(function=lambda s: s.add_a_n_register(LR35902.REGISTER_D), length_in_bytes=1, duration_in_cycles=4, mnemonic='ADD A,D'), # 0x82
+            LR35902.Instruction(function=lambda s: s.add_a_n_register(LR35902.REGISTER_E), length_in_bytes=1, duration_in_cycles=4, mnemonic='ADD A,E'), # 0x83
+            LR35902.Instruction(function=lambda s: s.add_a_n_register(LR35902.REGISTER_H), length_in_bytes=1, duration_in_cycles=4, mnemonic='ADD A,H'), # 0x84
+            LR35902.Instruction(function=lambda s: s.add_a_n_register(LR35902.REGISTER_L), length_in_bytes=1, duration_in_cycles=4, mnemonic='ADD A,L'), # 0x85
+            LR35902.Instruction(function=lambda s: s.add_a_n_memory(), length_in_bytes=1, duration_in_cycles=8, mnemonic='ADD A,(HL)'), # 0x86
+            LR35902.Instruction(function=lambda s: s.add_a_n_register(LR35902.REGISTER_A), length_in_bytes=1, duration_in_cycles=4, mnemonic='ADD A,A'), # 0x87
+            LR35902.Instruction(function=lambda s: s.adc_a_n_register(LR35902.REGISTER_B), length_in_bytes=1, duration_in_cycles=4, mnemonic='ADC A,B'), # 0x88
+            LR35902.Instruction(function=lambda s: s.adc_a_n_register(LR35902.REGISTER_C), length_in_bytes=1, duration_in_cycles=4, mnemonic='ADC A,C'), # 0x89
+            LR35902.Instruction(function=lambda s: s.adc_a_n_register(LR35902.REGISTER_D), length_in_bytes=1, duration_in_cycles=4, mnemonic='ADC A,D'), # 0x8A
+            LR35902.Instruction(function=lambda s: s.adc_a_n_register(LR35902.REGISTER_E), length_in_bytes=1, duration_in_cycles=4, mnemonic='ADC A,E'), # 0x8B
+            LR35902.Instruction(function=lambda s: s.adc_a_n_register(LR35902.REGISTER_H), length_in_bytes=1, duration_in_cycles=4, mnemonic='ADC A,H'), # 0x8C
+            LR35902.Instruction(function=lambda s: s.adc_a_n_register(LR35902.REGISTER_L), length_in_bytes=1, duration_in_cycles=4, mnemonic='ADC A,L'), # 0x8D
+            LR35902.Instruction(function=lambda s: s.adc_a_n_memory(), length_in_bytes=1, duration_in_cycles=8, mnemonic='ADC A,(HL)'), # 0x8E
+            LR35902.Instruction(function=lambda s: s.adc_a_n_register(LR35902.REGISTER_A), length_in_bytes=1, duration_in_cycles=4, mnemonic='ADC A,A'), # 0x8F
+            LR35902.Instruction(function=lambda s: s.sub_n_register(LR35902.REGISTER_B), length_in_bytes=1, duration_in_cycles=4, mnemonic='SUB B'), # 0x90
+            LR35902.Instruction(function=lambda s: s.sub_n_register(LR35902.REGISTER_C), length_in_bytes=1, duration_in_cycles=4, mnemonic='SUB C'), # 0x91
+            LR35902.Instruction(function=lambda s: s.sub_n_register(LR35902.REGISTER_D), length_in_bytes=1, duration_in_cycles=4, mnemonic='SUB D'), # 0x92
+            LR35902.Instruction(function=lambda s: s.sub_n_register(LR35902.REGISTER_E), length_in_bytes=1, duration_in_cycles=4, mnemonic='SUB E'), # 0x93
+            LR35902.Instruction(function=lambda s: s.sub_n_register(LR35902.REGISTER_H), length_in_bytes=1, duration_in_cycles=4, mnemonic='SUB H'), # 0x94
+            LR35902.Instruction(function=lambda s: s.sub_n_register(LR35902.REGISTER_L), length_in_bytes=1, duration_in_cycles=4, mnemonic='SUB L'), # 0x95
+            LR35902.Instruction(function=lambda s: s.sub_n_memory(), length_in_bytes=1, duration_in_cycles=8, mnemonic='SUB (HL)'), # 0x96
+            LR35902.Instruction(function=lambda s: s.sub_n_register(LR35902.REGISTER_A), length_in_bytes=1, duration_in_cycles=4, mnemonic='SUB A'), # 0x97
+            LR35902.Instruction(function=lambda s: s.subc_n_register(LR35902.REGISTER_B), length_in_bytes=1, duration_in_cycles=4, mnemonic='SBC A,B'), # 0x98
+            LR35902.Instruction(function=lambda s: s.subc_n_register(LR35902.REGISTER_C), length_in_bytes=1, duration_in_cycles=4, mnemonic='SBC A,C'), # 0x99
+            LR35902.Instruction(function=lambda s: s.subc_n_register(LR35902.REGISTER_D), length_in_bytes=1, duration_in_cycles=4, mnemonic='SBC A,D'), # 0x9A
+            LR35902.Instruction(function=lambda s: s.subc_n_register(LR35902.REGISTER_E), length_in_bytes=1, duration_in_cycles=4, mnemonic='SBC A,E'), # 0x9B
+            LR35902.Instruction(function=lambda s: s.subc_n_register(LR35902.REGISTER_H), length_in_bytes=1, duration_in_cycles=4, mnemonic='SBC A,H'), # 0x9C
+            LR35902.Instruction(function=lambda s: s.subc_n_register(LR35902.REGISTER_L), length_in_bytes=1, duration_in_cycles=4, mnemonic='SBC A,L'), # 0x9D
+            LR35902.Instruction(function=lambda s: s.subc_n_memory(), length_in_bytes=1, duration_in_cycles=8, mnemonic='SBC A,(HL)'), # 0x9E
+            LR35902.Instruction(function=lambda s: s.subc_n_register(LR35902.REGISTER_A), length_in_bytes=1, duration_in_cycles=4, mnemonic='SBC A,A'), # 0x9F
+            LR35902.Instruction(function=lambda s: s.and_n_register(LR35902.REGISTER_B), length_in_bytes=1, duration_in_cycles=4, mnemonic='AND B'), # 0xA0
+            LR35902.Instruction(function=lambda s: s.and_n_register(LR35902.REGISTER_C), length_in_bytes=1, duration_in_cycles=4, mnemonic='AND C'), # 0xA1
+            LR35902.Instruction(function=lambda s: s.and_n_register(LR35902.REGISTER_D), length_in_bytes=1, duration_in_cycles=4, mnemonic='AND D'), # 0xA2
+            LR35902.Instruction(function=lambda s: s.and_n_register(LR35902.REGISTER_E), length_in_bytes=1, duration_in_cycles=4, mnemonic='AND E'), # 0xA3
+            LR35902.Instruction(function=lambda s: s.and_n_register(LR35902.REGISTER_H), length_in_bytes=1, duration_in_cycles=4, mnemonic='AND H'), # 0xA4
+            LR35902.Instruction(function=lambda s: s.and_n_register(LR35902.REGISTER_L), length_in_bytes=1, duration_in_cycles=4, mnemonic='AND L'), # 0xA5
+            LR35902.Instruction(function=lambda s: s.and_n_memory(), length_in_bytes=1, duration_in_cycles=8, mnemonic='AND (HL)'), # 0xA6
+            LR35902.Instruction(function=lambda s: s.and_n_register(LR35902.REGISTER_A), length_in_bytes=1, duration_in_cycles=4, mnemonic='AND A'), # 0xA7
+            LR35902.Instruction(function=lambda s: s.xor_n_register(LR35902.REGISTER_B), length_in_bytes=1, duration_in_cycles=4, mnemonic='XOR B'), # 0xA8
+            LR35902.Instruction(function=lambda s: s.xor_n_register(LR35902.REGISTER_C), length_in_bytes=1, duration_in_cycles=4, mnemonic='XOR C'), # 0xA9
+            LR35902.Instruction(function=lambda s: s.xor_n_register(LR35902.REGISTER_D), length_in_bytes=1, duration_in_cycles=4, mnemonic='XOR D'), # 0xAA
+            LR35902.Instruction(function=lambda s: s.xor_n_register(LR35902.REGISTER_E), length_in_bytes=1, duration_in_cycles=4, mnemonic='XOR E'), # 0xAB
+            LR35902.Instruction(function=lambda s: s.xor_n_register(LR35902.REGISTER_H), length_in_bytes=1, duration_in_cycles=4, mnemonic='XOR H'), # 0xAC
+            LR35902.Instruction(function=lambda s: s.xor_n_register(LR35902.REGISTER_L), length_in_bytes=1, duration_in_cycles=4, mnemonic='XOR L'), # 0xAD
+            LR35902.Instruction(function=lambda s: s.xor_n_memory(), length_in_bytes=1, duration_in_cycles=8, mnemonic='XOR (HL)'), # 0xAE
+            LR35902.Instruction(function=lambda s: s.xor_n_register(LR35902.REGISTER_A), length_in_bytes=1, duration_in_cycles=4, mnemonic='XOR A'), # 0xAF
+            LR35902.Instruction(function=lambda s: s.or_n_register(LR35902.REGISTER_B), length_in_bytes=1, duration_in_cycles=4, mnemonic='OR B'), # 0xB0
+            LR35902.Instruction(function=lambda s: s.or_n_register(LR35902.REGISTER_C), length_in_bytes=1, duration_in_cycles=4, mnemonic='OR C'), # 0xB1
+            LR35902.Instruction(function=lambda s: s.or_n_register(LR35902.REGISTER_D), length_in_bytes=1, duration_in_cycles=4, mnemonic='OR D'), # 0xB2
+            LR35902.Instruction(function=lambda s: s.or_n_register(LR35902.REGISTER_E), length_in_bytes=1, duration_in_cycles=4, mnemonic='OR E'), # 0xB3
+            LR35902.Instruction(function=lambda s: s.or_n_register(LR35902.REGISTER_H), length_in_bytes=1, duration_in_cycles=4, mnemonic='OR H'), # 0xB4
+            LR35902.Instruction(function=lambda s: s.or_n_register(LR35902.REGISTER_L), length_in_bytes=1, duration_in_cycles=4, mnemonic='OR L'), # 0xB5
+            LR35902.Instruction(function=lambda s: s.or_n_memory(), length_in_bytes=1, duration_in_cycles=8, mnemonic='OR (HL)'), # 0xB6
+            LR35902.Instruction(function=lambda s: s.or_n_register(LR35902.REGISTER_A), length_in_bytes=1, duration_in_cycles=4, mnemonic='OR A'), # 0xB7
+            LR35902.Instruction(function=lambda s: s.cp_n_register(LR35902.REGISTER_B), length_in_bytes=1, duration_in_cycles=4, mnemonic='CP B'), # 0xB8
+            LR35902.Instruction(function=lambda s: s.cp_n_register(LR35902.REGISTER_C), length_in_bytes=1, duration_in_cycles=4, mnemonic='CP C'), # 0xB9
+            LR35902.Instruction(function=lambda s: s.cp_n_register(LR35902.REGISTER_D), length_in_bytes=1, duration_in_cycles=4, mnemonic='CP D'), # 0xBA
+            LR35902.Instruction(function=lambda s: s.cp_n_register(LR35902.REGISTER_E), length_in_bytes=1, duration_in_cycles=4, mnemonic='CP E'), # 0xBB
+            LR35902.Instruction(function=lambda s: s.cp_n_register(LR35902.REGISTER_H), length_in_bytes=1, duration_in_cycles=4, mnemonic='CP H'), # 0xBC
+            LR35902.Instruction(function=lambda s: s.cp_n_register(LR35902.REGISTER_L), length_in_bytes=1, duration_in_cycles=4, mnemonic='CP L'), # 0xBD
+            LR35902.Instruction(function=lambda s: s.cp_n_memory(), length_in_bytes=1, duration_in_cycles=8, mnemonic='OR (HL)'), # 0xBE
+            LR35902.Instruction(function=lambda s: s.cp_n_register(LR35902.REGISTER_A), length_in_bytes=1, duration_in_cycles=4, mnemonic='CP A'), # 0xBF
             None, # 0xC0
             LR35902.Instruction(function=lambda s: s.pop_nn(LR35902.REGISTER_BC), length_in_bytes=1, duration_in_cycles=12, mnemonic='POP BC'), # 0xC1
             None, # 0xC2
             None, # 0xC3
             None, # 0xC4
             LR35902.Instruction(function=lambda s: s.push_nn(LR35902.REGISTER_BC), length_in_bytes=1, duration_in_cycles=16, mnemonic='PUSH BC'), # 0xC5
-            None, # 0xC6
+            LR35902.Instruction(function=lambda s: s.add_a_n_immediate(), length_in_bytes=2, duration_in_cycles=8, mnemonic='ADD A,d8'), # 0xC6
             None, # 0xC7
             None, # 0xC8
             None, # 0xC9
@@ -268,7 +268,7 @@ class LR35902:
             None, # 0xCB
             None, # 0xCC
             None, # 0xCD
-            None, # 0xCE
+            LR35902.Instruction(function=lambda s: s.adc_a_n_immediate(), length_in_bytes=2, duration_in_cycles=8, mnemonic='ADC A,d8'), # 0xCE
             None, # 0xCF
             None, # 0xD0
             LR35902.Instruction(function=lambda s: s.pop_nn(LR35902.REGISTER_DE), length_in_bytes=1, duration_in_cycles=12, mnemonic='POP DE'), # 0xD1
@@ -276,7 +276,7 @@ class LR35902:
             None, # 0xD3
             None, # 0xD4
             LR35902.Instruction(function=lambda s: s.push_nn(LR35902.REGISTER_DE), length_in_bytes=1, duration_in_cycles=16, mnemonic='PUSH DE'), # 0xD5
-            None, # 0xD6
+            LR35902.Instruction(function=lambda s: s.sub_n_immediate(), length_in_bytes=2, duration_in_cycles=8, mnemonic='SUB d8'), # 0xD6
             None, # 0xD7
             None, # 0xD8
             None, # 0xD9
@@ -284,7 +284,7 @@ class LR35902:
             None, # 0xDB
             None, # 0xDC
             None, # 0xDD
-            None, # 0xDE
+            LR35902.Instruction(function=lambda s: s.subc_n_immediate(), length_in_bytes=2, duration_in_cycles=8, mnemonic='SUB A,d8'), # 0xDE
             None, # 0xDF
             LR35902.Instruction(function=lambda s: s.ldh_n_a(), length_in_bytes=2, duration_in_cycles=12, mnemonic='LDH (a8),A'), # 0xE0
             LR35902.Instruction(function=lambda s: s.pop_nn(LR35902.REGISTER_HL), length_in_bytes=1, duration_in_cycles=12, mnemonic='POP HL'), # 0xE1
@@ -292,7 +292,7 @@ class LR35902:
             None, # 0xE3
             None, # 0xE4
             LR35902.Instruction(function=lambda s: s.push_nn(LR35902.REGISTER_HL), length_in_bytes=1, duration_in_cycles=16, mnemonic='PUSH HL'), # 0xE5
-            None, # 0xE6
+            LR35902.Instruction(function=lambda s: s.and_n_immediate(), length_in_bytes=2, duration_in_cycles=8, mnemonic='AND d8'), # 0xE6
             None, # 0xE7
             LR35902.Instruction(function=lambda s: s.add_sp_n(), length_in_bytes=2, duration_in_cycles=16, mnemonic='ADD SP,r8'), # 0xE8
             None, # 0xE9
@@ -300,7 +300,7 @@ class LR35902:
             None, # 0xEB
             None, # 0xEC
             None, # 0xED
-            None, # 0xEE
+            LR35902.Instruction(function=lambda s: s.xor_n_immediate(), length_in_bytes=2, duration_in_cycles=8, mnemonic='XOR d8'), # 0xEE
             None, # 0xEF
             LR35902.Instruction(function=lambda s: s.ldh_a_n(), length_in_bytes=2, duration_in_cycles=12, mnemonic='LDH A,(a8)'), # 0xF0
             LR35902.Instruction(function=lambda s: s.pop_nn(LR35902.REGISTER_AF), length_in_bytes=1, duration_in_cycles=12, mnemonic='POP AF'), # 0xF1
@@ -308,7 +308,7 @@ class LR35902:
             LR35902.Instruction(function=lambda s: s.di(), length_in_bytes=1, duration_in_cycles=4, mnemonic='DI'), # 0xF3
             None, # 0xF4
             LR35902.Instruction(function=lambda s: s.push_nn(LR35902.REGISTER_AF), length_in_bytes=1, duration_in_cycles=16, mnemonic='PUSH AF'), # 0xF5
-            None, # 0xF6
+            LR35902.Instruction(function=lambda s: s.or_n_immediate(), length_in_bytes=2, duration_in_cycles=8, mnemonic='OR d8'), # 0xF6
             None, # 0xF7
             LR35902.Instruction(function=lambda s: s.ld_hl_sp_n(), length_in_bytes=2, duration_in_cycles=12, mnemonic='LD HL,SP+r8'), # 0xF8
             LR35902.Instruction(function=lambda s: s.ld_sp_hl(), length_in_bytes=1, duration_in_cycles=8, mnemonic='LD SP,HL'), # 0xF9
@@ -316,7 +316,7 @@ class LR35902:
             LR35902.Instruction(function=lambda s: s.ei(), length_in_bytes=1, duration_in_cycles=4, mnemonic='EI'), # 0xFB
             None, # 0xFC
             None, # 0xFD
-            None, # 0xFE
+            LR35902.Instruction(function=lambda s: s.cp_n_immediate(), length_in_bytes=2, duration_in_cycles=8, mnemonic='CP d8'), # 0xFE
             None, # 0xFF
         ]
 
@@ -587,7 +587,7 @@ class LR35902:
             self.F &= ~(1 << LR35902.FLAG_Z)
 
     def set_flag(self, register, value):
-        if True:
+        if value == True:
             self.F |= (1 << register)
         else:
             self.F &= ~(1 << register)
@@ -1696,7 +1696,7 @@ class LR35902:
     def cp_n_register(self, reg=None):
         """GBCPUman.pdf page 87
         Opcodes 0xB8, 0xB9, 0xBA, 0xBB, 0xBC, 0xBD, 0xBF
-        Comparee register reg with register A.
+        Compare register reg with register A.
         """
 
         if reg == LR35902.REGISTER_A:
@@ -1888,6 +1888,8 @@ class LR35902:
         else:
             raise RuntimeError('Invalid register "{}" specified!'.format(reg))
 
+        # TODO: Set N Flag
+
         # Keep C flag
         new_flags = 0 | (self.F & (1 << LR3590s.FLAG_C))
 
@@ -1934,6 +1936,7 @@ class LR35902:
         # Set Flags
         self.F = new_flags
 
+    # 16-bit Arithmetic
     def add_hl_n(self, reg=None):
         """GBCPUman.pdf page 90
         Opcodes 0x09, 0x19, 0x29, 0x39
