@@ -69,7 +69,7 @@ class LR35902:
             LR35902.Instruction(function=lambda s: s.inc_n_register(LR35902.REGISTER_B), length_in_bytes=1, duration_in_cycles=4, mnemonic='INC B'), # 0x04
             LR35902.Instruction(function=lambda s: s.dec_n_register(LR35902.REGISTER_B), length_in_bytes=1, duration_in_cycles=4, mnemonic='DEC B'), # 0x05
             LR35902.Instruction(function=lambda s: s.ld_nn_n(LR35902.REGISTER_B), length_in_bytes=2, duration_in_cycles=8, mnemonic='LD B,d8'), # 0x06
-            None, # 0x07
+            LR35902.Instruction(function=lambda s: s.rlc(LR35902.REGISTER_A), length_in_bytes=1, duration_in_cycles=4, mnemonic='RLCA'), # 0x07
             LR35902.Instruction(function=lambda s: s.ld_nn_sp(), length_in_bytes=3, duration_in_cycles=20, mnemonic='LD (a16),SP'), # 0x08
             LR35902.Instruction(function=lambda s: s.add_hl_n(LR35902.REGISTER_BC), length_in_bytes=1, duration_in_cycles=8, mnemonic='ADD HL,BC'), # 0x09
             LR35902.Instruction(function=lambda s: s.ld_a_n_from_memory(LR35902.REGISTER_BC), length_in_bytes=1, duration_in_cycles=8, mnemonic='LD A,(BC)'), # 0x0A
@@ -77,7 +77,7 @@ class LR35902:
             LR35902.Instruction(function=lambda s: s.inc_n_register(LR35902.REGISTER_C), length_in_bytes=1, duration_in_cycles=4, mnemonic='INC C'), # 0x0C
             LR35902.Instruction(function=lambda s: s.dec_n_register(LR35902.REGISTER_C), length_in_bytes=1, duration_in_cycles=4, mnemonic='DEC C'), # 0x0D
             LR35902.Instruction(function=lambda s: s.ld_nn_n(LR35902.REGISTER_C), length_in_bytes=2, duration_in_cycles=8, mnemonic='LD C,d8'), # 0x0E
-            None, # 0x0F
+            LR35902.Instruction(function=lambda s: s.rrc(LR35902.REGISTER_A), length_in_bytes=1, duration_in_cycles=4, mnemonic='RRCA'), # 0x0F
             LR35902.Instruction(function=lambda s: s.stop(), length_in_bytes=2, duration_in_cycles=4, mnemonic='STOP 0'), # 0x10
             LR35902.Instruction(function=lambda s: s.ld_n_nn(LR35902.REGISTER_DE), length_in_bytes=3, duration_in_cycles=12, mnemonic='LD DE,d16'), # 0x11
             LR35902.Instruction(function=lambda s: s.ld_n_a_pointer(LR35902.REGISTER_DE), length_in_bytes=1, duration_in_cycles=8, mnemonic='LD (DE),A'), # 0x12
@@ -85,7 +85,7 @@ class LR35902:
             LR35902.Instruction(function=lambda s: s.inc_n_register(LR35902.REGISTER_D), length_in_bytes=1, duration_in_cycles=4, mnemonic='INC D'), # 0x14
             LR35902.Instruction(function=lambda s: s.dec_n_register(LR35902.REGISTER_D), length_in_bytes=1, duration_in_cycles=4, mnemonic='DEC D'), # 0x15
             LR35902.Instruction(function=lambda s: s.ld_nn_n(LR35902.REGISTER_D), length_in_bytes=2, duration_in_cycles=8, mnemonic='LD D,d8'), # 0x16
-            None, # 0x17
+            LR35902.Instruction(function=lambda s: s.rl(LR35902.REGISTER_A), length_in_bytes=1, duration_in_cycles=4, mnemonic='RLA'), # 0x17
             None, # 0x18
             LR35902.Instruction(function=lambda s: s.add_hl_n(LR35902.REGISTER_DE), length_in_bytes=1, duration_in_cycles=8, mnemonic='ADD HL,DE'), # 0x19
             LR35902.Instruction(function=lambda s: s.ld_a_n_from_memory(LR35902.REGISTER_DE), length_in_bytes=1, duration_in_cycles=8, mnemonic='LD A,(DE)'), # 0x1A
@@ -93,7 +93,7 @@ class LR35902:
             LR35902.Instruction(function=lambda s: s.inc_n_register(LR35902.REGISTER_E), length_in_bytes=1, duration_in_cycles=4, mnemonic='INC E'), # 0x1C
             LR35902.Instruction(function=lambda s: s.dec_n_register(LR35902.REGISTER_E), length_in_bytes=1, duration_in_cycles=4, mnemonic='DEC E'), # 0x1D
             LR35902.Instruction(function=lambda s: s.ld_nn_n(LR35902.REGISTER_E), length_in_bytes=2, duration_in_cycles=8, mnemonic='LD E,d8'), # 0x1E
-            None, # 0x1F
+            LR35902.Instruction(function=lambda s: s.rr(LR35902.REGISTER_A), length_in_bytes=1, duration_in_cycles=4, mnemonic='RRA'), # 0x1F
             None, # 0x20
             LR35902.Instruction(function=lambda s: s.ld_n_nn(LR35902.REGISTER_HL), length_in_bytes=3, duration_in_cycles=12, mnemonic='LD HL,d16'), # 0x21
             LR35902.Instruction(function=lambda s: s.ld_hl_a_increment(), length_in_bytes=1, duration_in_cycles=8, mnemonic='LD (HL+),A'), # 0x22
@@ -322,38 +322,38 @@ class LR35902:
 
         # Instruction map
         self.cb_instructions = [
-            None, # 0x00
-            None, # 0x01
-            None, # 0x02
-            None, # 0x03
-            None, # 0x04
-            None, # 0x05
-            None, # 0x06
-            None, # 0x07
-            None, # 0x08
-            None, # 0x09
-            None, # 0x0A
-            None, # 0x0B
-            None, # 0x0C
-            None, # 0x0D
-            None, # 0x0E
-            None, # 0x0F
-            None, # 0x10
-            None, # 0x11
-            None, # 0x12
-            None, # 0x13
-            None, # 0x14
-            None, # 0x15
-            None, # 0x16
-            None, # 0x17
-            None, # 0x18
-            None, # 0x19
-            None, # 0x1A
-            None, # 0x1B
-            None, # 0x1C
-            None, # 0x1D
-            None, # 0x1E
-            None, # 0x1F
+            LR35902.Instruction(function=lambda s: s.rlc(LR35902.REGISTER_B), length_in_bytes=2, duration_in_cycles=8, mnemonic='RLC B'), # 0x00
+            LR35902.Instruction(function=lambda s: s.rlc(LR35902.REGISTER_C), length_in_bytes=2, duration_in_cycles=8, mnemonic='RLC C'), # 0x01
+            LR35902.Instruction(function=lambda s: s.rlc(LR35902.REGISTER_D), length_in_bytes=2, duration_in_cycles=8, mnemonic='RLC D'), # 0x02
+            LR35902.Instruction(function=lambda s: s.rlc(LR35902.REGISTER_E), length_in_bytes=2, duration_in_cycles=8, mnemonic='RLC E'), # 0x03
+            LR35902.Instruction(function=lambda s: s.rlc(LR35902.REGISTER_H), length_in_bytes=2, duration_in_cycles=8, mnemonic='RLC H'), # 0x04
+            LR35902.Instruction(function=lambda s: s.rlc(LR35902.REGISTER_L), length_in_bytes=2, duration_in_cycles=8, mnemonic='RLC L'), # 0x05
+            LR35902.Instruction(function=lambda s: s.rlc_memory(), length_in_bytes=2, duration_in_cycles=16, mnemonic='RLC (HL)'), # 0x06
+            LR35902.Instruction(function=lambda s: s.rlc(LR35902.REGISTER_A), length_in_bytes=2, duration_in_cycles=8, mnemonic='RLC A'), # 0x07
+            LR35902.Instruction(function=lambda s: s.rrc(LR35902.REGISTER_B), length_in_bytes=2, duration_in_cycles=8, mnemonic='RRC B'), # 0x08
+            LR35902.Instruction(function=lambda s: s.rrc(LR35902.REGISTER_C), length_in_bytes=2, duration_in_cycles=8, mnemonic='RRC C'), # 0x09
+            LR35902.Instruction(function=lambda s: s.rrc(LR35902.REGISTER_D), length_in_bytes=2, duration_in_cycles=8, mnemonic='RRC D'), # 0x0A
+            LR35902.Instruction(function=lambda s: s.rrc(LR35902.REGISTER_E), length_in_bytes=2, duration_in_cycles=8, mnemonic='RRC E'), # 0x0B
+            LR35902.Instruction(function=lambda s: s.rrc(LR35902.REGISTER_H), length_in_bytes=2, duration_in_cycles=8, mnemonic='RRC H'), # 0x0C
+            LR35902.Instruction(function=lambda s: s.rrc(LR35902.REGISTER_L), length_in_bytes=2, duration_in_cycles=8, mnemonic='RRC L'), # 0x0D
+            LR35902.Instruction(function=lambda s: s.rrc_memory(), length_in_bytes=2, duration_in_cycles=16, mnemonic='RRC (HL)'), # 0x0E
+            LR35902.Instruction(function=lambda s: s.rrc(LR35902.REGISTER_A), length_in_bytes=2, duration_in_cycles=8, mnemonic='RRC A'), # 0x0F
+            LR35902.Instruction(function=lambda s: s.rl(LR35902.REGISTER_B), length_in_bytes=2, duration_in_cycles=8, mnemonic='RL B'), # 0x10
+            LR35902.Instruction(function=lambda s: s.rl(LR35902.REGISTER_C), length_in_bytes=2, duration_in_cycles=8, mnemonic='RL C'), # 0x11
+            LR35902.Instruction(function=lambda s: s.rl(LR35902.REGISTER_D), length_in_bytes=2, duration_in_cycles=8, mnemonic='RL D'), # 0x12
+            LR35902.Instruction(function=lambda s: s.rl(LR35902.REGISTER_E), length_in_bytes=2, duration_in_cycles=8, mnemonic='RL E'), # 0x13
+            LR35902.Instruction(function=lambda s: s.rl(LR35902.REGISTER_H), length_in_bytes=2, duration_in_cycles=8, mnemonic='RL H'), # 0x14
+            LR35902.Instruction(function=lambda s: s.rl(LR35902.REGISTER_L), length_in_bytes=2, duration_in_cycles=8, mnemonic='RL L'), # 0x15
+            LR35902.Instruction(function=lambda s: s.rl_memory(), length_in_bytes=2, duration_in_cycles=16, mnemonic='RL (HL)'), # 0x16
+            LR35902.Instruction(function=lambda s: s.rl(LR35902.REGISTER_A), length_in_bytes=2, duration_in_cycles=8, mnemonic='RL A'), # 0x17
+            LR35902.Instruction(function=lambda s: s.rr(LR35902.REGISTER_B), length_in_bytes=2, duration_in_cycles=8, mnemonic='RR B'), # 0x18
+            LR35902.Instruction(function=lambda s: s.rr(LR35902.REGISTER_C), length_in_bytes=2, duration_in_cycles=8, mnemonic='RR C'), # 0x19
+            LR35902.Instruction(function=lambda s: s.rr(LR35902.REGISTER_D), length_in_bytes=2, duration_in_cycles=8, mnemonic='RR D'), # 0x1A
+            LR35902.Instruction(function=lambda s: s.rr(LR35902.REGISTER_E), length_in_bytes=2, duration_in_cycles=8, mnemonic='RR E'), # 0x1B
+            LR35902.Instruction(function=lambda s: s.rr(LR35902.REGISTER_H), length_in_bytes=2, duration_in_cycles=8, mnemonic='RR H'), # 0x1C
+            LR35902.Instruction(function=lambda s: s.rr(LR35902.REGISTER_L), length_in_bytes=2, duration_in_cycles=8, mnemonic='RR L'), # 0x1D
+            LR35902.Instruction(function=lambda s: s.rr_memory(), length_in_bytes=2, duration_in_cycles=16, mnemonic='RR (HL)'), # 0x1E
+            LR35902.Instruction(function=lambda s: s.rr(LR35902.REGISTER_A), length_in_bytes=2, duration_in_cycles=8, mnemonic='RR A'), # 0x1F
             None, # 0x20
             None, # 0x21
             None, # 0x22
@@ -2175,3 +2175,290 @@ class LR35902:
         """
         if not self.interrupts["enabled"]:
             self.interrupts["change_in"] = 2
+
+    # Rotates and Shifts
+    def rlc(self, reg=None):
+        """GBCPUman.pdf page 99 & 101
+        Opcode 0x07
+        0xCB Opcodes 0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x07
+        Rotate reg left. Old bit 7 to carry flag.
+        """
+        if reg == LR35902.REGISTER_A:
+            reg_attr = 'A'
+        elif reg == LR35902.REGISTER_B:
+            reg_attr = 'B'
+        elif reg == LR35902.REGISTER_C:
+            reg_attr = 'C'
+        elif reg == LR35902.REGISTER_D:
+            reg_attr = 'D'
+        elif reg == LR35902.REGISTER_E:
+            reg_attr = 'E'
+        elif reg == LR35902.REGISTER_H:
+            reg_attr = 'H'
+        elif reg == LR35902.REGISTER_L:
+            reg_attr = 'L'
+        else:
+            raise RuntimeError('Invalid register "{}" specified!'.format(reg))
+
+        # Reset flags
+        self.F = 0
+
+        # Old bit 7 to carry flag
+        if getattr(self, reg_attr) & 0x80:
+            self.F |= (1 << LR35902.FLAG_C)
+
+        # Rotate
+        setattr(
+            self,
+            reg_attr,
+            (
+                ((getattr(self, reg_attr) << 1) & 0xFE) |
+                ((getattr(self, reg_attr) & 0x80) >> 7)
+            )
+        )
+
+        # Set Z flag if 0
+        if getattr(self, reg_attr) == 0:
+            self.F |= (1 << LR35902.FLAG_Z)
+
+    def rlc_memory(self):
+        """GBCPUman.pdf page 101
+        0xCB Opcodes 0x06
+        Rotate value stored at address pointed to by HL left. Old bit 7 to carry flag.
+        """
+        addr = (self.H << 8) | self.L
+
+        # Reset flags
+        self.F = 0
+
+        # Old bit 7 to carry flag
+        if self.memory[addr] & 0x80:
+            self.F |= (1 << LR35902.FLAG_C)
+
+        # Rotate
+        self.memory[addr] = ((self.memory[addr] << 1) & 0xFE) | ((self.memory[addr] & 0x80) >> 7)
+
+        # Set Z flag if 0
+        if self.memory[addr] == 0:
+            self.F |= (1 << LR35902.FLAG_Z)
+
+    def rl(self, reg=None):
+        """GBCPUman.pdf page 99 & 102
+        Opcode 0x17
+        0xCB Opcodes 0x10, 0x11, 0x12, 0x13, 0x14, 0x15, 0x17
+        Rotate register left through carry flag. Old bit 7 to carry flag.
+        """
+        if reg == LR35902.REGISTER_A:
+            reg_attr = 'A'
+        elif reg == LR35902.REGISTER_B:
+            reg_attr = 'B'
+        elif reg == LR35902.REGISTER_C:
+            reg_attr = 'C'
+        elif reg == LR35902.REGISTER_D:
+            reg_attr = 'D'
+        elif reg == LR35902.REGISTER_E:
+            reg_attr = 'E'
+        elif reg == LR35902.REGISTER_H:
+            reg_attr = 'H'
+        elif reg == LR35902.REGISTER_L:
+            reg_attr = 'L'
+        else:
+            raise RuntimeError('Invalid register "{}" specified!'.format(reg))
+
+        new_flags = 0
+
+        # Old bit 7 to carry flag
+        if getattr(self, reg_attr) & 0x80:
+            new_flags |= (1 << LR35902.FLAG_C)
+
+        # Rotate
+        setattr(
+            self,
+            reg_attr,
+            ((getattr(self, reg_attr) << 1) & 0xFE)
+        )
+
+        # Old carry flag to bit 0
+        if self.F & (1 << LR35902.FLAG_C):
+            setattr(
+                self,
+                reg_attr,
+                getattr(self, reg_attr) | 1
+            )
+
+        # Set Z flag if 0
+        if getattr(self, reg_attr) == 0:
+            new_flags |= (1 << LR35902.FLAG_Z)
+
+        # Update flags
+        self.F = new_flags
+
+    def rl_memory(self):
+        """GBCPUman.pdf page 102
+        0xCB Opcodes 0x16
+        Rotate value stored at address pointed to by HL left through carry flag. Old bit 7 to carry flag.
+        """
+        addr = (self.H << 8) | self.L
+
+        new_flags = 0
+
+        # Old bit 7 to carry flag
+        if self.memory[addr] & 0x80:
+            new_flags |= (1 << LR35902.FLAG_C)
+
+        # Rotate
+        self.memory[addr] = (self.memory[addr] << 1) & 0xFE
+
+        # Old carry flag to bit 0
+        if self.F & (1 << LR35902.FLAG_C):
+            self.memory[addr] |= 1
+
+        # Set Z flag if 0
+        if self.memory[addr] == 0:
+            new_flags |= (1 << LR35902.FLAG_Z)
+
+        # Update flags
+        self.F = new_flags
+
+    def rrc(self, reg=None):
+        """GBCPUman.pdf page 100 & 103
+        Opcode 0x0F
+        0xCB Opcodes 0x08, 0x09, 0x0A, 0x0B, 0x0C, 0x0D, 0x0F
+        Rotate register right. Old bit 0 to carry flag.
+        """
+        if reg == LR35902.REGISTER_A:
+            reg_attr = 'A'
+        elif reg == LR35902.REGISTER_B:
+            reg_attr = 'B'
+        elif reg == LR35902.REGISTER_C:
+            reg_attr = 'C'
+        elif reg == LR35902.REGISTER_D:
+            reg_attr = 'D'
+        elif reg == LR35902.REGISTER_E:
+            reg_attr = 'E'
+        elif reg == LR35902.REGISTER_H:
+            reg_attr = 'H'
+        elif reg == LR35902.REGISTER_L:
+            reg_attr = 'L'
+        else:
+            raise RuntimeError('Invalid register "{}" specified!'.format(reg))
+
+        # Reset flags
+        self.F = 0
+
+        # Old bit 0 to carry flag
+        if getattr(self, reg_attr) & 0x1:
+            self.F |= (1 << LR35902.FLAG_C)
+
+        # Rotate
+        setattr(
+            self,
+            reg_attr,
+            (
+                ((getattr(self, reg_attr) >> 1) & 0x7F) |
+                ((getattr(self, reg_attr) & 0x01) << 7)
+            )
+        )
+
+        # Set Z flag if 0
+        if getattr(self, reg_attr) == 0:
+            self.F |= (1 << LR35902.FLAG_Z)
+
+    def rrc_memory(self):
+        """GBCPUman.pdf 103
+        0xCB Opcodes 0x0E
+        Rotate value pointed to by HL right. Old bit 0 to carry flag.
+        """
+        addr = (self.H << 8) | self.L
+
+        # Reset flags
+        self.F = 0
+
+        # Old bit 0 to carry flag
+        if self.memory[addr] & 0x1:
+            self.F |= (1 << LR35902.FLAG_C)
+
+        # Rotate
+        self.memory[addr] = ((self.memory[addr] >> 1) & 0x7F) | ((self.memory[addr] & 0x01) << 7)
+
+        # Set Z flag if 0
+        if self.memory[addr] == 0:
+            self.F |= (1 << LR35902.FLAG_Z)
+
+    def rr(self, reg=None):
+        """GBCPUman.pdf page 100 & 104
+        Opcode 0x1F
+        0xCB Opcodes 0x18, 0x19, 0x1A, 0x1B, 0x1C, 0x1D, 0x1F
+        Rotate register right through carry flag. Old bit 0 to carry flag.
+        """
+        if reg == LR35902.REGISTER_A:
+            reg_attr = 'A'
+        elif reg == LR35902.REGISTER_B:
+            reg_attr = 'B'
+        elif reg == LR35902.REGISTER_C:
+            reg_attr = 'C'
+        elif reg == LR35902.REGISTER_D:
+            reg_attr = 'D'
+        elif reg == LR35902.REGISTER_E:
+            reg_attr = 'E'
+        elif reg == LR35902.REGISTER_H:
+            reg_attr = 'H'
+        elif reg == LR35902.REGISTER_L:
+            reg_attr = 'L'
+        else:
+            raise RuntimeError('Invalid register "{}" specified!'.format(reg))
+
+        new_flags = 0
+
+        # Old bit 0 to carry flag
+        if getattr(self, reg_attr) & 0x1:
+            new_flags |= (1 << LR35902.FLAG_C)
+
+        # Rotate
+        setattr(
+            self,
+            reg_attr,
+            ((getattr(self, reg_attr) >> 1) & 0x7F)
+        )
+
+        # Old carry flag to bit 7
+        if self.F & (1 << LR35902.FLAG_C):
+            setattr(
+                self,
+                reg_attr,
+                getattr(self, reg_attr) | 0x80
+            )
+
+        # Set Z flag if 0
+        if getattr(self, reg_attr) == 0:
+            new_flags |= (1 << LR35902.FLAG_Z)
+
+        # Update flags
+        self.F = new_flags
+
+    def rr_memory(self):
+        """GBCPUman.pdf page 104
+        0xCB Opcodes 0x1E
+        Rotate register pointed to by HL to the right through carry flag. Old bit 0 to carry flag.
+        """
+        addr = (self.H << 8) | self.L
+
+        new_flags = 0
+
+        # Old bit 0 to carry flag
+        if self.memory[addr] & 0x1:
+            new_flags |= (1 << LR35902.FLAG_C)
+
+        # Rotate
+        self.memory[addr] = (self.memory[addr] >> 1) & 0x7F
+
+        # Old carry flag to bit 7
+        if self.F & (1 << LR35902.FLAG_C):
+            self.memory[addr] |= 0x80
+
+        # Set Z flag if 0
+        if self.memory[addr] == 0:
+            new_flags |= (1 << LR35902.FLAG_Z)
+
+        # Update flags
+        self.F = new_flags
