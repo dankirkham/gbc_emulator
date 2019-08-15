@@ -514,70 +514,70 @@ class LR35902:
             None, # 0xBD
             None, # 0xBE
             None, # 0xBF
-            None, # 0xC0
-            None, # 0xC1
-            None, # 0xC2
-            None, # 0xC3
-            None, # 0xC4
-            None, # 0xC5
-            None, # 0xC6
-            None, # 0xC7
-            None, # 0xC8
-            None, # 0xC9
-            None, # 0xCA
-            None, # 0xCB
-            None, # 0xCC
-            None, # 0xCD
-            None, # 0xCE
-            None, # 0xCF
-            None, # 0xD0
-            None, # 0xD1
-            None, # 0xD2
-            None, # 0xD3
-            None, # 0xD4
-            None, # 0xD5
-            None, # 0xD6
-            None, # 0xD7
-            None, # 0xD8
-            None, # 0xD9
-            None, # 0xDA
-            None, # 0xDB
-            None, # 0xDC
-            None, # 0xDD
-            None, # 0xDE
-            None, # 0xDF
-            None, # 0xE0
-            None, # 0xE1
-            None, # 0xE2
-            None, # 0xE3
-            None, # 0xE4
-            None, # 0xE5
-            None, # 0xE6
-            None, # 0xE7
-            None, # 0xE8
-            None, # 0xE9
-            None, # 0xEA
-            None, # 0xEB
-            None, # 0xEC
-            None, # 0xED
-            None, # 0xEE
-            None, # 0xEF
-            None, # 0xF0
-            None, # 0xF1
-            None, # 0xF2
-            None, # 0xF3
-            None, # 0xF4
-            None, # 0xF5
-            None, # 0xF6
-            None, # 0xF7
-            None, # 0xF8
-            None, # 0xF9
-            None, # 0xFA
-            None, # 0xFB
-            None, # 0xFC
-            None, # 0xFD
-            None, # 0xFE
-            None, # 0xFF
+            LR35902.Instruction(function=lambda s: s.set(LR35902.REGISTER_B, 0), length_in_bytes=2, duration_in_cycles=8, mnemonic='SET 0,B'), # 0xC0
+            LR35902.Instruction(function=lambda s: s.set(LR35902.REGISTER_C, 0), length_in_bytes=2, duration_in_cycles=8, mnemonic='SET 0,C'), # 0xC1
+            LR35902.Instruction(function=lambda s: s.set(LR35902.REGISTER_D, 0), length_in_bytes=2, duration_in_cycles=8, mnemonic='SET 0,D'), # 0xC2
+            LR35902.Instruction(function=lambda s: s.set(LR35902.REGISTER_E, 0), length_in_bytes=2, duration_in_cycles=8, mnemonic='SET 0,E'), # 0xC3
+            LR35902.Instruction(function=lambda s: s.set(LR35902.REGISTER_H, 0), length_in_bytes=2, duration_in_cycles=8, mnemonic='SET 0,H'), # 0xC4
+            LR35902.Instruction(function=lambda s: s.set(LR35902.REGISTER_L, 0), length_in_bytes=2, duration_in_cycles=8, mnemonic='SET 0,L'), # 0xC5
+            LR35902.Instruction(function=lambda s: s.set(0), length_in_bytes=2, duration_in_cycles=16, mnemonic='SET 0,(HL)'), # 0xC6
+            LR35902.Instruction(function=lambda s: s.set(LR35902.REGISTER_A, 0), length_in_bytes=2, duration_in_cycles=8, mnemonic='SET 0,A'), # 0xC7
+            LR35902.Instruction(function=lambda s: s.set(LR35902.REGISTER_B, 1), length_in_bytes=2, duration_in_cycles=8, mnemonic='SET 1,B'), # 0xC8
+            LR35902.Instruction(function=lambda s: s.set(LR35902.REGISTER_C, 1), length_in_bytes=2, duration_in_cycles=8, mnemonic='SET 1,C'), # 0xC9
+            LR35902.Instruction(function=lambda s: s.set(LR35902.REGISTER_D, 1), length_in_bytes=2, duration_in_cycles=8, mnemonic='SET 1,D'), # 0xCA
+            LR35902.Instruction(function=lambda s: s.set(LR35902.REGISTER_E, 1), length_in_bytes=2, duration_in_cycles=8, mnemonic='SET 1,E'), # 0xCB
+            LR35902.Instruction(function=lambda s: s.set(LR35902.REGISTER_H, 1), length_in_bytes=2, duration_in_cycles=8, mnemonic='SET 1,H'), # 0xCC
+            LR35902.Instruction(function=lambda s: s.set(LR35902.REGISTER_L, 1), length_in_bytes=2, duration_in_cycles=8, mnemonic='SET 1,L'), # 0xCD
+            LR35902.Instruction(function=lambda s: s.set(1), length_in_bytes=2, duration_in_cycles=16, mnemonic='SET 1,(HL)'), # 0xCE
+            LR35902.Instruction(function=lambda s: s.set(LR35902.REGISTER_A, 1), length_in_bytes=2, duration_in_cycles=8, mnemonic='SET 1,A'), # 0xCF
+            LR35902.Instruction(function=lambda s: s.set(LR35902.REGISTER_B, 2), length_in_bytes=2, duration_in_cycles=8, mnemonic='SET 2,B'), # 0xD0
+            LR35902.Instruction(function=lambda s: s.set(LR35902.REGISTER_C, 2), length_in_bytes=2, duration_in_cycles=8, mnemonic='SET 2,C'), # 0xD1
+            LR35902.Instruction(function=lambda s: s.set(LR35902.REGISTER_D, 2), length_in_bytes=2, duration_in_cycles=8, mnemonic='SET 2,D'), # 0xD2
+            LR35902.Instruction(function=lambda s: s.set(LR35902.REGISTER_E, 2), length_in_bytes=2, duration_in_cycles=8, mnemonic='SET 2,E'), # 0xD3
+            LR35902.Instruction(function=lambda s: s.set(LR35902.REGISTER_H, 2), length_in_bytes=2, duration_in_cycles=8, mnemonic='SET 2,H'), # 0xD4
+            LR35902.Instruction(function=lambda s: s.set(LR35902.REGISTER_L, 2), length_in_bytes=2, duration_in_cycles=8, mnemonic='SET 2,L'), # 0xD5
+            LR35902.Instruction(function=lambda s: s.set(2), length_in_bytes=2, duration_in_cycles=16, mnemonic='SET 2,(HL)'), # 0xD6
+            LR35902.Instruction(function=lambda s: s.set(LR35902.REGISTER_A, 2), length_in_bytes=2, duration_in_cycles=8, mnemonic='SET 2,A'), # 0xD7
+            LR35902.Instruction(function=lambda s: s.set(LR35902.REGISTER_B, 3), length_in_bytes=2, duration_in_cycles=8, mnemonic='SET 3,B'), # 0xD8
+            LR35902.Instruction(function=lambda s: s.set(LR35902.REGISTER_C, 3), length_in_bytes=2, duration_in_cycles=8, mnemonic='SET 3,C'), # 0xD9
+            LR35902.Instruction(function=lambda s: s.set(LR35902.REGISTER_D, 3), length_in_bytes=2, duration_in_cycles=8, mnemonic='SET 3,D'), # 0xDA
+            LR35902.Instruction(function=lambda s: s.set(LR35902.REGISTER_E, 3), length_in_bytes=2, duration_in_cycles=8, mnemonic='SET 3,E'), # 0xDB
+            LR35902.Instruction(function=lambda s: s.set(LR35902.REGISTER_H, 3), length_in_bytes=2, duration_in_cycles=8, mnemonic='SET 3,H'), # 0xDC
+            LR35902.Instruction(function=lambda s: s.set(LR35902.REGISTER_L, 3), length_in_bytes=2, duration_in_cycles=8, mnemonic='SET 3,L'), # 0xDD
+            LR35902.Instruction(function=lambda s: s.set(3), length_in_bytes=2, duration_in_cycles=16, mnemonic='SET 3,(HL)'), # 0xDE
+            LR35902.Instruction(function=lambda s: s.set(LR35902.REGISTER_A, 3), length_in_bytes=2, duration_in_cycles=8, mnemonic='SET 3,A'), # 0xDF
+            LR35902.Instruction(function=lambda s: s.set(LR35902.REGISTER_B, 4), length_in_bytes=2, duration_in_cycles=8, mnemonic='SET 4,B'), # 0xE0
+            LR35902.Instruction(function=lambda s: s.set(LR35902.REGISTER_C, 4), length_in_bytes=2, duration_in_cycles=8, mnemonic='SET 4,C'), # 0xE1
+            LR35902.Instruction(function=lambda s: s.set(LR35902.REGISTER_D, 4), length_in_bytes=2, duration_in_cycles=8, mnemonic='SET 4,D'), # 0xE2
+            LR35902.Instruction(function=lambda s: s.set(LR35902.REGISTER_E, 4), length_in_bytes=2, duration_in_cycles=8, mnemonic='SET 4,E'), # 0xE3
+            LR35902.Instruction(function=lambda s: s.set(LR35902.REGISTER_H, 4), length_in_bytes=2, duration_in_cycles=8, mnemonic='SET 4,H'), # 0xE4
+            LR35902.Instruction(function=lambda s: s.set(LR35902.REGISTER_L, 4), length_in_bytes=2, duration_in_cycles=8, mnemonic='SET 4,L'), # 0xE5
+            LR35902.Instruction(function=lambda s: s.set(4), length_in_bytes=2, duration_in_cycles=16, mnemonic='SET 4,(HL)'), # 0xE6
+            LR35902.Instruction(function=lambda s: s.set(LR35902.REGISTER_A, 4), length_in_bytes=2, duration_in_cycles=8, mnemonic='SET 4,A'), # 0xE7
+            LR35902.Instruction(function=lambda s: s.set(LR35902.REGISTER_B, 5), length_in_bytes=2, duration_in_cycles=8, mnemonic='SET 5,B'), # 0xE8
+            LR35902.Instruction(function=lambda s: s.set(LR35902.REGISTER_C, 5), length_in_bytes=2, duration_in_cycles=8, mnemonic='SET 5,C'), # 0xE9
+            LR35902.Instruction(function=lambda s: s.set(LR35902.REGISTER_D, 5), length_in_bytes=2, duration_in_cycles=8, mnemonic='SET 5,D'), # 0xEA
+            LR35902.Instruction(function=lambda s: s.set(LR35902.REGISTER_E, 5), length_in_bytes=2, duration_in_cycles=8, mnemonic='SET 5,E'), # 0xEB
+            LR35902.Instruction(function=lambda s: s.set(LR35902.REGISTER_H, 5), length_in_bytes=2, duration_in_cycles=8, mnemonic='SET 5,H'), # 0xEC
+            LR35902.Instruction(function=lambda s: s.set(LR35902.REGISTER_L, 5), length_in_bytes=2, duration_in_cycles=8, mnemonic='SET 5,L'), # 0xED
+            LR35902.Instruction(function=lambda s: s.set(5), length_in_bytes=2, duration_in_cycles=16, mnemonic='SET 5,(HL)'), # 0xEE
+            LR35902.Instruction(function=lambda s: s.set(LR35902.REGISTER_A, 5), length_in_bytes=2, duration_in_cycles=8, mnemonic='SET 5,A'), # 0xEF
+            LR35902.Instruction(function=lambda s: s.set(LR35902.REGISTER_B, 6), length_in_bytes=2, duration_in_cycles=8, mnemonic='SET 6,B'), # 0xF0
+            LR35902.Instruction(function=lambda s: s.set(LR35902.REGISTER_C, 6), length_in_bytes=2, duration_in_cycles=8, mnemonic='SET 6,C'), # 0xF1
+            LR35902.Instruction(function=lambda s: s.set(LR35902.REGISTER_D, 6), length_in_bytes=2, duration_in_cycles=8, mnemonic='SET 6,D'), # 0xF2
+            LR35902.Instruction(function=lambda s: s.set(LR35902.REGISTER_E, 6), length_in_bytes=2, duration_in_cycles=8, mnemonic='SET 6,E'), # 0xF3
+            LR35902.Instruction(function=lambda s: s.set(LR35902.REGISTER_H, 6), length_in_bytes=2, duration_in_cycles=8, mnemonic='SET 6,H'), # 0xF4
+            LR35902.Instruction(function=lambda s: s.set(LR35902.REGISTER_L, 6), length_in_bytes=2, duration_in_cycles=8, mnemonic='SET 6,L'), # 0xF5
+            LR35902.Instruction(function=lambda s: s.set(6), length_in_bytes=2, duration_in_cycles=16, mnemonic='SET 6,(HL)'), # 0xF6
+            LR35902.Instruction(function=lambda s: s.set(LR35902.REGISTER_A, 6), length_in_bytes=2, duration_in_cycles=8, mnemonic='SET 6,A'), # 0xF7
+            LR35902.Instruction(function=lambda s: s.set(LR35902.REGISTER_B, 7), length_in_bytes=2, duration_in_cycles=8, mnemonic='SET 7,B'), # 0xF8
+            LR35902.Instruction(function=lambda s: s.set(LR35902.REGISTER_C, 7), length_in_bytes=2, duration_in_cycles=8, mnemonic='SET 7,C'), # 0xF9
+            LR35902.Instruction(function=lambda s: s.set(LR35902.REGISTER_D, 7), length_in_bytes=2, duration_in_cycles=8, mnemonic='SET 7,D'), # 0xFA
+            LR35902.Instruction(function=lambda s: s.set(LR35902.REGISTER_E, 7), length_in_bytes=2, duration_in_cycles=8, mnemonic='SET 7,E'), # 0xFB
+            LR35902.Instruction(function=lambda s: s.set(LR35902.REGISTER_H, 7), length_in_bytes=2, duration_in_cycles=8, mnemonic='SET 7,H'), # 0xFC
+            LR35902.Instruction(function=lambda s: s.set(LR35902.REGISTER_L, 7), length_in_bytes=2, duration_in_cycles=8, mnemonic='SET 7,L'), # 0xFD
+            LR35902.Instruction(function=lambda s: s.set(7), length_in_bytes=2, duration_in_cycles=16, mnemonic='SET 7,(HL)'), # 0xFE
+            LR35902.Instruction(function=lambda s: s.set(LR35902.REGISTER_A, 7), length_in_bytes=2, duration_in_cycles=8, mnemonic='SET 7,A'), # 0xFF
         ]
 
     def set_zero(self, value):
@@ -2595,7 +2595,7 @@ class LR35902:
         self.F = new_flags
 
     def srl(self, reg=None):
-        """GBCPUman.pdf page 106
+        """GBCPUman.pdf page 107
         0xCB Opcodes 0x38, 0x39, 0x3A, 0x3B, 0x3C, 0x3D, 0x3F
         Shift register right into carry. MSB set to 0.
         """
@@ -2637,7 +2637,7 @@ class LR35902:
         self.F = new_flags
 
     def srl_memory(self):
-        """GBCPUman.pdf page 106
+        """GBCPUman.pdf page 107
         0xCB Opcode 0x3E
         Shift value stored at address HL right into carry. MSB doesn't change.
         """
@@ -2660,7 +2660,7 @@ class LR35902:
         self.F = new_flags
 
     def bit(self, reg=None, bit=None):
-        """GBCPUman.pdf page 106
+        """GBCPUman.pdf page 108
         0xCB Opcodes 0x40-0x7F, except 0x*6 and 0x*E
         Test bit in register
         """
@@ -2686,7 +2686,7 @@ class LR35902:
         self.set_flag(LR35902.FLAG_Z, not (getattr(self, reg_attr) & (1 << bit)))
 
     def bit_memory(self, bit=None):
-        """GBCPUman.pdf page 106
+        """GBCPUman.pdf page 108
         0xCB Opcodes 0x46, 0x4E, 0x56, 0x5E, 0x66, 0x6E, 0x76, 0x7E
         Test bit in value stored at HL
         """
@@ -2695,3 +2695,40 @@ class LR35902:
         self.set_flag(LR35902.FLAG_N, False)
         self.set_flag(LR35902.FLAG_H, True)
         self.set_flag(LR35902.FLAG_Z, not (self.memory[addr] & (1 << bit)))
+
+    def set(self, reg=None, bit=None):
+        """GBCPUman.pdf page 109
+        0xCB Opcodes 0xC0-0xFF, except 0x*6 and 0x*E
+        Set bit in register
+        """
+        if reg == LR35902.REGISTER_A:
+            reg_attr = 'A'
+        elif reg == LR35902.REGISTER_B:
+            reg_attr = 'B'
+        elif reg == LR35902.REGISTER_C:
+            reg_attr = 'C'
+        elif reg == LR35902.REGISTER_D:
+            reg_attr = 'D'
+        elif reg == LR35902.REGISTER_E:
+            reg_attr = 'E'
+        elif reg == LR35902.REGISTER_H:
+            reg_attr = 'H'
+        elif reg == LR35902.REGISTER_L:
+            reg_attr = 'L'
+        else:
+            raise RuntimeError('Invalid register "{}" specified!'.format(reg))
+
+        setattr(
+            self,
+            reg_attr,
+            getattr(self, reg_attr) | (1 << bit)
+        )
+
+    def set_memory(self, bit=None):
+        """GBCPUman.pdf page 109
+        0xCB Opcodes 0xC6, 0xCE, 0xD6, 0xDE, 0xE6, 0xEE, 0xF6, 0xFE
+        Set bit in memory at HL
+        """
+        addr = (self.H << 8) | self.L
+
+        self.memory[addr] |= (1 << bit)
