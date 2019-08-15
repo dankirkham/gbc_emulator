@@ -354,22 +354,22 @@ class LR35902:
             LR35902.Instruction(function=lambda s: s.rr(LR35902.REGISTER_L), length_in_bytes=2, duration_in_cycles=8, mnemonic='RR L'), # 0x1D
             LR35902.Instruction(function=lambda s: s.rr_memory(), length_in_bytes=2, duration_in_cycles=16, mnemonic='RR (HL)'), # 0x1E
             LR35902.Instruction(function=lambda s: s.rr(LR35902.REGISTER_A), length_in_bytes=2, duration_in_cycles=8, mnemonic='RR A'), # 0x1F
-            None, # 0x20
-            None, # 0x21
-            None, # 0x22
-            None, # 0x23
-            None, # 0x24
-            None, # 0x25
-            None, # 0x26
-            None, # 0x27
-            None, # 0x28
-            None, # 0x29
-            None, # 0x2A
-            None, # 0x2B
-            None, # 0x2C
-            None, # 0x2D
-            None, # 0x2E
-            None, # 0x2F
+            LR35902.Instruction(function=lambda s: s.sla(LR35902.REGISTER_B), length_in_bytes=2, duration_in_cycles=8, mnemonic='SLA B'), # 0x20
+            LR35902.Instruction(function=lambda s: s.sla(LR35902.REGISTER_C), length_in_bytes=2, duration_in_cycles=8, mnemonic='SLA C'), # 0x21
+            LR35902.Instruction(function=lambda s: s.sla(LR35902.REGISTER_D), length_in_bytes=2, duration_in_cycles=8, mnemonic='SLA D'), # 0x22
+            LR35902.Instruction(function=lambda s: s.sla(LR35902.REGISTER_E), length_in_bytes=2, duration_in_cycles=8, mnemonic='SLA E'), # 0x23
+            LR35902.Instruction(function=lambda s: s.sla(LR35902.REGISTER_H), length_in_bytes=2, duration_in_cycles=8, mnemonic='SLA H'), # 0x24
+            LR35902.Instruction(function=lambda s: s.sla(LR35902.REGISTER_L), length_in_bytes=2, duration_in_cycles=8, mnemonic='SLA L'), # 0x25
+            LR35902.Instruction(function=lambda s: s.sla_memory(), length_in_bytes=2, duration_in_cycles=16, mnemonic='SLA (HL)'), # 0x26
+            LR35902.Instruction(function=lambda s: s.sla(LR35902.REGISTER_A), length_in_bytes=2, duration_in_cycles=8, mnemonic='SLA A'), # 0x27
+            LR35902.Instruction(function=lambda s: s.sra(LR35902.REGISTER_B), length_in_bytes=2, duration_in_cycles=8, mnemonic='SRA B'), # 0x28
+            LR35902.Instruction(function=lambda s: s.sra(LR35902.REGISTER_C), length_in_bytes=2, duration_in_cycles=8, mnemonic='SRA C'), # 0x29
+            LR35902.Instruction(function=lambda s: s.sra(LR35902.REGISTER_D), length_in_bytes=2, duration_in_cycles=8, mnemonic='SRA D'), # 0x2A
+            LR35902.Instruction(function=lambda s: s.sra(LR35902.REGISTER_E), length_in_bytes=2, duration_in_cycles=8, mnemonic='SRA E'), # 0x2B
+            LR35902.Instruction(function=lambda s: s.sra(LR35902.REGISTER_H), length_in_bytes=2, duration_in_cycles=8, mnemonic='SRA H'), # 0x2C
+            LR35902.Instruction(function=lambda s: s.sra(LR35902.REGISTER_L), length_in_bytes=2, duration_in_cycles=8, mnemonic='SRA L'), # 0x2D
+            LR35902.Instruction(function=lambda s: s.sra_memory(), length_in_bytes=2, duration_in_cycles=16, mnemonic='SRA (HL)'), # 0x2E
+            LR35902.Instruction(function=lambda s: s.sra(LR35902.REGISTER_A), length_in_bytes=2, duration_in_cycles=8, mnemonic='SRA A'), # 0x2F
             LR35902.Instruction(function=lambda s: s.swap(LR35902.REGISTER_B), length_in_bytes=2, duration_in_cycles=8, mnemonic='SWAP B'), # 0x30
             LR35902.Instruction(function=lambda s: s.swap(LR35902.REGISTER_C), length_in_bytes=2, duration_in_cycles=8, mnemonic='SWAP C'), # 0x31
             LR35902.Instruction(function=lambda s: s.swap(LR35902.REGISTER_D), length_in_bytes=2, duration_in_cycles=8, mnemonic='SWAP D'), # 0x32
@@ -378,14 +378,14 @@ class LR35902:
             LR35902.Instruction(function=lambda s: s.swap(LR35902.REGISTER_L), length_in_bytes=2, duration_in_cycles=8, mnemonic='SWAP L'), # 0x35
             LR35902.Instruction(function=lambda s: s.swap_memory(s), length_in_bytes=2, duration_in_cycles=16, mnemonic='SWAP (HL)'), # 0x36
             LR35902.Instruction(function=lambda s: s.swap(LR35902.REGISTER_A), length_in_bytes=2, duration_in_cycles=8, mnemonic='SWAP A'), # 0x37
-            None, # 0x38
-            None, # 0x39
-            None, # 0x3A
-            None, # 0x3B
-            None, # 0x3C
-            None, # 0x3D
-            None, # 0x3E
-            None, # 0x3F
+            LR35902.Instruction(function=lambda s: s.srl(LR35902.REGISTER_B), length_in_bytes=2, duration_in_cycles=8, mnemonic='SRL B'), # 0x38
+            LR35902.Instruction(function=lambda s: s.srl(LR35902.REGISTER_C), length_in_bytes=2, duration_in_cycles=8, mnemonic='SRL C'), # 0x39
+            LR35902.Instruction(function=lambda s: s.srl(LR35902.REGISTER_D), length_in_bytes=2, duration_in_cycles=8, mnemonic='SRL D'), # 0x3A
+            LR35902.Instruction(function=lambda s: s.srl(LR35902.REGISTER_E), length_in_bytes=2, duration_in_cycles=8, mnemonic='SRL E'), # 0x3B
+            LR35902.Instruction(function=lambda s: s.srl(LR35902.REGISTER_H), length_in_bytes=2, duration_in_cycles=8, mnemonic='SRL H'), # 0x3C
+            LR35902.Instruction(function=lambda s: s.srl(LR35902.REGISTER_L), length_in_bytes=2, duration_in_cycles=8, mnemonic='SRL L'), # 0x3D
+            LR35902.Instruction(function=lambda s: s.srl_memory(), length_in_bytes=2, duration_in_cycles=16, mnemonic='SRL (HL)'), # 0x3E
+            LR35902.Instruction(function=lambda s: s.srl(LR35902.REGISTER_A), length_in_bytes=2, duration_in_cycles=8, mnemonic='SRL A'), # 0x3F
             None, # 0x40
             None, # 0x41
             None, # 0x42
@@ -2455,6 +2455,202 @@ class LR35902:
         # Old carry flag to bit 7
         if self.F & (1 << LR35902.FLAG_C):
             self.memory[addr] |= 0x80
+
+        # Set Z flag if 0
+        if self.memory[addr] == 0:
+            new_flags |= (1 << LR35902.FLAG_Z)
+
+        # Update flags
+        self.F = new_flags
+
+    def sla(self, reg=None):
+        """GBCPUman.pdf page 105
+        0xCB Opcodes 0x20, 0x21, 0x22, 0x23, 0x24, 0x25, 0x27
+        Shift register left into carry. LSB of register set to 0.
+        """
+        if reg == LR35902.REGISTER_A:
+            reg_attr = 'A'
+        elif reg == LR35902.REGISTER_B:
+            reg_attr = 'B'
+        elif reg == LR35902.REGISTER_C:
+            reg_attr = 'C'
+        elif reg == LR35902.REGISTER_D:
+            reg_attr = 'D'
+        elif reg == LR35902.REGISTER_E:
+            reg_attr = 'E'
+        elif reg == LR35902.REGISTER_H:
+            reg_attr = 'H'
+        elif reg == LR35902.REGISTER_L:
+            reg_attr = 'L'
+        else:
+            raise RuntimeError('Invalid register "{}" specified!'.format(reg))
+
+        new_flags = 0
+
+        # Set carry flag
+        if getattr(self, reg_attr) & 0x80:
+            self.F |= (1 << LR35902.FLAG_C)
+
+        # Shift left
+        setattr(
+            self,
+            reg_attr,
+            (getattr(self, reg_attr) << 1) & 0xFE
+        )
+
+        # Set Z flag if 0
+        if getattr(self, reg_attr) == 0:
+            new_flags |= (1 << LR35902.FLAG_Z)
+
+        # Update flags
+        self.F = new_flags
+
+    def sla_memory(self):
+        """GBCPUman.pdf page 105
+        0xCB Opcode 0x26
+        Shift value stored a memory address HL left into carry. LSB of register set to 0.
+        """
+        addr = (self.H << 8) | self.L
+
+        new_flags = 0
+
+        # Set carry flag
+        if self.memory[addr] & 0x80:
+            self.F |= (1 << LR35902.FLAG_C)
+
+        # Shift left
+        self.memory[addr] = (self.memory[addr] << 1) & 0xFE
+
+        # Set Z flag if 0
+        if self.memory[addr] == 0:
+            new_flags |= (1 << LR35902.FLAG_Z)
+
+        # Update flags
+        self.F = new_flags
+
+    def sra(self, reg=None):
+        """GBCPUman.pdf page 106
+        0xCB Opcodes 0x28, 0x29, 0x2A, 0x2B, 0x2C, 0x2D, 0x2F
+        Shift register right into carry. MSB doesn't change.
+        """
+        if reg == LR35902.REGISTER_A:
+            reg_attr = 'A'
+        elif reg == LR35902.REGISTER_B:
+            reg_attr = 'B'
+        elif reg == LR35902.REGISTER_C:
+            reg_attr = 'C'
+        elif reg == LR35902.REGISTER_D:
+            reg_attr = 'D'
+        elif reg == LR35902.REGISTER_E:
+            reg_attr = 'E'
+        elif reg == LR35902.REGISTER_H:
+            reg_attr = 'H'
+        elif reg == LR35902.REGISTER_L:
+            reg_attr = 'L'
+        else:
+            raise RuntimeError('Invalid register "{}" specified!'.format(reg))
+
+        new_flags = 0
+
+        # Set carry flag
+        if getattr(self, reg_attr) & 0x01:
+            self.F |= (1 << LR35902.FLAG_C)
+
+        # Shift Right
+        setattr(
+            self,
+            reg_attr,
+            (getattr(self, reg_attr) & 0x80) |
+            (getattr(self, reg_attr) >> 1) & 0x7F
+        )
+
+        # Set Z flag if 0
+        if getattr(self, reg_attr) == 0:
+            new_flags |= (1 << LR35902.FLAG_Z)
+
+        # Update flags
+        self.F = new_flags
+
+    def sra_memory(self):
+        """GBCPUman.pdf page 106
+        0xCB Opcode 0x2E
+        Shift value stored at address HL right into carry. MSB doesn't change.
+        """
+        addr = (self.H << 8) | self.L
+
+        new_flags = 0
+
+        # Set carry flag
+        if self.memory[addr] & 0x01:
+            self.F |= (1 << LR35902.FLAG_C)
+
+        # Shift Right
+        self.memory[addr] = (self.memory[addr] & 0x80) | (self.memory[addr] >> 1) & 0x7F
+
+        # Set Z flag if 0
+        if self.memory[addr] == 0:
+            new_flags |= (1 << LR35902.FLAG_Z)
+
+        # Update flags
+        self.F = new_flags
+
+    def srl(self, reg=None):
+        """GBCPUman.pdf page 106
+        0xCB Opcodes 0x38, 0x39, 0x3A, 0x3B, 0x3C, 0x3D, 0x3F
+        Shift register right into carry. MSB set to 0.
+        """
+        if reg == LR35902.REGISTER_A:
+            reg_attr = 'A'
+        elif reg == LR35902.REGISTER_B:
+            reg_attr = 'B'
+        elif reg == LR35902.REGISTER_C:
+            reg_attr = 'C'
+        elif reg == LR35902.REGISTER_D:
+            reg_attr = 'D'
+        elif reg == LR35902.REGISTER_E:
+            reg_attr = 'E'
+        elif reg == LR35902.REGISTER_H:
+            reg_attr = 'H'
+        elif reg == LR35902.REGISTER_L:
+            reg_attr = 'L'
+        else:
+            raise RuntimeError('Invalid register "{}" specified!'.format(reg))
+
+        new_flags = 0
+
+        # Set carry flag
+        if getattr(self, reg_attr) & 0x01:
+            self.F |= (1 << LR35902.FLAG_C)
+
+        # Shift Right
+        setattr(
+            self,
+            reg_attr,
+            (getattr(self, reg_attr) >> 1) & 0x7F
+        )
+
+        # Set Z flag if 0
+        if getattr(self, reg_attr) == 0:
+            new_flags |= (1 << LR35902.FLAG_Z)
+
+        # Update flags
+        self.F = new_flags
+
+    def srl_memory(self):
+        """GBCPUman.pdf page 106
+        0xCB Opcode 0x3E
+        Shift value stored at address HL right into carry. MSB doesn't change.
+        """
+        addr = (self.H << 8) | self.L
+
+        new_flags = 0
+
+        # Set carry flag
+        if self.memory[addr] & 0x01:
+            self.F |= (1 << LR35902.FLAG_C)
+
+        # Shift Right
+        self.memory[addr] = (self.memory[addr] >> 1) & 0x7F
 
         # Set Z flag if 0
         if self.memory[addr] == 0:
