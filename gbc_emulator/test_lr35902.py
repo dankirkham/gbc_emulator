@@ -39,7 +39,7 @@ class TestLR35902(unittest.TestCase):
 
         cpu = LR35902(memory)
 
-        for _ in range(16):
+        for _ in range(4):
             cpu.clock()
 
         self.assertEqual(cpu.B, 0x35)
@@ -60,22 +60,22 @@ class TestLR35902(unittest.TestCase):
 
         cpu = LR35902(memory)
 
-        for _ in range(16):
-            cpu.clock()
-        self.assertFalse(cpu.interrupts['enabled'])
-
         for _ in range(4):
             cpu.clock()
         self.assertFalse(cpu.interrupts['enabled'])
 
-        for _ in range(8):
+        for _ in range(1):
+            cpu.clock()
+        self.assertFalse(cpu.interrupts['enabled'])
+
+        for _ in range(2):
             cpu.clock()
         self.assertTrue(cpu.interrupts['enabled'])
 
-        for _ in range(4):
+        for _ in range(1):
             cpu.clock()
         self.assertTrue(cpu.interrupts['enabled'])
 
-        for _ in range(8):
+        for _ in range(2):
             cpu.clock()
         self.assertFalse(cpu.interrupts['enabled'])

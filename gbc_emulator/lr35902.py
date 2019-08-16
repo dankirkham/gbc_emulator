@@ -26,6 +26,12 @@ class LR35902:
     REGISTER_SP = 12
     REGISTER_AF = 13
 
+    # Conditions
+    CONDITION_C = 0
+    CONDITION_NC = 1
+    CONDITION_Z = 2
+    CONDITION_NZ = 3
+
     class State(Enum):
         RUNNING = 0,
         HALTED = 1,
@@ -86,7 +92,7 @@ class LR35902:
             LR35902.Instruction(function=lambda s: s.dec_n_register(LR35902.REGISTER_D), length_in_bytes=1, duration_in_cycles=4, mnemonic='DEC D'), # 0x15
             LR35902.Instruction(function=lambda s: s.ld_nn_n(LR35902.REGISTER_D), length_in_bytes=2, duration_in_cycles=8, mnemonic='LD D,d8'), # 0x16
             LR35902.Instruction(function=lambda s: s.rl(LR35902.REGISTER_A), length_in_bytes=1, duration_in_cycles=4, mnemonic='RLA'), # 0x17
-            None, # 0x18
+            LR35902.Instruction(function=lambda s: s.jr_n(), length_in_bytes=2, duration_in_cycles=12, mnemonic='JR r8'), # 0x18
             LR35902.Instruction(function=lambda s: s.add_hl_n(LR35902.REGISTER_DE), length_in_bytes=1, duration_in_cycles=8, mnemonic='ADD HL,DE'), # 0x19
             LR35902.Instruction(function=lambda s: s.ld_a_n_from_memory(LR35902.REGISTER_DE), length_in_bytes=1, duration_in_cycles=8, mnemonic='LD A,(DE)'), # 0x1A
             LR35902.Instruction(function=lambda s: s.dec_nn(LR35902.REGISTER_DE), length_in_bytes=1, duration_in_cycles=8, mnemonic='DEC DE'), # 0x1B
@@ -94,7 +100,7 @@ class LR35902:
             LR35902.Instruction(function=lambda s: s.dec_n_register(LR35902.REGISTER_E), length_in_bytes=1, duration_in_cycles=4, mnemonic='DEC E'), # 0x1D
             LR35902.Instruction(function=lambda s: s.ld_nn_n(LR35902.REGISTER_E), length_in_bytes=2, duration_in_cycles=8, mnemonic='LD E,d8'), # 0x1E
             LR35902.Instruction(function=lambda s: s.rr(LR35902.REGISTER_A), length_in_bytes=1, duration_in_cycles=4, mnemonic='RRA'), # 0x1F
-            None, # 0x20
+            LR35902.Instruction(function=lambda s: s.jr_cc_n(LR35902.CONDITION_NZ), length_in_bytes=2, duration_in_cycles=8, mnemonic='JR NZ,r8'), # 0x20
             LR35902.Instruction(function=lambda s: s.ld_n_nn(LR35902.REGISTER_HL), length_in_bytes=3, duration_in_cycles=12, mnemonic='LD HL,d16'), # 0x21
             LR35902.Instruction(function=lambda s: s.ld_hl_a_increment(), length_in_bytes=1, duration_in_cycles=8, mnemonic='LD (HL+),A'), # 0x22
             LR35902.Instruction(function=lambda s: s.inc_nn(LR35902.REGISTER_HL), length_in_bytes=1, duration_in_cycles=8, mnemonic='INC HL'), # 0x23
@@ -102,7 +108,7 @@ class LR35902:
             LR35902.Instruction(function=lambda s: s.dec_n_register(LR35902.REGISTER_H), length_in_bytes=1, duration_in_cycles=4, mnemonic='DEC H'), # 0x25
             LR35902.Instruction(function=lambda s: s.ld_nn_n(LR35902.REGISTER_H), length_in_bytes=2, duration_in_cycles=8, mnemonic='LD H,d8'), # 0x26
             LR35902.Instruction(function=lambda s: s.daa(), length_in_bytes=1, duration_in_cycles=4, mnemonic='DAA'), # 0x27
-            None, # 0x28
+            LR35902.Instruction(function=lambda s: s.jr_cc_n(LR35902.CONDITION_Z), length_in_bytes=2, duration_in_cycles=8, mnemonic='JR Z,r8'), # 0x28
             LR35902.Instruction(function=lambda s: s.add_hl_n(LR35902.REGISTER_HL), length_in_bytes=1, duration_in_cycles=8, mnemonic='ADD HL,HL'), # 0x29
             LR35902.Instruction(function=lambda s: s.ld_a_hl_increment(), length_in_bytes=1, duration_in_cycles=8, mnemonic='LD A,(HL+)'), # 0x2A
             LR35902.Instruction(function=lambda s: s.dec_nn(LR35902.REGISTER_HL), length_in_bytes=1, duration_in_cycles=8, mnemonic='DEC HL'), # 0x2B
@@ -110,7 +116,7 @@ class LR35902:
             LR35902.Instruction(function=lambda s: s.dec_n_register(LR35902.REGISTER_L), length_in_bytes=1, duration_in_cycles=4, mnemonic='DEC L'), # 0x2D
             LR35902.Instruction(function=lambda s: s.ld_nn_n(LR35902.REGISTER_L), length_in_bytes=2, duration_in_cycles=8, mnemonic='LD L,d8'), # 0x2E
             LR35902.Instruction(function=lambda s: s.cpl(), length_in_bytes=1, duration_in_cycles=4, mnemonic='CPL'), # 0x2F
-            None, # 0x30
+            LR35902.Instruction(function=lambda s: s.jr_cc_n(LR35902.CONDITION_NC), length_in_bytes=2, duration_in_cycles=8, mnemonic='JR NC,r8'), # 0x30
             LR35902.Instruction(function=lambda s: s.ld_n_nn(LR35902.REGISTER_SP), length_in_bytes=3, duration_in_cycles=12, mnemonic='LD SP,d16'), # 0x31
             LR35902.Instruction(function=lambda s: s.ld_hl_a_decrement(), length_in_bytes=1, duration_in_cycles=8, mnemonic='LD (HL-),A'), # 0x32
             LR35902.Instruction(function=lambda s: s.inc_nn(LR35902.REGISTER_SP), length_in_bytes=1, duration_in_cycles=8, mnemonic='INC SP'), # 0x33
@@ -118,7 +124,7 @@ class LR35902:
             LR35902.Instruction(function=lambda s: s.dec_n_memory(), length_in_bytes=1, duration_in_cycles=12, mnemonic='DEC (HL)'), # 0x35
             LR35902.Instruction(function=lambda s: s.ld_r1_r2_immediate_to_memory(LR35902.REGISTER_HL), length_in_bytes=2, duration_in_cycles=12, mnemonic='LD (HL),d8'), # 0x36
             LR35902.Instruction(function=lambda s: s.scf(), length_in_bytes=1, duration_in_cycles=4, mnemonic='SCF'), # 0x37
-            None, # 0x38
+            LR35902.Instruction(function=lambda s: s.jr_cc_n(LR35902.CONDITION_C), length_in_bytes=2, duration_in_cycles=8, mnemonic='JR C,r8'), # 0x38
             LR35902.Instruction(function=lambda s: s.add_hl_n(LR35902.REGISTER_SP), length_in_bytes=1, duration_in_cycles=8, mnemonic='ADD HL,SP'), # 0x39
             LR35902.Instruction(function=lambda s: s.ld_a_hl_decrement(), length_in_bytes=1, duration_in_cycles=8, mnemonic='LD A,(HL-)'), # 0x3A
             LR35902.Instruction(function=lambda s: s.dec_nn(LR35902.REGISTER_SP), length_in_bytes=1, duration_in_cycles=8, mnemonic='DEC SP'), # 0x3B
@@ -256,8 +262,8 @@ class LR35902:
             LR35902.Instruction(function=lambda s: s.cp_n_register(LR35902.REGISTER_A), length_in_bytes=1, duration_in_cycles=4, mnemonic='CP A'), # 0xBF
             None, # 0xC0
             LR35902.Instruction(function=lambda s: s.pop_nn(LR35902.REGISTER_BC), length_in_bytes=1, duration_in_cycles=12, mnemonic='POP BC'), # 0xC1
-            None, # 0xC2
-            None, # 0xC3
+            LR35902.Instruction(function=lambda s: s.jp_cc_nn(LR35902.CONDITION_NZ), length_in_bytes=3, duration_in_cycles=12, mnemonic='JP NZ,a16'), # 0xC2
+            LR35902.Instruction(function=lambda s: s.jp_nn(), length_in_bytes=3, duration_in_cycles=16, mnemonic='JP a16'), # 0xC3
             None, # 0xC4
             LR35902.Instruction(function=lambda s: s.push_nn(LR35902.REGISTER_BC), length_in_bytes=1, duration_in_cycles=16, mnemonic='PUSH BC'), # 0xC5
             LR35902.Instruction(function=lambda s: s.add_a_n_immediate(), length_in_bytes=2, duration_in_cycles=8, mnemonic='ADD A,d8'), # 0xC6
@@ -295,7 +301,7 @@ class LR35902:
             LR35902.Instruction(function=lambda s: s.and_n_immediate(), length_in_bytes=2, duration_in_cycles=8, mnemonic='AND d8'), # 0xE6
             None, # 0xE7
             LR35902.Instruction(function=lambda s: s.add_sp_n(), length_in_bytes=2, duration_in_cycles=16, mnemonic='ADD SP,r8'), # 0xE8
-            None, # 0xE9
+            LR35902.Instruction(function=lambda s: s.jp_memory(), length_in_bytes=1, duration_in_cycles=4, mnemonic='JP (HL)'), # 0xE9
             LR35902.Instruction(function=lambda s: s.ld_n_a_immediate(), length_in_bytes=3, duration_in_cycles=16, mnemonic='LD (a16),A'), # 0xEA
             None, # 0xEB
             None, # 0xEC
@@ -615,7 +621,7 @@ class LR35902:
         # Execute
         instruction.function(self)
         self.PC += instruction.length_in_bytes
-        self.wait = instruction.duration_in_cycles - 1
+        self.wait = (instruction.duration_in_cycles / 4) - 1
 
         # Interrupt change
         if self.interrupts["change_in"] > 0:
@@ -623,10 +629,6 @@ class LR35902:
 
             if self.interrupts["change_in"] == 0:
                 self.interrupts["enabled"] = not self.interrupts["enabled"]
-
-    def bit_extension(self):
-        # Handle bit manipulation instruction on 0xCB prefix'd instructions
-        pass
 
     # 8-bit load/store/move instructions
     def ld_nn_n(self, reg=None):
@@ -1820,7 +1822,7 @@ class LR35902:
             raise RuntimeError('Invalid register "{}" specified!'.format(reg))
 
         # Keep C flag
-        new_flags = 0 | (self.F & (1 << LR3590s.FLAG_C))
+        new_flags = 0 | (self.F & (1 << LR35902.FLAG_C))
 
         # Process half carry
         if ((getattr(self, reg_attr) & 0xF) + 1) & 0x10:
@@ -2769,3 +2771,70 @@ class LR35902:
         addr = (self.H << 8) | self.L
 
         self.memory[addr] = (self.memory[addr] & ~(1 << bit)) & 0xFF
+
+    def jp_nn(self):
+        """GBCPUman.pdf page 111
+        Opcode 0xC3
+        Jump to address NN
+        """
+        addr = (self.memory[self.PC + 2] << 8) | self.memory[self.PC + 1]
+
+        self.PC = addr - 1 # TODO: Hacky
+
+    def jp_cc_nn(self, condition=None):
+        """GBCPUman.pdf page 111
+        Opcode 0xC2, 0xCA, 0xD2, 0xDA
+        Jump to two byte immediate value if condition is met.
+        """
+        if condition == LR35902.CONDITION_NZ:
+            test = not (self.F & (1 << LR35902.FLAG_Z))
+        elif condition == LR35902.CONDITION_Z:
+            test = self.F & (1 << LR35902.FLAG_Z)
+        elif condition == LR35902.CONDITION_NC:
+            test = not (self.F & (1 << LR35902.FLAG_C))
+        elif condition == LR35902.CONDITION_C:
+            test = self.F & (1 << LR35902.FLAG_C)
+        else:
+            raise RuntimeError('Invalid condition "{}" specified!'.format(condition))
+
+        if test:
+            addr = (self.memory[self.PC + 2] << 8) | self.memory[self.PC + 1]
+            self.PC = addr - 1 # TODO: Hacky
+            self.wait += 1 # TODO: Hacky
+
+    def jp_memory(self):
+        """GBCPUman.pdf page 112
+        Opcode 0xE9
+        Jump to address contained in HL
+        """
+        addr = (self.H << 8) | self.L
+        self.PC = addr - 1 # TODO: Hacky
+
+    def jr_n(self):
+        """GBCPUman.pdf page 112
+        Opcode 0x18
+        Add 8-bit immediate value to PC and jump to it.
+        """
+        value = self.memory[self.PC + 1]
+        self.PC += value - 1 # TODO: Hacky
+
+    def jr_cc_n(self, condition=None):
+        """GBCPUman.pdf page 112
+        Opcode 0x20, 0x28, 0x30, 0x38
+        Add 8-bit immediate value to PC and jump to it if condition is met.
+        """
+        if condition == LR35902.CONDITION_NZ:
+            test = not (self.F & (1 << LR35902.FLAG_Z))
+        elif condition == LR35902.CONDITION_Z:
+            test = self.F & (1 << LR35902.FLAG_Z)
+        elif condition == LR35902.CONDITION_NC:
+            test = not (self.F & (1 << LR35902.FLAG_C))
+        elif condition == LR35902.CONDITION_C:
+            test = self.F & (1 << LR35902.FLAG_C)
+        else:
+            raise RuntimeError('Invalid condition "{}" specified!'.format(condition))
+
+        if test:
+            value = self.memory[self.PC + 1]
+            self.PC += value - 1 # TODO: Hacky
+            self.wait += 1 # TODO: Hacky
