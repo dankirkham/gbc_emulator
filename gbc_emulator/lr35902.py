@@ -260,38 +260,38 @@ class LR35902:
             LR35902.Instruction(function=lambda s: s.cp_n_register(LR35902.REGISTER_L), length_in_bytes=1, duration_in_cycles=4, mnemonic='CP L'), # 0xBD
             LR35902.Instruction(function=lambda s: s.cp_n_memory(), length_in_bytes=1, duration_in_cycles=8, mnemonic='OR (HL)'), # 0xBE
             LR35902.Instruction(function=lambda s: s.cp_n_register(LR35902.REGISTER_A), length_in_bytes=1, duration_in_cycles=4, mnemonic='CP A'), # 0xBF
-            None, # 0xC0
+            LR35902.Instruction(function=lambda s: s.ret_cc(LR35902.CONDITION_NZ), length_in_bytes=1, duration_in_cycles=8, mnemonic='RET NZ'), # 0xC0
             LR35902.Instruction(function=lambda s: s.pop_nn(LR35902.REGISTER_BC), length_in_bytes=1, duration_in_cycles=12, mnemonic='POP BC'), # 0xC1
             LR35902.Instruction(function=lambda s: s.jp_cc_nn(LR35902.CONDITION_NZ), length_in_bytes=3, duration_in_cycles=12, mnemonic='JP NZ,a16'), # 0xC2
             LR35902.Instruction(function=lambda s: s.jp_nn(), length_in_bytes=3, duration_in_cycles=16, mnemonic='JP a16'), # 0xC3
-            None, # 0xC4
+            LR35902.Instruction(function=lambda s: s.call_cc_nn(LR35902.CONDITION_NZ), length_in_bytes=3, duration_in_cycles=12, mnemonic='CALL NZ,a16'), # 0xC4
             LR35902.Instruction(function=lambda s: s.push_nn(LR35902.REGISTER_BC), length_in_bytes=1, duration_in_cycles=16, mnemonic='PUSH BC'), # 0xC5
             LR35902.Instruction(function=lambda s: s.add_a_n_immediate(), length_in_bytes=2, duration_in_cycles=8, mnemonic='ADD A,d8'), # 0xC6
-            None, # 0xC7
-            None, # 0xC8
-            None, # 0xC9
-            None, # 0xCA
+            LR35902.Instruction(function=lambda s: s.rst(0x00), length_in_bytes=1, duration_in_cycles=16, mnemonic='RST 00H'), # 0xC7
+            LR35902.Instruction(function=lambda s: s.ret_cc(LR35902.CONDITION_Z), length_in_bytes=1, duration_in_cycles=8, mnemonic='RET Z'), # 0xC8
+            LR35902.Instruction(function=lambda s: s.ret(), length_in_bytes=1, duration_in_cycles=16, mnemonic='RET'), # 0xC9
+            LR35902.Instruction(function=lambda s: s.jp_cc_nn(LR35902.CONDITION_Z), length_in_bytes=3, duration_in_cycles=12, mnemonic='JP Z,a16'), # 0xCA
             None, # 0xCB
-            None, # 0xCC
-            None, # 0xCD
+            LR35902.Instruction(function=lambda s: s.call_cc_nn(LR35902.CONDITION_Z), length_in_bytes=3, duration_in_cycles=12, mnemonic='CALL Z,a16'), # 0xCC
+            LR35902.Instruction(function=lambda s: s.call_nn(), length_in_bytes=3, duration_in_cycles=24, mnemonic='CALL a16'), # 0xCD
             LR35902.Instruction(function=lambda s: s.adc_a_n_immediate(), length_in_bytes=2, duration_in_cycles=8, mnemonic='ADC A,d8'), # 0xCE
-            None, # 0xCF
-            None, # 0xD0
+            LR35902.Instruction(function=lambda s: s.rst(0x08), length_in_bytes=1, duration_in_cycles=16, mnemonic='RST 08H'), # 0xCF
+            LR35902.Instruction(function=lambda s: s.ret_cc(LR35902.CONDITION_NC), length_in_bytes=1, duration_in_cycles=8, mnemonic='RET NC'), # 0xD0
             LR35902.Instruction(function=lambda s: s.pop_nn(LR35902.REGISTER_DE), length_in_bytes=1, duration_in_cycles=12, mnemonic='POP DE'), # 0xD1
-            None, # 0xD2
+            LR35902.Instruction(function=lambda s: s.jp_cc_nn(LR35902.CONDITION_NC), length_in_bytes=3, duration_in_cycles=12, mnemonic='JP NC,a16'), # 0xD2
             None, # 0xD3
-            None, # 0xD4
+            LR35902.Instruction(function=lambda s: s.call_cc_nn(LR35902.CONDITION_NC), length_in_bytes=3, duration_in_cycles=12, mnemonic='CALL NC,a16'), # 0xD4
             LR35902.Instruction(function=lambda s: s.push_nn(LR35902.REGISTER_DE), length_in_bytes=1, duration_in_cycles=16, mnemonic='PUSH DE'), # 0xD5
             LR35902.Instruction(function=lambda s: s.sub_n_immediate(), length_in_bytes=2, duration_in_cycles=8, mnemonic='SUB d8'), # 0xD6
-            None, # 0xD7
-            None, # 0xD8
-            None, # 0xD9
-            None, # 0xDA
+            LR35902.Instruction(function=lambda s: s.rst(0x10), length_in_bytes=1, duration_in_cycles=16, mnemonic='RST 10H'), # 0xD7
+            LR35902.Instruction(function=lambda s: s.ret_cc(LR35902.CONDITION_C), length_in_bytes=1, duration_in_cycles=8, mnemonic='RET C'), # 0xD8
+            LR35902.Instruction(function=lambda s: s.reti(), length_in_bytes=1, duration_in_cycles=16, mnemonic='RETI'), # 0xD9
+            LR35902.Instruction(function=lambda s: s.jp_cc_nn(LR35902.CONDITION_C), length_in_bytes=3, duration_in_cycles=12, mnemonic='JP C,a16'), # 0xDA
             None, # 0xDB
-            None, # 0xDC
+            LR35902.Instruction(function=lambda s: s.call_cc_nn(LR35902.CONDITION_C), length_in_bytes=3, duration_in_cycles=12, mnemonic='CALL C,a16'), # 0xDC
             None, # 0xDD
             LR35902.Instruction(function=lambda s: s.subc_n_immediate(), length_in_bytes=2, duration_in_cycles=8, mnemonic='SUB A,d8'), # 0xDE
-            None, # 0xDF
+            LR35902.Instruction(function=lambda s: s.rst(0x18), length_in_bytes=1, duration_in_cycles=16, mnemonic='RST 18H'), # 0xDF
             LR35902.Instruction(function=lambda s: s.ldh_n_a(), length_in_bytes=2, duration_in_cycles=12, mnemonic='LDH (a8),A'), # 0xE0
             LR35902.Instruction(function=lambda s: s.pop_nn(LR35902.REGISTER_HL), length_in_bytes=1, duration_in_cycles=12, mnemonic='POP HL'), # 0xE1
             LR35902.Instruction(function=lambda s: s.ld_c_a(), length_in_bytes=1, duration_in_cycles=8, mnemonic='LD (C),A'), # 0xE2  # This disagrees with pastraiser length of 2 bytes
@@ -299,7 +299,7 @@ class LR35902:
             None, # 0xE4
             LR35902.Instruction(function=lambda s: s.push_nn(LR35902.REGISTER_HL), length_in_bytes=1, duration_in_cycles=16, mnemonic='PUSH HL'), # 0xE5
             LR35902.Instruction(function=lambda s: s.and_n_immediate(), length_in_bytes=2, duration_in_cycles=8, mnemonic='AND d8'), # 0xE6
-            None, # 0xE7
+            LR35902.Instruction(function=lambda s: s.rst(0x20), length_in_bytes=1, duration_in_cycles=16, mnemonic='RST 20H'), # 0xE7
             LR35902.Instruction(function=lambda s: s.add_sp_n(), length_in_bytes=2, duration_in_cycles=16, mnemonic='ADD SP,r8'), # 0xE8
             LR35902.Instruction(function=lambda s: s.jp_memory(), length_in_bytes=1, duration_in_cycles=4, mnemonic='JP (HL)'), # 0xE9
             LR35902.Instruction(function=lambda s: s.ld_n_a_immediate(), length_in_bytes=3, duration_in_cycles=16, mnemonic='LD (a16),A'), # 0xEA
@@ -307,7 +307,7 @@ class LR35902:
             None, # 0xEC
             None, # 0xED
             LR35902.Instruction(function=lambda s: s.xor_n_immediate(), length_in_bytes=2, duration_in_cycles=8, mnemonic='XOR d8'), # 0xEE
-            None, # 0xEF
+            LR35902.Instruction(function=lambda s: s.rst(0x28), length_in_bytes=1, duration_in_cycles=16, mnemonic='RST 28H'), # 0xEF
             LR35902.Instruction(function=lambda s: s.ldh_a_n(), length_in_bytes=2, duration_in_cycles=12, mnemonic='LDH A,(a8)'), # 0xF0
             LR35902.Instruction(function=lambda s: s.pop_nn(LR35902.REGISTER_AF), length_in_bytes=1, duration_in_cycles=12, mnemonic='POP AF'), # 0xF1
             LR35902.Instruction(function=lambda s: s.ld_a_c(), length_in_bytes=1, duration_in_cycles=8, mnemonic='LD A,(C)'), # 0xF2 # This disagrees with pastraiser length of 2 bytes
@@ -315,7 +315,7 @@ class LR35902:
             None, # 0xF4
             LR35902.Instruction(function=lambda s: s.push_nn(LR35902.REGISTER_AF), length_in_bytes=1, duration_in_cycles=16, mnemonic='PUSH AF'), # 0xF5
             LR35902.Instruction(function=lambda s: s.or_n_immediate(), length_in_bytes=2, duration_in_cycles=8, mnemonic='OR d8'), # 0xF6
-            None, # 0xF7
+            LR35902.Instruction(function=lambda s: s.rst(0x30), length_in_bytes=1, duration_in_cycles=16, mnemonic='RST 30H'), # 0xF7
             LR35902.Instruction(function=lambda s: s.ld_hl_sp_n(), length_in_bytes=2, duration_in_cycles=12, mnemonic='LD HL,SP+r8'), # 0xF8
             LR35902.Instruction(function=lambda s: s.ld_sp_hl(), length_in_bytes=1, duration_in_cycles=8, mnemonic='LD SP,HL'), # 0xF9
             LR35902.Instruction(function=lambda s: s.ld_a_n_from_memory_immediate(), length_in_bytes=3, duration_in_cycles=16, mnemonic='LD A,(a16)'), # 0xFA
@@ -323,7 +323,7 @@ class LR35902:
             None, # 0xFC
             None, # 0xFD
             LR35902.Instruction(function=lambda s: s.cp_n_immediate(), length_in_bytes=2, duration_in_cycles=8, mnemonic='CP d8'), # 0xFE
-            None, # 0xFF
+            LR35902.Instruction(function=lambda s: s.rst(0x38), length_in_bytes=1, duration_in_cycles=16, mnemonic='RST 38H'), # 0xFF
         ]
 
         # Instruction map
@@ -526,7 +526,7 @@ class LR35902:
             LR35902.Instruction(function=lambda s: s.set(LR35902.REGISTER_E, 0), length_in_bytes=2, duration_in_cycles=8, mnemonic='SET 0,E'), # 0xC3
             LR35902.Instruction(function=lambda s: s.set(LR35902.REGISTER_H, 0), length_in_bytes=2, duration_in_cycles=8, mnemonic='SET 0,H'), # 0xC4
             LR35902.Instruction(function=lambda s: s.set(LR35902.REGISTER_L, 0), length_in_bytes=2, duration_in_cycles=8, mnemonic='SET 0,L'), # 0xC5
-            LR35902.Instruction(function=lambda s: s.set(0), length_in_bytes=2, duration_in_cycles=16, mnemonic='SET 0,(HL)'), # 0xC6
+            LR35902.Instruction(function=lambda s: s.set_memory(0), length_in_bytes=2, duration_in_cycles=16, mnemonic='SET 0,(HL)'), # 0xC6
             LR35902.Instruction(function=lambda s: s.set(LR35902.REGISTER_A, 0), length_in_bytes=2, duration_in_cycles=8, mnemonic='SET 0,A'), # 0xC7
             LR35902.Instruction(function=lambda s: s.set(LR35902.REGISTER_B, 1), length_in_bytes=2, duration_in_cycles=8, mnemonic='SET 1,B'), # 0xC8
             LR35902.Instruction(function=lambda s: s.set(LR35902.REGISTER_C, 1), length_in_bytes=2, duration_in_cycles=8, mnemonic='SET 1,C'), # 0xC9
@@ -534,7 +534,7 @@ class LR35902:
             LR35902.Instruction(function=lambda s: s.set(LR35902.REGISTER_E, 1), length_in_bytes=2, duration_in_cycles=8, mnemonic='SET 1,E'), # 0xCB
             LR35902.Instruction(function=lambda s: s.set(LR35902.REGISTER_H, 1), length_in_bytes=2, duration_in_cycles=8, mnemonic='SET 1,H'), # 0xCC
             LR35902.Instruction(function=lambda s: s.set(LR35902.REGISTER_L, 1), length_in_bytes=2, duration_in_cycles=8, mnemonic='SET 1,L'), # 0xCD
-            LR35902.Instruction(function=lambda s: s.set(1), length_in_bytes=2, duration_in_cycles=16, mnemonic='SET 1,(HL)'), # 0xCE
+            LR35902.Instruction(function=lambda s: s.set_memory(1), length_in_bytes=2, duration_in_cycles=16, mnemonic='SET 1,(HL)'), # 0xCE
             LR35902.Instruction(function=lambda s: s.set(LR35902.REGISTER_A, 1), length_in_bytes=2, duration_in_cycles=8, mnemonic='SET 1,A'), # 0xCF
             LR35902.Instruction(function=lambda s: s.set(LR35902.REGISTER_B, 2), length_in_bytes=2, duration_in_cycles=8, mnemonic='SET 2,B'), # 0xD0
             LR35902.Instruction(function=lambda s: s.set(LR35902.REGISTER_C, 2), length_in_bytes=2, duration_in_cycles=8, mnemonic='SET 2,C'), # 0xD1
@@ -542,7 +542,7 @@ class LR35902:
             LR35902.Instruction(function=lambda s: s.set(LR35902.REGISTER_E, 2), length_in_bytes=2, duration_in_cycles=8, mnemonic='SET 2,E'), # 0xD3
             LR35902.Instruction(function=lambda s: s.set(LR35902.REGISTER_H, 2), length_in_bytes=2, duration_in_cycles=8, mnemonic='SET 2,H'), # 0xD4
             LR35902.Instruction(function=lambda s: s.set(LR35902.REGISTER_L, 2), length_in_bytes=2, duration_in_cycles=8, mnemonic='SET 2,L'), # 0xD5
-            LR35902.Instruction(function=lambda s: s.set(2), length_in_bytes=2, duration_in_cycles=16, mnemonic='SET 2,(HL)'), # 0xD6
+            LR35902.Instruction(function=lambda s: s.set_memory(2), length_in_bytes=2, duration_in_cycles=16, mnemonic='SET 2,(HL)'), # 0xD6
             LR35902.Instruction(function=lambda s: s.set(LR35902.REGISTER_A, 2), length_in_bytes=2, duration_in_cycles=8, mnemonic='SET 2,A'), # 0xD7
             LR35902.Instruction(function=lambda s: s.set(LR35902.REGISTER_B, 3), length_in_bytes=2, duration_in_cycles=8, mnemonic='SET 3,B'), # 0xD8
             LR35902.Instruction(function=lambda s: s.set(LR35902.REGISTER_C, 3), length_in_bytes=2, duration_in_cycles=8, mnemonic='SET 3,C'), # 0xD9
@@ -550,7 +550,7 @@ class LR35902:
             LR35902.Instruction(function=lambda s: s.set(LR35902.REGISTER_E, 3), length_in_bytes=2, duration_in_cycles=8, mnemonic='SET 3,E'), # 0xDB
             LR35902.Instruction(function=lambda s: s.set(LR35902.REGISTER_H, 3), length_in_bytes=2, duration_in_cycles=8, mnemonic='SET 3,H'), # 0xDC
             LR35902.Instruction(function=lambda s: s.set(LR35902.REGISTER_L, 3), length_in_bytes=2, duration_in_cycles=8, mnemonic='SET 3,L'), # 0xDD
-            LR35902.Instruction(function=lambda s: s.set(3), length_in_bytes=2, duration_in_cycles=16, mnemonic='SET 3,(HL)'), # 0xDE
+            LR35902.Instruction(function=lambda s: s.set_memory(3), length_in_bytes=2, duration_in_cycles=16, mnemonic='SET 3,(HL)'), # 0xDE
             LR35902.Instruction(function=lambda s: s.set(LR35902.REGISTER_A, 3), length_in_bytes=2, duration_in_cycles=8, mnemonic='SET 3,A'), # 0xDF
             LR35902.Instruction(function=lambda s: s.set(LR35902.REGISTER_B, 4), length_in_bytes=2, duration_in_cycles=8, mnemonic='SET 4,B'), # 0xE0
             LR35902.Instruction(function=lambda s: s.set(LR35902.REGISTER_C, 4), length_in_bytes=2, duration_in_cycles=8, mnemonic='SET 4,C'), # 0xE1
@@ -558,7 +558,7 @@ class LR35902:
             LR35902.Instruction(function=lambda s: s.set(LR35902.REGISTER_E, 4), length_in_bytes=2, duration_in_cycles=8, mnemonic='SET 4,E'), # 0xE3
             LR35902.Instruction(function=lambda s: s.set(LR35902.REGISTER_H, 4), length_in_bytes=2, duration_in_cycles=8, mnemonic='SET 4,H'), # 0xE4
             LR35902.Instruction(function=lambda s: s.set(LR35902.REGISTER_L, 4), length_in_bytes=2, duration_in_cycles=8, mnemonic='SET 4,L'), # 0xE5
-            LR35902.Instruction(function=lambda s: s.set(4), length_in_bytes=2, duration_in_cycles=16, mnemonic='SET 4,(HL)'), # 0xE6
+            LR35902.Instruction(function=lambda s: s.set_memory(4), length_in_bytes=2, duration_in_cycles=16, mnemonic='SET 4,(HL)'), # 0xE6
             LR35902.Instruction(function=lambda s: s.set(LR35902.REGISTER_A, 4), length_in_bytes=2, duration_in_cycles=8, mnemonic='SET 4,A'), # 0xE7
             LR35902.Instruction(function=lambda s: s.set(LR35902.REGISTER_B, 5), length_in_bytes=2, duration_in_cycles=8, mnemonic='SET 5,B'), # 0xE8
             LR35902.Instruction(function=lambda s: s.set(LR35902.REGISTER_C, 5), length_in_bytes=2, duration_in_cycles=8, mnemonic='SET 5,C'), # 0xE9
@@ -566,7 +566,7 @@ class LR35902:
             LR35902.Instruction(function=lambda s: s.set(LR35902.REGISTER_E, 5), length_in_bytes=2, duration_in_cycles=8, mnemonic='SET 5,E'), # 0xEB
             LR35902.Instruction(function=lambda s: s.set(LR35902.REGISTER_H, 5), length_in_bytes=2, duration_in_cycles=8, mnemonic='SET 5,H'), # 0xEC
             LR35902.Instruction(function=lambda s: s.set(LR35902.REGISTER_L, 5), length_in_bytes=2, duration_in_cycles=8, mnemonic='SET 5,L'), # 0xED
-            LR35902.Instruction(function=lambda s: s.set(5), length_in_bytes=2, duration_in_cycles=16, mnemonic='SET 5,(HL)'), # 0xEE
+            LR35902.Instruction(function=lambda s: s.set_memory(5), length_in_bytes=2, duration_in_cycles=16, mnemonic='SET 5,(HL)'), # 0xEE
             LR35902.Instruction(function=lambda s: s.set(LR35902.REGISTER_A, 5), length_in_bytes=2, duration_in_cycles=8, mnemonic='SET 5,A'), # 0xEF
             LR35902.Instruction(function=lambda s: s.set(LR35902.REGISTER_B, 6), length_in_bytes=2, duration_in_cycles=8, mnemonic='SET 6,B'), # 0xF0
             LR35902.Instruction(function=lambda s: s.set(LR35902.REGISTER_C, 6), length_in_bytes=2, duration_in_cycles=8, mnemonic='SET 6,C'), # 0xF1
@@ -574,7 +574,7 @@ class LR35902:
             LR35902.Instruction(function=lambda s: s.set(LR35902.REGISTER_E, 6), length_in_bytes=2, duration_in_cycles=8, mnemonic='SET 6,E'), # 0xF3
             LR35902.Instruction(function=lambda s: s.set(LR35902.REGISTER_H, 6), length_in_bytes=2, duration_in_cycles=8, mnemonic='SET 6,H'), # 0xF4
             LR35902.Instruction(function=lambda s: s.set(LR35902.REGISTER_L, 6), length_in_bytes=2, duration_in_cycles=8, mnemonic='SET 6,L'), # 0xF5
-            LR35902.Instruction(function=lambda s: s.set(6), length_in_bytes=2, duration_in_cycles=16, mnemonic='SET 6,(HL)'), # 0xF6
+            LR35902.Instruction(function=lambda s: s.set_memory(6), length_in_bytes=2, duration_in_cycles=16, mnemonic='SET 6,(HL)'), # 0xF6
             LR35902.Instruction(function=lambda s: s.set(LR35902.REGISTER_A, 6), length_in_bytes=2, duration_in_cycles=8, mnemonic='SET 6,A'), # 0xF7
             LR35902.Instruction(function=lambda s: s.set(LR35902.REGISTER_B, 7), length_in_bytes=2, duration_in_cycles=8, mnemonic='SET 7,B'), # 0xF8
             LR35902.Instruction(function=lambda s: s.set(LR35902.REGISTER_C, 7), length_in_bytes=2, duration_in_cycles=8, mnemonic='SET 7,C'), # 0xF9
@@ -582,7 +582,7 @@ class LR35902:
             LR35902.Instruction(function=lambda s: s.set(LR35902.REGISTER_E, 7), length_in_bytes=2, duration_in_cycles=8, mnemonic='SET 7,E'), # 0xFB
             LR35902.Instruction(function=lambda s: s.set(LR35902.REGISTER_H, 7), length_in_bytes=2, duration_in_cycles=8, mnemonic='SET 7,H'), # 0xFC
             LR35902.Instruction(function=lambda s: s.set(LR35902.REGISTER_L, 7), length_in_bytes=2, duration_in_cycles=8, mnemonic='SET 7,L'), # 0xFD
-            LR35902.Instruction(function=lambda s: s.set(7), length_in_bytes=2, duration_in_cycles=16, mnemonic='SET 7,(HL)'), # 0xFE
+            LR35902.Instruction(function=lambda s: s.set_memory(7), length_in_bytes=2, duration_in_cycles=16, mnemonic='SET 7,(HL)'), # 0xFE
             LR35902.Instruction(function=lambda s: s.set(LR35902.REGISTER_A, 7), length_in_bytes=2, duration_in_cycles=8, mnemonic='SET 7,A'), # 0xFF
         ]
 
@@ -1066,18 +1066,18 @@ class LR35902:
 
         # Process half carry
         if ((self.A & 0xF) + (addend & 0xF)) & 0x10:
-            new_flags |= (1 << LR3590s.FLAG_H)
+            new_flags |= (1 << LR35902.FLAG_H)
 
         # Process carry
         if ((self.A & 0xFF) + (addend & 0xFF)) & 0x100:
-            new_flags |= (1 << LR3590s.FLAG_C)
+            new_flags |= (1 << LR35902.FLAG_C)
 
         # Perform addition
         self.A = (self.A + addend) & 0xFF
 
         # Process zero
         if self.A == 0:
-            new_flags |= (1 << LR3590s.FLAG_Z)
+            new_flags |= (1 << LR35902.FLAG_Z)
 
         # Set Flags
         self.F = new_flags
@@ -1095,18 +1095,18 @@ class LR35902:
 
         # Process half carry
         if ((self.A & 0xF) + (addend & 0xF)) & 0x10:
-            new_flags |= (1 << LR3590s.FLAG_H)
+            new_flags |= (1 << LR35902.FLAG_H)
 
         # Process carry
         if ((self.A & 0xFF) + (addend & 0xFF)) & 0x100:
-            new_flags |= (1 << LR3590s.FLAG_C)
+            new_flags |= (1 << LR35902.FLAG_C)
 
         # Perform addition
         self.A = (self.A + addend) & 0xFF
 
         # Process zero
         if self.A == 0:
-            new_flags |= (1 << LR3590s.FLAG_Z)
+            new_flags |= (1 << LR35902.FLAG_Z)
 
         # Set Flags
         self.F = new_flags
@@ -1123,18 +1123,18 @@ class LR35902:
 
         # Process half carry
         if ((self.A & 0xF) + (addend & 0xF)) & 0x10:
-            new_flags |= (1 << LR3590s.FLAG_H)
+            new_flags |= (1 << LR35902.FLAG_H)
 
         # Process carry
         if ((self.A & 0xFF) + (addend & 0xFF)) & 0x100:
-            new_flags |= (1 << LR3590s.FLAG_C)
+            new_flags |= (1 << LR35902.FLAG_C)
 
         # Perform addition
         self.A = (self.A + addend) & 0xFF
 
         # Process zero
         if self.A == 0:
-            new_flags |= (1 << LR3590s.FLAG_Z)
+            new_flags |= (1 << LR35902.FLAG_Z)
 
         # Set Flags
         self.F = new_flags
@@ -1162,24 +1162,24 @@ class LR35902:
         else:
             raise RuntimeError('Invalid register "{}" specified!'.format(reg))
 
-        carry_bit = (self.F & (1 << LR3590s.FLAG_C)) >> LR3590s.FLAG_C
+        carry_bit = (self.F & (1 << LR35902.FLAG_C)) >> LR35902.FLAG_C
 
         new_flags = 0
 
         # Process half carry
         if ((self.A & 0xF) + (addend & 0xF) + carry_bit) & 0x10:
-            new_flags |= (1 << LR3590s.FLAG_H)
+            new_flags |= (1 << LR35902.FLAG_H)
 
         # Process carry
         if ((self.A & 0xFF) + (addend & 0xFF) + carry_bit) & 0x100:
-            new_flags |= (1 << LR3590s.FLAG_C)
+            new_flags |= (1 << LR35902.FLAG_C)
 
         # Perform addition
         self.A = (self.A + addend + carry_bit) & 0xFF
 
         # Process zero
         if self.A == 0:
-            new_flags |= (1 << LR3590s.FLAG_Z)
+            new_flags |= (1 << LR35902.FLAG_Z)
 
         # Set Flags
         self.F = new_flags
@@ -1193,24 +1193,24 @@ class LR35902:
         addr = (self.H << 8) | self.L
         addend = self.memory[addr]
 
-        carry_bit = (self.F & (1 << LR3590s.FLAG_C)) >> LR3590s.FLAG_C
+        carry_bit = (self.F & (1 << LR35902.FLAG_C)) >> LR35902.FLAG_C
 
         new_flags = 0
 
         # Process half carry
         if ((self.A & 0xF) + (addend & 0xF) + carry_bit) & 0x10:
-            new_flags |= (1 << LR3590s.FLAG_H)
+            new_flags |= (1 << LR35902.FLAG_H)
 
         # Process carry
         if ((self.A & 0xFF) + (addend & 0xFF) + carry_bit) & 0x100:
-            new_flags |= (1 << LR3590s.FLAG_C)
+            new_flags |= (1 << LR35902.FLAG_C)
 
         # Perform addition
         self.A = (self.A + addend + carry_bit) & 0xFF
 
         # Process zero
         if self.A == 0:
-            new_flags |= (1 << LR3590s.FLAG_Z)
+            new_flags |= (1 << LR35902.FLAG_Z)
 
         # Set Flags
         self.F = new_flags
@@ -1223,24 +1223,24 @@ class LR35902:
 
         addend = self.memory[self.PC + 1]
 
-        carry_bit = (self.F & (1 << LR3590s.FLAG_C)) >> LR3590s.FLAG_C
+        carry_bit = (self.F & (1 << LR35902.FLAG_C)) >> LR35902.FLAG_C
 
         new_flags = 0
 
         # Process half carry
         if ((self.A & 0xF) + (addend & 0xF) + carry_bit) & 0x10:
-            new_flags |= (1 << LR3590s.FLAG_H)
+            new_flags |= (1 << LR35902.FLAG_H)
 
         # Process carry
         if ((self.A & 0xFF) + (addend & 0xFF) + carry_bit) & 0x100:
-            new_flags |= (1 << LR3590s.FLAG_C)
+            new_flags |= (1 << LR35902.FLAG_C)
 
         # Perform addition
         self.A = (self.A + addend + carry_bit) & 0xFF
 
         # Process zero
         if self.A == 0:
-            new_flags |= (1 << LR3590s.FLAG_Z)
+            new_flags |= (1 << LR35902.FLAG_Z)
 
         # Set Flags
         self.F = new_flags
@@ -1269,22 +1269,22 @@ class LR35902:
             raise RuntimeError('Invalid register "{}" specified!'.format(reg))
 
         # N is always set
-        new_flags = (1 << LR3590s.FLAG_N)
+        new_flags = (1 << LR35902.FLAG_N)
 
         # Process half borrow
         if ((self.A & 0xF) - (subtrahend & 0xF)) >= 0:
-            new_flags |= (1 << LR3590s.FLAG_H)
+            new_flags |= (1 << LR35902.FLAG_H)
 
         # Process borrow
         if ((self.A & 0xFF) - (subtrahend & 0xFF)) >= 0:
-            new_flags |= (1 << LR3590s.FLAG_C)
+            new_flags |= (1 << LR35902.FLAG_C)
 
         # Perform subtraction
         self.A = (self.A - subtrahend) & 0xFF
 
         # Process zero
         if self.A == 0:
-            new_flags |= (1 << LR3590s.FLAG_Z)
+            new_flags |= (1 << LR35902.FLAG_Z)
 
         # Set Flags
         self.F = new_flags
@@ -1299,22 +1299,22 @@ class LR35902:
         subtrahend = self.memory[addr]
 
         # N is always set
-        new_flags = (1 << LR3590s.FLAG_N)
+        new_flags = (1 << LR35902.FLAG_N)
 
         # Process half borrow
         if ((self.A & 0xF) - (subtrahend & 0xF)) >= 0:
-            new_flags |= (1 << LR3590s.FLAG_H)
+            new_flags |= (1 << LR35902.FLAG_H)
 
         # Process borrow
         if ((self.A & 0xFF) - (subtrahend & 0xFF)) >= 0:
-            new_flags |= (1 << LR3590s.FLAG_C)
+            new_flags |= (1 << LR35902.FLAG_C)
 
         # Perform subtraction
         self.A = (self.A - subtrahend) & 0xFF
 
         # Process zero
         if self.A == 0:
-            new_flags |= (1 << LR3590s.FLAG_Z)
+            new_flags |= (1 << LR35902.FLAG_Z)
 
         # Set Flags
         self.F = new_flags
@@ -1328,22 +1328,22 @@ class LR35902:
         subtrahend = self.memory[self.PC + 1]
 
         # N is always set
-        new_flags = (1 << LR3590s.FLAG_N)
+        new_flags = (1 << LR35902.FLAG_N)
 
         # Process half borrow
         if ((self.A & 0xF) - (subtrahend & 0xF)) >= 0:
-            new_flags |= (1 << LR3590s.FLAG_H)
+            new_flags |= (1 << LR35902.FLAG_H)
 
         # Process borrow
         if ((self.A & 0xFF) - (subtrahend & 0xFF)) >= 0:
-            new_flags |= (1 << LR3590s.FLAG_C)
+            new_flags |= (1 << LR35902.FLAG_C)
 
         # Perform subtraction
         self.A = (self.A - subtrahend) & 0xFF
 
         # Process zero
         if self.A == 0:
-            new_flags |= (1 << LR3590s.FLAG_Z)
+            new_flags |= (1 << LR35902.FLAG_Z)
 
         # Set Flags
         self.F = new_flags
@@ -1371,25 +1371,25 @@ class LR35902:
         else:
             raise RuntimeError('Invalid register "{}" specified!'.format(reg))
 
-        carry_bit = (self.F & (1 << LR3590s.FLAG_C)) >> LR3590s.FLAG_C
+        carry_bit = (self.F & (1 << LR35902.FLAG_C)) >> LR35902.FLAG_C
 
         # N is always set
-        new_flags = (1 << LR3590s.FLAG_N)
+        new_flags = (1 << LR35902.FLAG_N)
 
         # Process half borrow
         if ((self.A & 0xF) - (subtrahend & 0xF) - carry_bit) >= 0:
-            new_flags |= (1 << LR3590s.FLAG_H)
+            new_flags |= (1 << LR35902.FLAG_H)
 
         # Process borrow
         if ((self.A & 0xFF) - (subtrahend & 0xFF) - carry_bit) >= 0:
-            new_flags |= (1 << LR3590s.FLAG_C)
+            new_flags |= (1 << LR35902.FLAG_C)
 
         # Perform subtraction
         self.A = (self.A - subtrahend - carry_bit) & 0xFF
 
         # Process zero
         if self.A == 0:
-            new_flags |= (1 << LR3590s.FLAG_Z)
+            new_flags |= (1 << LR35902.FLAG_Z)
 
         # Set Flags
         self.F = new_flags
@@ -1403,25 +1403,25 @@ class LR35902:
         addr = (self.H << 8) | self.L
         subtrahend = self.memory[addr]
 
-        carry_bit = (self.F & (1 << LR3590s.FLAG_C)) >> LR3590s.FLAG_C
+        carry_bit = (self.F & (1 << LR35902.FLAG_C)) >> LR35902.FLAG_C
 
         # N is always set
-        new_flags = (1 << LR3590s.FLAG_N)
+        new_flags = (1 << LR35902.FLAG_N)
 
         # Process half borrow
         if ((self.A & 0xF) - (subtrahend & 0xF) - carry_bit) >= 0:
-            new_flags |= (1 << LR3590s.FLAG_H)
+            new_flags |= (1 << LR35902.FLAG_H)
 
         # Process borrow
         if ((self.A & 0xFF) - (subtrahend & 0xFF) - carry_bit) >= 0:
-            new_flags |= (1 << LR3590s.FLAG_C)
+            new_flags |= (1 << LR35902.FLAG_C)
 
         # Perform subtraction
         self.A = (self.A - subtrahend - carry_bit) & 0xFF
 
         # Process zero
         if self.A == 0:
-            new_flags |= (1 << LR3590s.FLAG_Z)
+            new_flags |= (1 << LR35902.FLAG_Z)
 
         # Set Flags
         self.F = new_flags
@@ -1435,25 +1435,25 @@ class LR35902:
 
         subtrahend = self.memory[self.PC + 1]
 
-        carry_bit = (self.F & (1 << LR3590s.FLAG_C)) >> LR3590s.FLAG_C
+        carry_bit = (self.F & (1 << LR35902.FLAG_C)) >> LR35902.FLAG_C
 
         # N is always set
-        new_flags = (1 << LR3590s.FLAG_N)
+        new_flags = (1 << LR35902.FLAG_N)
 
         # Process half borrow
         if ((self.A & 0xF) - (subtrahend & 0xF) - carry_bit) >= 0:
-            new_flags |= (1 << LR3590s.FLAG_H)
+            new_flags |= (1 << LR35902.FLAG_H)
 
         # Process borrow
         if ((self.A & 0xFF) - (subtrahend & 0xFF) - carry_bit) >= 0:
-            new_flags |= (1 << LR3590s.FLAG_C)
+            new_flags |= (1 << LR35902.FLAG_C)
 
         # Perform subtraction
         self.A = (self.A - subtrahend - carry_bit) & 0xFF
 
         # Process zero
         if self.A == 0:
-            new_flags |= (1 << LR3590s.FLAG_Z)
+            new_flags |= (1 << LR35902.FLAG_Z)
 
         # Set Flags
         self.F = new_flags
@@ -1482,14 +1482,14 @@ class LR35902:
             raise RuntimeError('Invalid register "{}" specified!'.format(reg))
 
         # H is always set
-        new_flags = (1 << LR3590s.FLAG_H)
+        new_flags = (1 << LR35902.FLAG_H)
 
         # Perform arithmetic
         self.A = (self.A & operand) & 0xFF
 
         # Process zero
         if self.A == 0:
-            new_flags |= (1 << LR3590s.FLAG_Z)
+            new_flags |= (1 << LR35902.FLAG_Z)
 
         # Set Flags
         self.F = new_flags
@@ -1504,14 +1504,14 @@ class LR35902:
         operand = self.memory[addr]
 
         # H is always set
-        new_flags = (1 << LR3590s.FLAG_H)
+        new_flags = (1 << LR35902.FLAG_H)
 
         # Perform arithmetic
         self.A = (self.A & operand) & 0xFF
 
         # Process zero
         if self.A == 0:
-            new_flags |= (1 << LR3590s.FLAG_Z)
+            new_flags |= (1 << LR35902.FLAG_Z)
 
         # Set Flags
         self.F = new_flags
@@ -1525,14 +1525,14 @@ class LR35902:
         operand = self.memory[self.PC + 1]
 
         # H is always set
-        new_flags = (1 << LR3590s.FLAG_H)
+        new_flags = (1 << LR35902.FLAG_H)
 
         # Perform arithmetic
         self.A = (self.A & operand) & 0xFF
 
         # Process zero
         if self.A == 0:
-            new_flags |= (1 << LR3590s.FLAG_Z)
+            new_flags |= (1 << LR35902.FLAG_Z)
 
         # Set Flags
         self.F = new_flags
@@ -1568,7 +1568,7 @@ class LR35902:
 
         # Process zero
         if self.A == 0:
-            new_flags |= (1 << LR3590s.FLAG_Z)
+            new_flags |= (1 << LR35902.FLAG_Z)
 
         # Set Flags
         self.F = new_flags
@@ -1590,7 +1590,7 @@ class LR35902:
 
         # Process zero
         if self.A == 0:
-            new_flags |= (1 << LR3590s.FLAG_Z)
+            new_flags |= (1 << LR35902.FLAG_Z)
 
         # Set Flags
         self.F = new_flags
@@ -1611,7 +1611,7 @@ class LR35902:
 
         # Process zero
         if self.A == 0:
-            new_flags |= (1 << LR3590s.FLAG_Z)
+            new_flags |= (1 << LR35902.FLAG_Z)
 
         # Set Flags
         self.F = new_flags
@@ -1647,7 +1647,7 @@ class LR35902:
 
         # Process zero
         if self.A == 0:
-            new_flags |= (1 << LR3590s.FLAG_Z)
+            new_flags |= (1 << LR35902.FLAG_Z)
 
         # Set Flags
         self.F = new_flags
@@ -1669,7 +1669,7 @@ class LR35902:
 
         # Process zero
         if self.A == 0:
-            new_flags |= (1 << LR3590s.FLAG_Z)
+            new_flags |= (1 << LR35902.FLAG_Z)
 
         # Set Flags
         self.F = new_flags
@@ -1690,7 +1690,7 @@ class LR35902:
 
         # Process zero
         if self.A == 0:
-            new_flags |= (1 << LR3590s.FLAG_Z)
+            new_flags |= (1 << LR35902.FLAG_Z)
 
         # Set Flags
         self.F = new_flags
@@ -1719,22 +1719,22 @@ class LR35902:
             raise RuntimeError('Invalid register "{}" specified!'.format(reg))
 
         # N is always set
-        new_flags = (1 << LR3590s.FLAG_N)
+        new_flags = (1 << LR35902.FLAG_N)
 
         # Process half borrow
         if ((self.A & 0xF) - (operand & 0xF)) >= 0:
-            new_flags |= (1 << LR3590s.FLAG_H)
+            new_flags |= (1 << LR35902.FLAG_H)
 
         # Process borrow
         if ((self.A & 0xFF) - (operand & 0xFF)) >= 0:
-            new_flags |= (1 << LR3590s.FLAG_C)
+            new_flags |= (1 << LR35902.FLAG_C)
 
         # Perform subtraction
         result = (self.A - operand) & 0xFF
 
         # Process zero
         if result == 0:
-            new_flags |= (1 << LR3590s.FLAG_Z)
+            new_flags |= (1 << LR35902.FLAG_Z)
 
         # Set Flags
         self.F = new_flags
@@ -1749,22 +1749,22 @@ class LR35902:
         operand = self.memory[addr]
 
         # N is always set
-        new_flags = (1 << LR3590s.FLAG_N)
+        new_flags = (1 << LR35902.FLAG_N)
 
         # Process half borrow
         if ((self.A & 0xF) - (operand & 0xF)) >= 0:
-            new_flags |= (1 << LR3590s.FLAG_H)
+            new_flags |= (1 << LR35902.FLAG_H)
 
         # Process borrow
         if ((self.A & 0xFF) - (operand & 0xFF)) >= 0:
-            new_flags |= (1 << LR3590s.FLAG_C)
+            new_flags |= (1 << LR35902.FLAG_C)
 
         # Perform subtraction
         result = (self.A - operand) & 0xFF
 
         # Process zero
         if result == 0:
-            new_flags |= (1 << LR3590s.FLAG_Z)
+            new_flags |= (1 << LR35902.FLAG_Z)
 
         # Set Flags
         self.F = new_flags
@@ -1778,22 +1778,22 @@ class LR35902:
         operand = self.memory[self.PC + 1]
 
         # N is always set
-        new_flags = (1 << LR3590s.FLAG_N)
+        new_flags = (1 << LR35902.FLAG_N)
 
         # Process half borrow
         if ((self.A & 0xF) - (operand & 0xF)) >= 0:
-            new_flags |= (1 << LR3590s.FLAG_H)
+            new_flags |= (1 << LR35902.FLAG_H)
 
         # Process borrow
         if ((self.A & 0xFF) - (operand & 0xFF)) >= 0:
-            new_flags |= (1 << LR3590s.FLAG_C)
+            new_flags |= (1 << LR35902.FLAG_C)
 
         # Perform subtraction
         result = (self.A - operand) & 0xFF
 
         # Process zero
         if result == 0:
-            new_flags |= (1 << LR3590s.FLAG_Z)
+            new_flags |= (1 << LR35902.FLAG_Z)
 
         # Set Flags
         self.F = new_flags
@@ -1826,7 +1826,7 @@ class LR35902:
 
         # Process half carry
         if ((getattr(self, reg_attr) & 0xF) + 1) & 0x10:
-            new_flags |= (1 << LR3590s.FLAG_H)
+            new_flags |= (1 << LR35902.FLAG_H)
 
         # Perform increment
         setattr(
@@ -1837,7 +1837,7 @@ class LR35902:
 
         # Process zero
         if getattr(self, reg_attr) == 0:
-            new_flags |= (1 << LR3590s.FLAG_Z)
+            new_flags |= (1 << LR35902.FLAG_Z)
 
         # Set Flags
         self.F = new_flags
@@ -1851,18 +1851,18 @@ class LR35902:
         addr = (self.H << 8) | self.L
 
         # Keep C flag
-        new_flags = 0 | (self.F & (1 << LR3590s.FLAG_C))
+        new_flags = 0 | (self.F & (1 << LR35902.FLAG_C))
 
         # Process half carry
         if ((self.memory[addr] & 0xF) + 1) & 0x10:
-            new_flags |= (1 << LR3590s.FLAG_H)
+            new_flags |= (1 << LR35902.FLAG_H)
 
         # Perform addition
         self.memory[addr] = (self.memory[addr] + 1) & 0xFF
 
         # Process zero
         if self.memory[addr] == 0:
-            new_flags |= (1 << LR3590s.FLAG_Z)
+            new_flags |= (1 << LR35902.FLAG_Z)
 
         # Set Flags
         self.F = new_flags
@@ -1893,11 +1893,11 @@ class LR35902:
         # TODO: Set N Flag
 
         # Keep C flag
-        new_flags = 0 | (self.F & (1 << LR3590s.FLAG_C))
+        new_flags = 0 | (self.F & (1 << LR35902.FLAG_C))
 
         # Process half carry
         if getattr(self, reg_attr) & 0xF == 0:
-            new_flags |= (1 << LR3590s.FLAG_H)
+            new_flags |= (1 << LR35902.FLAG_H)
 
         # Perform decrement
         setattr(
@@ -1908,7 +1908,7 @@ class LR35902:
 
         # Process zero
         if getattr(self, reg_attr) == 0:
-            new_flags |= (1 << LR3590s.FLAG_Z)
+            new_flags |= (1 << LR35902.FLAG_Z)
 
         # Set Flags
         self.F = new_flags
@@ -1922,18 +1922,18 @@ class LR35902:
         addr = (self.H << 8) | self.L
 
         # Keep C flag
-        new_flags = 0 | (self.F & (1 << LR3590s.FLAG_C))
+        new_flags = 0 | (self.F & (1 << LR35902.FLAG_C))
 
         # Process half carry
         if self.memory[addr] & 0xF == 0:
-            new_flags |= (1 << LR3590s.FLAG_H)
+            new_flags |= (1 << LR35902.FLAG_H)
 
         # Perform decrement
         self.memory[addr] = (self.memory[addr] - 1) & 0xFF
 
         # Process zero
         if self.memory[addr] == 0:
-            new_flags |= (1 << LR3590s.FLAG_Z)
+            new_flags |= (1 << LR35902.FLAG_Z)
 
         # Set Flags
         self.F = new_flags
@@ -1958,7 +1958,7 @@ class LR35902:
         else:
             raise RuntimeError('Invalid register "{}" specified!'.format(reg))
 
-        hv_val += val
+        hl_val += val
 
         self.H = ((hl_val & 0xFF00) >> 8) & 0xFF
         self.L = hl_val & 0xFF
@@ -2838,3 +2838,115 @@ class LR35902:
             value = self.memory[self.PC + 1]
             self.PC += value - 1 # TODO: Hacky
             self.wait += 1 # TODO: Hacky
+
+    def call_nn(self):
+        """GBCPUman.pdf page 114
+        Opcode 0xCD
+        Push next instruction address on to stack and jump to two-byte immediate
+        address.
+        """
+        # Save program counter to stack
+        self.memory[self.SP] = ((self.PC + 1) >> 8) & 0xFF
+        self.memory[self.SP - 1] = (self.PC + 1) & 0xFF
+        self.SP -= 2
+
+        # Jump to 16-bit immediate value
+        addr = (self.memory[self.PC + 2] << 8) | self.memory[self.PC + 1]
+        self.PC = addr - 1 # TODO: Hacky
+
+    def call_cc_nn(self, condition):
+        """GBCPUman.pdf page 114
+        Opcode 0xC4, 0xCC, 0xD4, 0xDC
+        Push next instruction address on to stack and jump to two-byte immediate
+        address, if condition is met
+        """
+        if condition == LR35902.CONDITION_NZ:
+            test = not (self.F & (1 << LR35902.FLAG_Z))
+        elif condition == LR35902.CONDITION_Z:
+            test = self.F & (1 << LR35902.FLAG_Z)
+        elif condition == LR35902.CONDITION_NC:
+            test = not (self.F & (1 << LR35902.FLAG_C))
+        elif condition == LR35902.CONDITION_C:
+            test = self.F & (1 << LR35902.FLAG_C)
+        else:
+            raise RuntimeError('Invalid condition "{}" specified!'.format(condition))
+
+        if test:
+            # Save program counter to stack
+            self.memory[self.SP] = ((self.PC + 1) >> 8) & 0xFF
+            self.memory[self.SP - 1] = (self.PC + 1) & 0xFF
+            self.SP -= 2
+
+            # Jump to 16-bit immediate value
+            addr = (self.memory[self.PC + 2] << 8) | self.memory[self.PC + 1]
+            self.PC = addr - 1 # TODO: Hacky
+
+            self.wait += 3 # TODO: Hacky
+
+    def rst(self, offset=None):
+        """GBCPUman.pdf page 116
+        Opcode 0xC7, 0xCF, 0xD7, 0xDF, 0xE7, 0xEF, 0xF7, 0xFF
+        Push present instruction address on to stack and jump to relative offset
+        address from 0x0000.
+        """
+        # Save program counter to stack
+        self.memory[self.SP] = (self.PC >> 8) & 0xFF
+        self.memory[self.SP - 1] = self.PC & 0xFF
+        self.SP -= 2
+
+        # Jump to address
+        self.PC = offset
+
+    def ret(self):
+        """GBCPUman.pdf page 117
+        Opcode 0xC9
+        Pop two bytes off the stack and jump to the address.
+        """
+        self.SP += 2
+        self.PC = (
+            ((self.memory[self.SP] << 8) & 0xFF00) |
+            (self.memory[self.SP - 1] & 0xFF)
+        )
+
+    def ret_cc(self, condition=None):
+        """GBCPUman.pdf page 117
+        Opcode 0xC0, 0xC8, 0xD0, 0xD8
+        Pop two bytes off the stack and jump to the address, if condition is
+        met.
+        """
+        if condition == LR35902.CONDITION_NZ:
+            test = not (self.F & (1 << LR35902.FLAG_Z))
+        elif condition == LR35902.CONDITION_Z:
+            test = self.F & (1 << LR35902.FLAG_Z)
+        elif condition == LR35902.CONDITION_NC:
+            test = not (self.F & (1 << LR35902.FLAG_C))
+        elif condition == LR35902.CONDITION_C:
+            test = self.F & (1 << LR35902.FLAG_C)
+        else:
+            raise RuntimeError('Invalid condition "{}" specified!'.format(condition))
+
+        if test:
+            self.SP += 2
+            self.PC = (
+                ((self.memory[self.SP] << 8) & 0xFF00) |
+                (self.memory[self.SP - 1] & 0xFF)
+            )
+
+            self.wait += 3
+
+    def reti(self):
+        """GBCPUman.pdf page 117
+        Opcode 0xD9
+        Pop two bytes off the stack and jump to the address and then enable
+        interrupts.
+        """
+        self.SP += 2
+        self.PC = (
+            ((self.memory[self.SP] << 8) & 0xFF00) |
+            (self.memory[self.SP - 1] & 0xFF)
+        )
+
+        self.interrupts = {
+            "enabled": True,
+            "change_in": 0
+        }
