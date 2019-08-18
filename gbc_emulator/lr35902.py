@@ -1030,6 +1030,7 @@ class LR35902:
         Decrement SP twice.
         TODO: Keeping lower byte at lower address. Verify this is correct.
         """
+        self.SP -= 2
 
         if reg == LR35902.REGISTER_BC:
             self.memory[self.SP] = self.B
@@ -1045,8 +1046,6 @@ class LR35902:
             self.memory[self.SP - 1] = self.F
         else:
             raise RuntimeError('Invalid register "{}" specified!'.format(reg))
-
-        self.SP -= 2
 
     def pop_nn(self, reg=None):
         """GBCPUman.pdf page 79
@@ -2859,9 +2858,12 @@ class LR35902:
         value = self.memory[self.PC + 1]
 
         if value & 0x80:
-            value = (~value + 1) & 0xFF - 2
+            value = (0x100 - value) & 0xFFFF
+            self.PC = (self.PC - value + 2) & 0xFFFF
+        else:
+            value = (value + 2) & 0xFFFF
+            self.PC += value
 
-        self.PC += value
         return LR35902.JUMPED
 
     def jr_cc_n(self, condition=None):
@@ -2884,9 +2886,12 @@ class LR35902:
             value = self.memory[self.PC + 1]
 
             if value & 0x80:
-                value = -(((~value) - 1) & 0xFF)
+                value = (0x100 - value) & 0xFFFF
+                self.PC = (self.PC - value + 2) & 0xFFFF
+            else:
+                value = (value + 2) & 0xFFFF
+                self.PC += value
 
-            self.PC += value
             self.wait += 1 # TODO: Hacky
             return LR35902.JUMPED
 
