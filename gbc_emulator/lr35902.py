@@ -32,6 +32,9 @@ class LR35902:
     CONDITION_Z = 2
     CONDITION_NZ = 3
 
+    JUMPED = True
+    BREAKPOINT_HIT = True
+
     class State(Enum):
         RUNNING = 0,
         HALTED = 1,
@@ -41,6 +44,9 @@ class LR35902:
 
     def __init__(self, memory):
         self.memory = memory
+
+        self.verbose = False
+        self.debugger = None
 
         # 8-bit registers
         self.A = 0x00 # Accumulator
@@ -598,16 +604,7 @@ class LR35902:
         else:
             self.F &= ~(1 << flag)
 
-    def clock(self):
-        # Idle if necessary
-        if self.wait > 0:
-            self.wait -= 1
-            return
-
-        # Do nothing if CPU is not running
-        if not self.state == LR35902.State.RUNNING:
-            return
-
+    def fetch_and_decode(self):
         # Fetch
         opcode = self.memory[self.PC]
 
@@ -618,10 +615,49 @@ class LR35902:
             cb_opcode = self.memory[self.PC + 1]
             instruction = self.cb_instructions[cb_opcode]
 
+        return instruction, opcode
+
+    def clock(self):
+        # Idle if necessary
+        if self.wait > 0:
+            self.wait -= 1
+            return
+
+        # Do nothing if CPU is not running
+        if not self.state == LR35902.State.RUNNING:
+            return
+
+        instruction, opcode = self.fetch_and_decode()
+
+        # Report
+        if self.verbose:
+            report = "Instruction: {}; Opcode: {}".format(instruction.mnemonic, hex(opcode))
+            if instruction.length_in_bytes == 2:
+                report += "; Operand: {}".format(hex(self.memory[self.PC + 1]))
+            elif instruction.length_in_bytes == 3:
+                val = self.memory[self.PC + 1] | (self.memory[self.PC + 2] << 8)
+                report += "; Operand: {}".format(hex(val))
+            print(report)
+
+            print("PC: {}".format(hex(self.PC)))
+            print("SP: {}".format(hex(self.SP)))
+            print("A: {}".format(hex(self.A)))
+            print("B: {}".format(hex(self.B)))
+            print("C: {}".format(hex(self.C)))
+            print("D: {}".format(hex(self.D)))
+            print("E: {}".format(hex(self.E)))
+            print("F: {}".format(hex(self.F)))
+            print("H: {}".format(hex(self.H)))
+            print("L: {}".format(hex(self.L)))
+
         # Execute
-        instruction.function(self)
-        self.PC += instruction.length_in_bytes
+        action = instruction.function(self)
         self.wait = (instruction.duration_in_cycles / 4) - 1
+        if action != LR35902.JUMPED:
+            self.PC += instruction.length_in_bytes
+
+        if self.PC in self.debugger.breakpoints:
+            return LR35902.BREAKPOINT_HIT
 
         # Interrupt change
         if self.interrupts["change_in"] > 0:
@@ -949,8 +985,7 @@ class LR35902:
             self.H = val_h
             self.L = val_l
         elif reg == LR35902.REGISTER_SP:
-            self.S = val_h
-            self.P = val_l
+            self.SP = (val_h << 8) | val_l
         else:
             raise RuntimeError('Invalid register "{}" specified!'.format(reg))
 
@@ -1020,9 +1055,6 @@ class LR35902:
         Increment SP twice.
         TODO: Keeping lower byte at lower address. Verify this is correct.
         """
-
-        self.SP += 2
-
         if reg == LR35902.REGISTER_BC:
             self.B = self.memory[self.SP]
             self.C = self.memory[self.SP - 1]
@@ -1037,6 +1069,8 @@ class LR35902:
             self.F = self.memory[self.SP - 1]
         else:
             raise RuntimeError('Invalid register "{}" specified!'.format(reg))
+
+        self.SP += 2
 
     # 8-bit arithmetic
     def add_a_n_register(self, reg=None):
@@ -1890,10 +1924,11 @@ class LR35902:
         else:
             raise RuntimeError('Invalid register "{}" specified!'.format(reg))
 
-        # TODO: Set N Flag
-
         # Keep C flag
         new_flags = 0 | (self.F & (1 << LR35902.FLAG_C))
+
+        # Set N Flag
+        new_flags |= (1 << LR35902.FLAG_N)
 
         # Process half carry
         if getattr(self, reg_attr) & 0xF == 0:
@@ -1923,6 +1958,9 @@ class LR35902:
 
         # Keep C flag
         new_flags = 0 | (self.F & (1 << LR35902.FLAG_C))
+
+        # Set N Flag
+        new_flags |= (1 << LR35902.FLAG_N)
 
         # Process half carry
         if self.memory[addr] & 0xF == 0:
@@ -2779,7 +2817,8 @@ class LR35902:
         """
         addr = (self.memory[self.PC + 2] << 8) | self.memory[self.PC + 1]
 
-        self.PC = addr - 1 # TODO: Hacky
+        self.PC = addr
+        return LR35902.JUMPED
 
     def jp_cc_nn(self, condition=None):
         """GBCPUman.pdf page 111
@@ -2787,20 +2826,21 @@ class LR35902:
         Jump to two byte immediate value if condition is met.
         """
         if condition == LR35902.CONDITION_NZ:
-            test = not (self.F & (1 << LR35902.FLAG_Z))
-        elif condition == LR35902.CONDITION_Z:
             test = self.F & (1 << LR35902.FLAG_Z)
+        elif condition == LR35902.CONDITION_Z:
+            test = not (self.F & (1 << LR35902.FLAG_Z))
         elif condition == LR35902.CONDITION_NC:
-            test = not (self.F & (1 << LR35902.FLAG_C))
-        elif condition == LR35902.CONDITION_C:
             test = self.F & (1 << LR35902.FLAG_C)
+        elif condition == LR35902.CONDITION_C:
+            test = not (self.F & (1 << LR35902.FLAG_C))
         else:
             raise RuntimeError('Invalid condition "{}" specified!'.format(condition))
 
         if test:
             addr = (self.memory[self.PC + 2] << 8) | self.memory[self.PC + 1]
-            self.PC = addr - 1 # TODO: Hacky
-            self.wait += 1 # TODO: Hacky
+            self.PC = addr
+            self.wait += 1
+            return LR35902.JUMPED
 
     def jp_memory(self):
         """GBCPUman.pdf page 112
@@ -2808,7 +2848,8 @@ class LR35902:
         Jump to address contained in HL
         """
         addr = (self.H << 8) | self.L
-        self.PC = addr - 1 # TODO: Hacky
+        self.PC = addr
+        return LR35902.JUMPED
 
     def jr_n(self):
         """GBCPUman.pdf page 112
@@ -2816,10 +2857,15 @@ class LR35902:
         Add 8-bit immediate value to PC and jump to it.
         """
         value = self.memory[self.PC + 1]
-        self.PC += value - 1 # TODO: Hacky
+
+        if value & 0x80:
+            value = (~value + 1) & 0xFF - 2
+
+        self.PC += value
+        return LR35902.JUMPED
 
     def jr_cc_n(self, condition=None):
-        """GBCPUman.pdf page 112
+        """GBCPUman.pdf page 113
         Opcode 0x20, 0x28, 0x30, 0x38
         Add 8-bit immediate value to PC and jump to it if condition is met.
         """
@@ -2836,8 +2882,13 @@ class LR35902:
 
         if test:
             value = self.memory[self.PC + 1]
-            self.PC += value - 1 # TODO: Hacky
+
+            if value & 0x80:
+                value = -(((~value) - 1) & 0xFF)
+
+            self.PC += value
             self.wait += 1 # TODO: Hacky
+            return LR35902.JUMPED
 
     def call_nn(self):
         """GBCPUman.pdf page 114
@@ -2846,13 +2897,14 @@ class LR35902:
         address.
         """
         # Save program counter to stack
-        self.memory[self.SP] = ((self.PC + 1) >> 8) & 0xFF
-        self.memory[self.SP - 1] = (self.PC + 1) & 0xFF
         self.SP -= 2
+        self.memory[self.SP] = ((self.PC + 3) >> 8) & 0xFF
+        self.memory[self.SP - 1] = (self.PC + 3) & 0xFF
 
         # Jump to 16-bit immediate value
         addr = (self.memory[self.PC + 2] << 8) | self.memory[self.PC + 1]
-        self.PC = addr - 1 # TODO: Hacky
+        self.PC = addr
+        return LR35902.JUMPED
 
     def call_cc_nn(self, condition):
         """GBCPUman.pdf page 114
@@ -2873,15 +2925,16 @@ class LR35902:
 
         if test:
             # Save program counter to stack
-            self.memory[self.SP] = ((self.PC + 1) >> 8) & 0xFF
-            self.memory[self.SP - 1] = (self.PC + 1) & 0xFF
             self.SP -= 2
+            self.memory[self.SP] = ((self.PC + 3) >> 8) & 0xFF
+            self.memory[self.SP - 1] = (self.PC + 3) & 0xFF
 
             # Jump to 16-bit immediate value
             addr = (self.memory[self.PC + 2] << 8) | self.memory[self.PC + 1]
-            self.PC = addr - 1 # TODO: Hacky
+            self.PC = addr
 
             self.wait += 3 # TODO: Hacky
+            return LR35902.JUMPED
 
     def rst(self, offset=None):
         """GBCPUman.pdf page 116
@@ -2890,23 +2943,25 @@ class LR35902:
         address from 0x0000.
         """
         # Save program counter to stack
+        self.SP -= 2
         self.memory[self.SP] = (self.PC >> 8) & 0xFF
         self.memory[self.SP - 1] = self.PC & 0xFF
-        self.SP -= 2
 
         # Jump to address
-        self.PC = offset
+        self.PC += offset
+        return LR35902.JUMPED
 
     def ret(self):
         """GBCPUman.pdf page 117
         Opcode 0xC9
         Pop two bytes off the stack and jump to the address.
         """
-        self.SP += 2
         self.PC = (
             ((self.memory[self.SP] << 8) & 0xFF00) |
             (self.memory[self.SP - 1] & 0xFF)
         )
+        self.SP += 2
+        return LR35902.JUMPED
 
     def ret_cc(self, condition=None):
         """GBCPUman.pdf page 117
@@ -2926,13 +2981,14 @@ class LR35902:
             raise RuntimeError('Invalid condition "{}" specified!'.format(condition))
 
         if test:
-            self.SP += 2
             self.PC = (
                 ((self.memory[self.SP] << 8) & 0xFF00) |
                 (self.memory[self.SP - 1] & 0xFF)
             )
+            self.SP += 2
 
             self.wait += 3
+            return LR35902.JUMPED
 
     def reti(self):
         """GBCPUman.pdf page 117
@@ -2940,13 +2996,15 @@ class LR35902:
         Pop two bytes off the stack and jump to the address and then enable
         interrupts.
         """
-        self.SP += 2
         self.PC = (
             ((self.memory[self.SP] << 8) & 0xFF00) |
             (self.memory[self.SP - 1] & 0xFF)
         )
+        self.SP += 2
 
         self.interrupts = {
             "enabled": True,
             "change_in": 0
         }
+
+        return LR35902.JUMPED
