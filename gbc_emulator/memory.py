@@ -31,7 +31,7 @@ class Memory:
                 self.bootloader_enabled = False
         elif index == 0xFF02:
             if value == 0x81:
-                print(self.physical_memory[0xFF01])
+                print(str(chr(self.physical_memory[0xFF01])))
         else:
             if self.verbose:
                 print("memory[{}] = {} ({})".format(hex(index), hex(value), str(chr(value))))
