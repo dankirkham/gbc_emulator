@@ -185,7 +185,7 @@ class LR35902:
             LR35902.Instruction(function=lambda s: s.ld_r1_r2_between_registers(src=LR35902.REGISTER_H, dst=LR35902.REGISTER_L), length_in_bytes=1, duration_in_cycles=4, mnemonic='LD L,H'), # 0x6C
             LR35902.Instruction(function=lambda s: s.ld_r1_r2_between_registers(src=LR35902.REGISTER_L, dst=LR35902.REGISTER_L), length_in_bytes=1, duration_in_cycles=4, mnemonic='LD L,L'), # 0x6D
             LR35902.Instruction(function=lambda s: s.ld_r1_r2_from_memory(src=LR35902.REGISTER_HL, dst=LR35902.REGISTER_L), length_in_bytes=1, duration_in_cycles=8, mnemonic='LD L,(HL)'), # 0x6E
-            LR35902.Instruction(function=lambda s: s.ld_n_a(LR35902.REGISTER_H), length_in_bytes=1, duration_in_cycles=4, mnemonic='LD H,A'), # 0x6F
+            LR35902.Instruction(function=lambda s: s.ld_n_a(LR35902.REGISTER_L), length_in_bytes=1, duration_in_cycles=4, mnemonic='LD L,A'), # 0x6F
             LR35902.Instruction(function=lambda s: s.ld_r1_r2_to_memory(src=LR35902.REGISTER_B, dst=LR35902.REGISTER_HL), length_in_bytes=1, duration_in_cycles=8, mnemonic='LD (HL),B'), # 0x70
             LR35902.Instruction(function=lambda s: s.ld_r1_r2_to_memory(src=LR35902.REGISTER_C, dst=LR35902.REGISTER_HL), length_in_bytes=1, duration_in_cycles=8, mnemonic='LD (HL),C'), # 0x71
             LR35902.Instruction(function=lambda s: s.ld_r1_r2_to_memory(src=LR35902.REGISTER_D, dst=LR35902.REGISTER_HL), length_in_bytes=1, duration_in_cycles=8, mnemonic='LD (HL),D'), # 0x72
@@ -1007,7 +1007,7 @@ class LR35902:
         result = self.SP + n
 
         self.H = (result >> 8) & 0xFF
-        Self.L = result & 0xFF
+        self.L = result & 0xFF
 
         # TODO: Set C and H flags correctly.
         # https://stackoverflow.com/a/7261149
@@ -1021,7 +1021,7 @@ class LR35902:
         nn is two bytes."""
         nn = (self.memory[self.PC + 2] << 8) | self.memory[self.PC + 1]
         self.memory[nn] = self.SP & 0xFF
-        self.memory[nn] = (self.SP >> 8) & 0xFF
+        self.memory[nn + 1] = (self.SP >> 8) & 0xFF
 
     def push_nn(self, reg=None):
         """GBCPUman.pdf page 78
