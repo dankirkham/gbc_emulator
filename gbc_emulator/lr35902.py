@@ -656,7 +656,7 @@ class LR35902:
         if action != LR35902.JUMPED:
             self.PC += instruction.length_in_bytes
 
-        if self.PC in self.debugger.breakpoints:
+        if self.debugger and self.PC in self.debugger.breakpoints:
             return LR35902.BREAKPOINT_HIT
 
         # Interrupt change
