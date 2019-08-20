@@ -18,13 +18,13 @@ with open(args.rom, "rb") as f:
         ptr += 1
         byte = f.read(1)
 
-memory.verbose = True
+# memory.verbose = True
 
 cpu = LR35902(memory)
 # cpu.verbose = True
 cpu.PC = 0x100
 cpu.SP = 0xFFFE
-cpu.A = 0x11
+# cpu.A = 0x11 # GBC
 cpu.F = 0x80
 cpu.D = 0xFF
 cpu.E = 0x56
