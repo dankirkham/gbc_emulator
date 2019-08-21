@@ -1033,17 +1033,17 @@ class LR35902:
         self.SP -= 2
 
         if reg == LR35902.REGISTER_BC:
-            self.memory[self.SP] = self.B
-            self.memory[self.SP - 1] = self.C
+            self.memory[self.SP + 1] = self.B
+            self.memory[self.SP] = self.C
         elif reg == LR35902.REGISTER_DE:
-            self.memory[self.SP] = self.D
-            self.memory[self.SP - 1] = self.E
+            self.memory[self.SP + 1] = self.D
+            self.memory[self.SP] = self.E
         elif reg == LR35902.REGISTER_HL:
-            self.memory[self.SP] = self.H
-            self.memory[self.SP - 1] = self.L
+            self.memory[self.SP + 1] = self.H
+            self.memory[self.SP] = self.L
         elif reg == LR35902.REGISTER_AF:
-            self.memory[self.SP] = self.A
-            self.memory[self.SP - 1] = self.F
+            self.memory[self.SP + 1] = self.A
+            self.memory[self.SP] = self.F
         else:
             raise RuntimeError('Invalid register "{}" specified!'.format(reg))
 
@@ -1055,17 +1055,17 @@ class LR35902:
         TODO: Keeping lower byte at lower address. Verify this is correct.
         """
         if reg == LR35902.REGISTER_BC:
-            self.B = self.memory[self.SP]
-            self.C = self.memory[self.SP - 1]
+            self.B = self.memory[self.SP + 1]
+            self.C = self.memory[self.SP]
         elif reg == LR35902.REGISTER_DE:
-            self.D = self.memory[self.SP]
-            self.E = self.memory[self.SP - 1]
+            self.D = self.memory[self.SP + 1]
+            self.E = self.memory[self.SP]
         elif reg == LR35902.REGISTER_HL:
-            self.H = self.memory[self.SP]
-            self.L = self.memory[self.SP - 1]
+            self.H = self.memory[self.SP + 1]
+            self.L = self.memory[self.SP]
         elif reg == LR35902.REGISTER_AF:
-            self.A = self.memory[self.SP]
-            self.F = self.memory[self.SP - 1]
+            self.A = self.memory[self.SP + 1]
+            self.F = self.memory[self.SP]
         else:
             raise RuntimeError('Invalid register "{}" specified!'.format(reg))
 
@@ -2825,13 +2825,13 @@ class LR35902:
         Jump to two byte immediate value if condition is met.
         """
         if condition == LR35902.CONDITION_NZ:
-            test = self.F & (1 << LR35902.FLAG_Z)
-        elif condition == LR35902.CONDITION_Z:
             test = not (self.F & (1 << LR35902.FLAG_Z))
+        elif condition == LR35902.CONDITION_Z:
+            test = self.F & (1 << LR35902.FLAG_Z)
         elif condition == LR35902.CONDITION_NC:
-            test = self.F & (1 << LR35902.FLAG_C)
-        elif condition == LR35902.CONDITION_C:
             test = not (self.F & (1 << LR35902.FLAG_C))
+        elif condition == LR35902.CONDITION_C:
+            test = self.F & (1 << LR35902.FLAG_C)
         else:
             raise RuntimeError('Invalid condition "{}" specified!'.format(condition))
 
@@ -2903,8 +2903,8 @@ class LR35902:
         """
         # Save program counter to stack
         self.SP -= 2
-        self.memory[self.SP] = ((self.PC + 3) >> 8) & 0xFF
-        self.memory[self.SP - 1] = (self.PC + 3) & 0xFF
+        self.memory[self.SP + 1] = ((self.PC + 3) >> 8) & 0xFF
+        self.memory[self.SP] = (self.PC + 3) & 0xFF
 
         # Jump to 16-bit immediate value
         addr = (self.memory[self.PC + 2] << 8) | self.memory[self.PC + 1]
@@ -2931,8 +2931,8 @@ class LR35902:
         if test:
             # Save program counter to stack
             self.SP -= 2
-            self.memory[self.SP] = ((self.PC + 3) >> 8) & 0xFF
-            self.memory[self.SP - 1] = (self.PC + 3) & 0xFF
+            self.memory[self.SP + 1] = ((self.PC + 3) >> 8) & 0xFF
+            self.memory[self.SP] = (self.PC + 3) & 0xFF
 
             # Jump to 16-bit immediate value
             addr = (self.memory[self.PC + 2] << 8) | self.memory[self.PC + 1]
@@ -2949,8 +2949,8 @@ class LR35902:
         """
         # Save program counter to stack
         self.SP -= 2
-        self.memory[self.SP] = (self.PC >> 8) & 0xFF
-        self.memory[self.SP - 1] = self.PC & 0xFF
+        self.memory[self.SP + 1] = (self.PC >> 8) & 0xFF
+        self.memory[self.SP] = self.PC & 0xFF
 
         # Jump to address
         self.PC += offset
@@ -2962,8 +2962,8 @@ class LR35902:
         Pop two bytes off the stack and jump to the address.
         """
         self.PC = (
-            ((self.memory[self.SP] << 8) & 0xFF00) |
-            (self.memory[self.SP - 1] & 0xFF)
+            ((self.memory[self.SP + 1] << 8) & 0xFF00) |
+            (self.memory[self.SP] & 0xFF)
         )
         self.SP += 2
         return LR35902.JUMPED
@@ -2987,8 +2987,8 @@ class LR35902:
 
         if test:
             self.PC = (
-                ((self.memory[self.SP] << 8) & 0xFF00) |
-                (self.memory[self.SP - 1] & 0xFF)
+                ((self.memory[self.SP + 1] << 8) & 0xFF00) |
+                (self.memory[self.SP] & 0xFF)
             )
             self.SP += 2
 
@@ -3002,8 +3002,8 @@ class LR35902:
         interrupts.
         """
         self.PC = (
-            ((self.memory[self.SP] << 8) & 0xFF00) |
-            (self.memory[self.SP - 1] & 0xFF)
+            ((self.memory[self.SP + 1] << 8) & 0xFF00) |
+            (self.memory[self.SP] & 0xFF)
         )
         self.SP += 2
 
