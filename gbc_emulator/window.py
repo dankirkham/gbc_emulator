@@ -1,4 +1,3 @@
-import sys
 import pygame
 import pygame.freetype
 from time import time
@@ -126,7 +125,7 @@ def render_immediate(ctx, x, y, width=100, depth=9):
 
     return y
 
-def do_window(cpu, scale=4, info_width=200):
+def do_window(cpu, done, scale=4, info_width=200):
     pygame.init()
 
     size = SCREEN_WIDTH, SCREEN_HEIGHT = GAMEBOY_PIXELS_X * scale + info_width, GAMEBOY_PIXELS_Y * scale
@@ -155,7 +154,7 @@ def do_window(cpu, scale=4, info_width=200):
     while 1:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
-                sys.exit()
+                done()
 
         now = time()
         if now >= (last_time + FRAME_PERIOD):
@@ -177,5 +176,3 @@ def do_window(cpu, scale=4, info_width=200):
             last_y = render_immediate(ctx, SCREEN_WIDTH - info_width, last_y, info_width)
 
             pygame.display.flip()
-
-            cpu.clock()

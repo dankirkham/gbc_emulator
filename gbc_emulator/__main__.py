@@ -5,6 +5,8 @@ from gbc_emulator.memory import Memory
 from gbc_emulator.debugger import Debugger
 from gbc_emulator.window import do_window
 import argparse
+import threading
+import sys
 
 parser = argparse.ArgumentParser()
 parser.add_argument('rom')
@@ -35,7 +37,14 @@ cpu.L = 0x0D
 
 debugger = Debugger(cpu)
 
-debugger.cmdloop()
+def done():
+    debugger.stop()
+    sys.exit()
+
+debugger_thread = threading.Thread(target=debugger.cmdloop)
+debugger_thread.start()
+
+do_window(cpu, done)
 
 # while True:
 #     cpu.clock()
@@ -44,5 +53,3 @@ debugger.cmdloop()
 # for byte in memory:
 #     f.write(bytes(byte))
 # f.close()
-
-# do_window(cpu)
