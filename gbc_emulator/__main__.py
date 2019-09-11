@@ -1,6 +1,9 @@
+#!/usr/bin/env python
+
 from gbc_emulator.lr35902 import LR35902
 from gbc_emulator.memory import Memory
 from gbc_emulator.debugger import Debugger
+from gbc_emulator.window import do_window
 import argparse
 
 parser = argparse.ArgumentParser()
@@ -41,3 +44,5 @@ debugger.cmdloop()
 # for byte in memory:
 #     f.write(bytes(byte))
 # f.close()
+
+# do_window(cpu)

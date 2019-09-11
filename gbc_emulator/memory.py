@@ -1,3 +1,20 @@
+class GuiMemory:
+    """Provides read only access to the GUI. Reading the memory from the GUI
+    should not effect the memories last_addr property. This property is used
+    by the gui to determine the immediate memory address for rendering."""
+    def __init__(self, memory):
+        self.memory = memory
+
+    def __setitem__(self, index, value):
+        pass
+
+    def __getitem__(self, index):
+        return self.memory.__getitem__(index, from_gui=True)
+
+    @property
+    def last_addr(self):
+        return self.memory.last_addr
+
 class Memory:
     BOOTLOADER = (
         0x31, 0xfe, 0xff, 0xaf, 0x21, 0xff, 0x9f, 0x32, 0xcb, 0x7c, 0x20, 0xfb, 0x21, 0x26, 0xff, 0x0e,
@@ -25,19 +42,31 @@ class Memory:
         self.bootloader_enabled = True
         self.verbose = False
 
+        # Last addr is used to mark the immediate value for rendering on the
+        # GUI.
+        self.last_addr = 0
+
+        self.gui_memory = GuiMemory(self)
+
     def __setitem__(self, index, value):
+        self.last_addr = index
+
         if index == Memory.REGISTER_BOOTLOADER:
             if value != 0:
                 self.bootloader_enabled = False
         elif index == 0xFF02:
             if value == 0x81:
-                print(str(chr(self.physical_memory[0xFF01])))
+                print(str(chr(self.physical_memory[0xFF01])), end = '')
         else:
             if self.verbose:
                 print("memory[{}] = {} ({})".format(hex(index), hex(value), str(chr(value))))
             self.physical_memory[index] = value
 
-    def __getitem__(self, index):
+    def __getitem__(self, index, from_gui=False):
+        if not from_gui:
+            # GUI should not mess with last_addr
+            self.last_addr = index
+
         if index <= 0xFF and self.bootloader_enabled:
             return Memory.BOOTLOADER[index]
         else:
