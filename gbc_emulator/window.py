@@ -24,6 +24,41 @@ def render_title(ctx, title, x, y, width=100):
     ctx['screen'].blit(title, (x + (width / 2) - (title_rect.width / 2), y))
     return y + title_rect.height + ctx['padding']
 
+def render_tiledata(ctx, tiledata_x, tiledata_y):
+    COLUMNS, ROWS = 16, 24
+    ADDR_TILE_DATA = 0x8000 # TODO: Refer to map
+
+    bg_color_map = [
+        GAMEBOY_COLORS['lightest_green'], # 00b
+        GAMEBOY_COLORS['light_green'], # 01b
+        GAMEBOY_COLORS['dark_green'], # 10b
+        GAMEBOY_COLORS['darkest_green'], # 11b
+    ]
+
+    tiledata_y = render_title(ctx, "Tile Data", tiledata_x, tiledata_y, width=COLUMNS * 8)
+
+    tiledata = pygame.Surface((COLUMNS * 8, ROWS * 8))
+
+    for tile in range(COLUMNS * ROWS):
+        start_addr = ADDR_TILE_DATA + (tile * 16) # 16 bytes per tile
+
+        x, y = (tile % COLUMNS) * 8, int(tile / COLUMNS) * 8 # 8x8 tiles
+
+        for row in range(8):
+            # Read row data
+            low_byte = ctx['memory'][start_addr + (row * 2)]
+            high_byte = ctx['memory'][start_addr + (row * 2) + 1]
+
+            for column in range(8):
+                tile_color = (((high_byte >> (7 - column)) & 0x1) << 1) & ((low_byte >> (7 - column)) & 0x1)
+
+                tiledata.set_at((x + column, y + row), bg_color_map[tile_color])
+
+    ctx['screen'].blit(tiledata, (tiledata_x, tiledata_y))
+
+    return tiledata_y + (ROWS * 8)
+
+
 def render_fps(ctx, fps, x, y, width=100):
     fps, rect = ctx['font'].render(fps + "fps", ctx['highlight_color'])
     ctx['screen'].blit(fps, (x + width - rect.width, y))
@@ -128,7 +163,9 @@ def render_immediate(ctx, x, y, width=100, depth=9):
 def do_window(cpu, done, scale=4, info_width=200):
     pygame.init()
 
-    size = SCREEN_WIDTH, SCREEN_HEIGHT = GAMEBOY_PIXELS_X * scale + info_width, GAMEBOY_PIXELS_Y * scale
+    TILEMAP_WIDTH = 17 * 8 # 16 columns + 1 for padding
+
+    size = SCREEN_WIDTH, SCREEN_HEIGHT = GAMEBOY_PIXELS_X * scale + info_width + TILEMAP_WIDTH, GAMEBOY_PIXELS_Y * scale
 
     pygame.font.init()
 
@@ -170,9 +207,11 @@ def do_window(cpu, done, scale=4, info_width=200):
             pygame.draw.rect(screen, GAMEBOY_COLORS['lightest_green'], [0, 0, GAMEBOY_PIXELS_X * scale, GAMEBOY_PIXELS_Y * scale])
 
             fps = str(floor(1 / mean(frame_times)))
-            last_y = render_fps(ctx, fps, SCREEN_WIDTH - info_width, 0, info_width)
-            last_y = render_registers(ctx, SCREEN_WIDTH - info_width, last_y, info_width)
-            last_y = render_stack(ctx, SCREEN_WIDTH - info_width, last_y, info_width)
-            last_y = render_immediate(ctx, SCREEN_WIDTH - info_width, last_y, info_width)
+            last_y = render_fps(ctx, fps, SCREEN_WIDTH - info_width - TILEMAP_WIDTH, 0, info_width)
+            last_y = render_registers(ctx, SCREEN_WIDTH - info_width - TILEMAP_WIDTH, last_y, info_width)
+            last_y = render_stack(ctx, SCREEN_WIDTH - info_width - TILEMAP_WIDTH, last_y, info_width)
+            last_y = render_immediate(ctx, SCREEN_WIDTH - info_width - TILEMAP_WIDTH, last_y, info_width)
+
+            render_tiledata(ctx, SCREEN_WIDTH - TILEMAP_WIDTH, ctx['padding'])
 
             pygame.display.flip()
