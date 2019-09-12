@@ -13,7 +13,7 @@ parser.add_argument('rom')
 args = parser.parse_args()
 
 memory = Memory()
-memory.bootloader_enabled = False
+memory[Memory.REGISTER_BOOTLOADER_DISABLED] = 0xFF
 
 ptr = 0
 with open(args.rom, "rb") as f:
@@ -38,7 +38,7 @@ cpu.L = 0x0D
 debugger = Debugger(cpu)
 
 def done():
-    debugger.stop()
+    debugger.onecmd("EOF")
     sys.exit()
 
 debugger_thread = threading.Thread(target=debugger.cmdloop)

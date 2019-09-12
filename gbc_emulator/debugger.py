@@ -82,3 +82,6 @@ class Debugger(cmd.Cmd):
         'Print memory at address.'
         addr = int(arg, 0)
         print(hex(self.cpu.memory[addr]))
+
+    def do_EOF(self, arg):
+        return True

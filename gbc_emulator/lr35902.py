@@ -32,6 +32,21 @@ class LR35902:
     CONDITION_Z = 2
     CONDITION_NZ = 3
 
+    # Interrupts
+    INTERRUPT_VBLANK = 0
+    INTERRUPT_LCD_STAT = 1
+    INTERRUPT_TIMER = 2
+    INTERRUPT_SERIAL = 3
+    INTERRUPT_JOYPAD = 4
+
+    INTERRUPT_VECTORS = [
+        0x40, # INTERRUPT_VBLANK
+        0x48, # INTERRUPT_LCD_STAT
+        0x50, # INTERRUPT_TIMER
+        0x58, # INTERRUPT_SERIAL
+        0x60, # INTERRUPT_JOYPAD
+    ]
+
     JUMPED = True
     BREAKPOINT_HIT = True
 
@@ -623,10 +638,34 @@ class LR35902:
             self.wait -= 1
             return
 
+        # If the CPU is not stopped and interrupts are enabled, process
+        # interrupts.
+        # http://gbdev.gg8.se/wiki/articles/Interrupts
+        if (not self.state == LR35902.State.STOPPED) and self.interrupts["enabled"]:
+            # Check if interrupts are enabled and requested
+            enabled_and_requested = (
+                self.memory[REGISTER_IE] & # Enabled
+                self.memory[REGISTER_IF] # Requested
+            )
+            for interrupt in range(5):
+                if enabled_and_requested & (1 << interrupt):
+                    # Reset Request Flag
+                    self.memory[REGISTER_IF] &= ~(1 << interrupt)
+
+                    # Disable global interrupts
+                    self.interrupts["enabled"] = False
+
+                    # Jump to Interrupt Vector
+                    self.PC = INTERRUPT_VECTORS[interrupt]
+
+                    break # Only on interrupt at a time
+
+
         # Do nothing if CPU is not running
         if not self.state == LR35902.State.RUNNING:
             return
 
+        # Fetch and Decode
         instruction, opcode = self.fetch_and_decode()
 
         # Report

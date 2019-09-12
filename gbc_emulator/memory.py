@@ -1,3 +1,5 @@
+from enum import Enum
+
 class GuiMemory:
     """Provides read only access to the GUI. Reading the memory from the GUI
     should not effect the memories last_addr property. This property is used
@@ -35,11 +37,44 @@ class Memory:
         0xf5, 0x06, 0x19, 0x78, 0x86, 0x23, 0x05, 0x20, 0xfb, 0x86, 0x20, 0xfe, 0x3e, 0x01, 0xe0, 0x50,
     )
 
-    REGISTER_BOOTLOADER = 0xFF50
+    # Register Map
+    # https://youtu.be/HyzD8pNlpwI?t=1320
+    # Interrupt Controller
+    REGISTER_IF = 0xFF0F # Interrupt Flag
+    REGISTER_IE = 0xFFFF # Interrupt Enable
+
+    # Bootloader
+    REGISTER_BOOTLOADER_DISABLED = 0xFF50
+
+    # Joypad Input
+    REGISTER_P1 = 0xFF00 # Joypad
+
+    # Timer
+    REGISTER_DIV = 0xFF04 # Divider Register
+    REGISTER_TIMA = 0xFF05 # Timer Counter
+    REGISTER_TMA = 0xFF06 # Timer Modulo
+    REGISTER_TAC = 0xFF07 # Timer Control
+
+    # Pixel Processing Unit
+    REGISTER_LCDC = 0xFF40 # LCD Control
+    REGISTER_STAT = 0xFF41 # LCDC Status
+    REGISTER_SCY = 0xFF42 # Scroll Y
+    REGISTER_SCX = 0xFF43 # Scroll X
+    REGISTER_LY = 0xFF44 # LCDC Y-Coordinate
+    REGISTER_LYC = 0xFF45 # LY Compare
+    REGISTER_DMA = 0xFF46 # DMA Transfer and Start Address
+    REGISTER_BGP = 0xFF47 # BG Palette Data
+    REGISTER_OBP0 = 0xFF48 # Object Palette 0 Data
+    REGISTER_OBP1 = 0xFF49 # Object Palette 1 Data
+    REGISTER_WY = 0xFF4A # Window Y Position
+    REGISTER_WX = 0xFF4B # Window X Postion minus 7
+
+    # TODO: Serial Data Transfer
+
+    # TODO: Sound Controller
 
     def __init__(self):
         self.physical_memory = memory = [0] * 2**16
-        self.bootloader_enabled = True
         self.verbose = False
 
         # Last addr is used to mark the immediate value for rendering on the
@@ -51,10 +86,7 @@ class Memory:
     def __setitem__(self, index, value):
         self.last_addr = index
 
-        if index == Memory.REGISTER_BOOTLOADER:
-            if value != 0:
-                self.bootloader_enabled = False
-        elif index == 0xFF02:
+        if index == 0xFF02:
             if value == 0x81:
                 print(str(chr(self.physical_memory[0xFF01])), end = '')
         else:
@@ -67,7 +99,7 @@ class Memory:
             # GUI should not mess with last_addr
             self.last_addr = index
 
-        if index <= 0xFF and self.bootloader_enabled:
+        if index <= 0xFF and self[Memory.REGISTER_BOOTLOADER_DISABLED]:
             return Memory.BOOTLOADER[index]
         else:
             return self.physical_memory[index]
