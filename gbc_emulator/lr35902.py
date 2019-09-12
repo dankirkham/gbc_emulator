@@ -655,10 +655,19 @@ class LR35902:
                     # Disable global interrupts
                     self.interrupts["enabled"] = False
 
+                    # Save program counter to stack
+                    self.SP -= 2
+                    self.memory[self.SP + 1] = ((self.PC) >> 8) & 0xFF
+                    self.memory[self.SP] = (self.PC) & 0xFF
+
                     # Jump to Interrupt Vector
                     self.PC = INTERRUPT_VECTORS[interrupt]
 
-                    break # Only on interrupt at a time
+                    self.wait = 4 # Wait four more cycles
+
+                    self.state = LR35902.State.RUNNING # CPU running again
+
+                    return # Only one interrupt at a time
 
 
         # Do nothing if CPU is not running
