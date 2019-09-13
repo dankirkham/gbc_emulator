@@ -27,13 +27,17 @@ with open(args.rom, "rb") as f:
 
 cpu = LR35902(memory)
 # cpu.verbose = True
-cpu.PC = 0x100
+
+cpu.A = 0x01
+cpu.F = 0xB0
+cpu.B = 0x00
+cpu.C = 0x13
+cpu.D = 0x00
+cpu.E = 0xD8
+cpu.H = 0x01
+cpu.L = 0x4D
 cpu.SP = 0xFFFE
-# cpu.A = 0x11 # GBC
-cpu.F = 0x80
-cpu.D = 0xFF
-cpu.E = 0x56
-cpu.L = 0x0D
+cpu.PC = 0x100
 
 debugger = Debugger(cpu)
 
