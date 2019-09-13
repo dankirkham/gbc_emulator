@@ -45,7 +45,8 @@ class TestLR35902(unittest.TestCase):
         self.assertEqual(cpu.B, 0x35)
 
     def test_interrupt_toggle(self):
-        memory = [
+        memory = [0] * 0x10000
+        new_memory = [
             0x06, # 8
             0x53,
             0x06, # 8
@@ -57,6 +58,10 @@ class TestLR35902(unittest.TestCase):
             0x06, # 8
             0x53
         ]
+
+        # Assign new memory
+        for val, i in enumerate(new_memory):
+            memory[val] = i
 
         cpu = LR35902(memory)
 
