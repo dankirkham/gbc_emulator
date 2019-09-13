@@ -12,6 +12,8 @@ class Debugger(cmd.Cmd):
 
         self.cpu.debugger = self
 
+        self.stop = False
+
     def do_bp(self, arg):
         'Add breakpoint.'
         bp = int(arg, 0)
@@ -52,7 +54,7 @@ class Debugger(cmd.Cmd):
 
     def do_c(self, arg):
         'Continue to breakpoint.'
-        while self.cpu.clock() != LR35902.BREAKPOINT_HIT:
+        while (not self.stop) and (self.cpu.clock() != LR35902.BREAKPOINT_HIT):
             pass
 
         print("Breakpoint hit")
@@ -84,4 +86,6 @@ class Debugger(cmd.Cmd):
         print(hex(self.cpu.memory[addr]))
 
     def do_EOF(self, arg):
+        self.stop = True
+
         return True
