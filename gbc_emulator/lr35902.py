@@ -1,5 +1,6 @@
 from collections import namedtuple
 from enum import Enum
+from gbc_emulator.memory import Memory
 
 class LR35902:
     """Sharp LR35902 emulation. This is the CPU used in the Gameboy and Gameboy Color."""
@@ -403,7 +404,7 @@ class LR35902:
             LR35902.Instruction(function=lambda s: s.swap(LR35902.REGISTER_E), length_in_bytes=2, duration_in_cycles=8, mnemonic='SWAP E'), # 0x33
             LR35902.Instruction(function=lambda s: s.swap(LR35902.REGISTER_H), length_in_bytes=2, duration_in_cycles=8, mnemonic='SWAP H'), # 0x34
             LR35902.Instruction(function=lambda s: s.swap(LR35902.REGISTER_L), length_in_bytes=2, duration_in_cycles=8, mnemonic='SWAP L'), # 0x35
-            LR35902.Instruction(function=lambda s: s.swap_memory(s), length_in_bytes=2, duration_in_cycles=16, mnemonic='SWAP (HL)'), # 0x36
+            LR35902.Instruction(function=lambda s: s.swap_memory(), length_in_bytes=2, duration_in_cycles=16, mnemonic='SWAP (HL)'), # 0x36
             LR35902.Instruction(function=lambda s: s.swap(LR35902.REGISTER_A), length_in_bytes=2, duration_in_cycles=8, mnemonic='SWAP A'), # 0x37
             LR35902.Instruction(function=lambda s: s.srl(LR35902.REGISTER_B), length_in_bytes=2, duration_in_cycles=8, mnemonic='SRL B'), # 0x38
             LR35902.Instruction(function=lambda s: s.srl(LR35902.REGISTER_C), length_in_bytes=2, duration_in_cycles=8, mnemonic='SRL C'), # 0x39
@@ -644,13 +645,13 @@ class LR35902:
         if (not self.state == LR35902.State.STOPPED) and self.interrupts["enabled"]:
             # Check if interrupts are enabled and requested
             enabled_and_requested = (
-                self.memory[REGISTER_IE] & # Enabled
-                self.memory[REGISTER_IF] # Requested
+                self.memory[Memory.REGISTER_IE] & # Enabled
+                self.memory[Memory.REGISTER_IF] # Requested
             )
             for interrupt in range(5):
                 if enabled_and_requested & (1 << interrupt):
                     # Reset Request Flag
-                    self.memory[REGISTER_IF] &= ~(1 << interrupt)
+                    self.memory[Memory.REGISTER_IF] &= ~(1 << interrupt)
 
                     # Disable global interrupts
                     self.interrupts["enabled"] = False
@@ -661,7 +662,7 @@ class LR35902:
                     self.memory[self.SP] = (self.PC) & 0xFF
 
                     # Jump to Interrupt Vector
-                    self.PC = INTERRUPT_VECTORS[interrupt]
+                    self.PC = LR35902.INTERRUPT_VECTORS[interrupt]
 
                     self.wait = 4 # Wait four more cycles
 
@@ -1100,7 +1101,6 @@ class LR35902:
         Opcodes 0xC1, 0xD1, 0xE1, 0xF1
         Pop two bytes off of stack into register pair
         Increment SP twice.
-        TODO: Keeping lower byte at lower address. Verify this is correct.
         """
         if reg == LR35902.REGISTER_BC:
             self.B = self.memory[self.SP + 1]
@@ -1113,7 +1113,7 @@ class LR35902:
             self.L = self.memory[self.SP]
         elif reg == LR35902.REGISTER_AF:
             self.A = self.memory[self.SP + 1]
-            self.F = self.memory[self.SP]
+            self.F = self.memory[self.SP] & 0xF0 # Lower 4 bytes of can never be 1
         else:
             raise RuntimeError('Invalid register "{}" specified!'.format(reg))
 
@@ -1353,11 +1353,11 @@ class LR35902:
         new_flags = (1 << LR35902.FLAG_N)
 
         # Process half borrow
-        if ((self.A & 0xF) - (subtrahend & 0xF)) >= 0:
+        if (self.A & 0xF) < (subtrahend & 0xF):
             new_flags |= (1 << LR35902.FLAG_H)
 
         # Process borrow
-        if ((self.A & 0xFF) - (subtrahend & 0xFF)) >= 0:
+        if (self.A & 0xFF) < (subtrahend & 0xFF):
             new_flags |= (1 << LR35902.FLAG_C)
 
         # Perform subtraction
@@ -1383,11 +1383,11 @@ class LR35902:
         new_flags = (1 << LR35902.FLAG_N)
 
         # Process half borrow
-        if ((self.A & 0xF) - (subtrahend & 0xF)) >= 0:
+        if (self.A & 0xF) < (subtrahend & 0xF):
             new_flags |= (1 << LR35902.FLAG_H)
 
         # Process borrow
-        if ((self.A & 0xFF) - (subtrahend & 0xFF)) >= 0:
+        if (self.A & 0xFF) < (subtrahend & 0xFF):
             new_flags |= (1 << LR35902.FLAG_C)
 
         # Perform subtraction
@@ -1412,11 +1412,11 @@ class LR35902:
         new_flags = (1 << LR35902.FLAG_N)
 
         # Process half borrow
-        if ((self.A & 0xF) - (subtrahend & 0xF)) >= 0:
+        if (self.A & 0xF) < (subtrahend & 0xF):
             new_flags |= (1 << LR35902.FLAG_H)
 
         # Process borrow
-        if ((self.A & 0xFF) - (subtrahend & 0xFF)) >= 0:
+        if (self.A & 0xFF) < (subtrahend & 0xFF):
             new_flags |= (1 << LR35902.FLAG_C)
 
         # Perform subtraction
@@ -1457,16 +1457,20 @@ class LR35902:
         # N is always set
         new_flags = (1 << LR35902.FLAG_N)
 
-        # Process half borrow
-        if ((self.A & 0xF) - (subtrahend & 0xF) - carry_bit) >= 0:
+        # Twos complement operands
+        addend = (~subtrahend + 1) & 0xFF
+        carry_bit = (~carry_bit + 1) & 0xFF
+
+        # Process half carry
+        if ((self.A & 0xF) + (addend & 0xF) + carry_bit) & 0x10:
             new_flags |= (1 << LR35902.FLAG_H)
 
-        # Process borrow
-        if ((self.A & 0xFF) - (subtrahend & 0xFF) - carry_bit) >= 0:
+        # Process carry
+        if ((self.A & 0xFF) + (addend & 0xFF) + carry_bit) & 0x100:
             new_flags |= (1 << LR35902.FLAG_C)
 
-        # Perform subtraction
-        self.A = (self.A - subtrahend - carry_bit) & 0xFF
+        # Perform addition
+        self.A = (self.A + addend + carry_bit) & 0xFF
 
         # Process zero
         if self.A == 0:
@@ -1489,16 +1493,20 @@ class LR35902:
         # N is always set
         new_flags = (1 << LR35902.FLAG_N)
 
-        # Process half borrow
-        if ((self.A & 0xF) - (subtrahend & 0xF) - carry_bit) >= 0:
+        # Twos complement operands
+        addend = (~subtrahend + 1) & 0xFF
+        carry_bit = (~carry_bit + 1) & 0xFF
+
+        # Process half carry
+        if ((self.A & 0xF) + (addend & 0xF) + carry_bit) & 0x10:
             new_flags |= (1 << LR35902.FLAG_H)
 
-        # Process borrow
-        if ((self.A & 0xFF) - (subtrahend & 0xFF) - carry_bit) >= 0:
+        # Process carry
+        if ((self.A & 0xFF) + (addend & 0xFF) + carry_bit) & 0x100:
             new_flags |= (1 << LR35902.FLAG_C)
 
-        # Perform subtraction
-        self.A = (self.A - subtrahend - carry_bit) & 0xFF
+        # Perform addition
+        self.A = (self.A + addend + carry_bit) & 0xFF
 
         # Process zero
         if self.A == 0:
@@ -1521,16 +1529,20 @@ class LR35902:
         # N is always set
         new_flags = (1 << LR35902.FLAG_N)
 
-        # Process half borrow
-        if ((self.A & 0xF) - (subtrahend & 0xF) - carry_bit) >= 0:
+        # Twos complement operands
+        addend = (~subtrahend + 1) & 0xFF
+        carry_bit = (~carry_bit + 1) & 0xFF
+
+        # Process half carry
+        if ((self.A & 0xF) + (addend & 0xF) + carry_bit) & 0x10:
             new_flags |= (1 << LR35902.FLAG_H)
 
-        # Process borrow
-        if ((self.A & 0xFF) - (subtrahend & 0xFF) - carry_bit) >= 0:
+        # Process carry
+        if ((self.A & 0xFF) + (addend & 0xFF) + carry_bit) & 0x100:
             new_flags |= (1 << LR35902.FLAG_C)
 
-        # Perform subtraction
-        self.A = (self.A - subtrahend - carry_bit) & 0xFF
+        # Perform addition
+        self.A = (self.A + addend + carry_bit) & 0xFF
 
         # Process zero
         if self.A == 0:
@@ -1803,18 +1815,15 @@ class LR35902:
         new_flags = (1 << LR35902.FLAG_N)
 
         # Process half borrow
-        if ((self.A & 0xF) - (operand & 0xF)) >= 0:
+        if (self.A & 0xF) < (operand & 0xF):
             new_flags |= (1 << LR35902.FLAG_H)
 
         # Process borrow
-        if ((self.A & 0xFF) - (operand & 0xFF)) >= 0:
+        if (self.A & 0xFF) < (operand & 0xFF):
             new_flags |= (1 << LR35902.FLAG_C)
 
-        # Perform subtraction
-        result = (self.A - operand) & 0xFF
-
-        # Process zero
-        if result == 0:
+        # Process equals
+        if self.A == operand:
             new_flags |= (1 << LR35902.FLAG_Z)
 
         # Set Flags
@@ -1833,18 +1842,15 @@ class LR35902:
         new_flags = (1 << LR35902.FLAG_N)
 
         # Process half borrow
-        if ((self.A & 0xF) - (operand & 0xF)) >= 0:
+        if (self.A & 0xF) < (operand & 0xF):
             new_flags |= (1 << LR35902.FLAG_H)
 
         # Process borrow
-        if ((self.A & 0xFF) - (operand & 0xFF)) >= 0:
+        if (self.A & 0xFF) < (operand & 0xFF):
             new_flags |= (1 << LR35902.FLAG_C)
 
-        # Perform subtraction
-        result = (self.A - operand) & 0xFF
-
-        # Process zero
-        if result == 0:
+        # Process equals
+        if self.A == operand:
             new_flags |= (1 << LR35902.FLAG_Z)
 
         # Set Flags
@@ -1862,18 +1868,15 @@ class LR35902:
         new_flags = (1 << LR35902.FLAG_N)
 
         # Process half borrow
-        if ((self.A & 0xF) - (operand & 0xF)) >= 0:
+        if (self.A & 0xF) < (operand & 0xF):
             new_flags |= (1 << LR35902.FLAG_H)
 
         # Process borrow
-        if ((self.A & 0xFF) - (operand & 0xFF)) >= 0:
+        if (self.A & 0xFF) < (operand & 0xFF):
             new_flags |= (1 << LR35902.FLAG_C)
 
-        # Perform subtraction
-        result = (self.A - operand) & 0xFF
-
-        # Process zero
-        if result == 0:
+        # Process equals
+        if self.A == operand:
             new_flags |= (1 << LR35902.FLAG_Z)
 
         # Set Flags
