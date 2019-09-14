@@ -28,6 +28,7 @@ def render_tiledata(ctx, tiledata_x, tiledata_y):
     COLUMNS, ROWS = 16, 24
     ADDR_TILE_DATA = 0x8000 # TODO: Refer to map
 
+    # TODO: Map to colors from REGISTER_BGP BG Palette Data.
     bg_color_map = [
         GAMEBOY_COLORS['lightest_green'], # 00b
         GAMEBOY_COLORS['light_green'], # 01b
@@ -160,7 +161,7 @@ def render_immediate(ctx, x, y, width=100, depth=9):
 
     return y
 
-def do_window(cpu, done, scale=4, info_width=200):
+def do_window(gameboy, done, scale=4, info_width=200):
     pygame.init()
 
     TILEMAP_WIDTH = 17 * 8 # 16 columns + 1 for padding
@@ -175,8 +176,8 @@ def do_window(cpu, done, scale=4, info_width=200):
     ctx = {
         "font": font,
         "screen": screen,
-        "cpu": cpu,
-        "memory": cpu.memory.gui_memory,
+        "cpu": gameboy.cpu,
+        "memory": gameboy.memory.audit_port,
         "padding": 9,
         "font_color": GAMEBOY_COLORS['light_green'],
         "highlight_color": (255, 255, 255),
@@ -210,8 +211,8 @@ def do_window(cpu, done, scale=4, info_width=200):
             last_y = render_fps(ctx, fps, SCREEN_WIDTH - info_width - TILEMAP_WIDTH, 0, info_width)
             last_y = render_registers(ctx, SCREEN_WIDTH - info_width - TILEMAP_WIDTH, last_y, info_width)
             last_y = render_stack(ctx, SCREEN_WIDTH - info_width - TILEMAP_WIDTH, last_y, info_width)
-            last_y = render_immediate(ctx, SCREEN_WIDTH - info_width - TILEMAP_WIDTH, last_y, info_width)
+            # last_y = render_immediate(ctx, SCREEN_WIDTH - info_width - TILEMAP_WIDTH, last_y, info_width)
 
-            render_tiledata(ctx, SCREEN_WIDTH - TILEMAP_WIDTH, ctx['padding'])
+            # render_tiledata(ctx, SCREEN_WIDTH - TILEMAP_WIDTH, ctx['padding'])
 
             pygame.display.flip()

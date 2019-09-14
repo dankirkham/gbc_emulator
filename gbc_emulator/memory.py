@@ -1,23 +1,21 @@
 from enum import Enum
 
-class GuiMemory:
-    """Provides read only access to the GUI. Reading the memory from the GUI
-    should not effect the memories last_addr property. This property is used
-    by the gui to determine the immediate memory address for rendering."""
-    def __init__(self, memory):
-        self.memory = memory
-
-    def __setitem__(self, index, value):
-        pass
-
-    def __getitem__(self, index):
-        return self.memory.__getitem__(index, from_gui=True)
-
-    @property
-    def last_addr(self):
-        return self.memory.last_addr
-
 class Memory:
+    class PortType(Enum):
+        AUDIT = 0
+        CPU = 1
+
+    class Port:
+        def __init__(self, port_type, memory):
+            self.port_type = port_type
+            self.memory = memory
+
+        def __setitem__(self, index, value):
+            self.memory.__setitem__(index, value, port_type=self.port_type)
+
+        def __getitem__(self, index):
+            return self.memory.__getitem__(index, port_type=self.port_type)
+
     BOOTLOADER = (
         0x31, 0xfe, 0xff, 0xaf, 0x21, 0xff, 0x9f, 0x32, 0xcb, 0x7c, 0x20, 0xfb, 0x21, 0x26, 0xff, 0x0e,
         0x11, 0x3e, 0x80, 0x32, 0xe2, 0x0c, 0x3e, 0xf3, 0xe2, 0x32, 0x3e, 0x77, 0x77, 0x3e, 0xfc, 0xe0,
@@ -81,9 +79,13 @@ class Memory:
         # GUI.
         self.last_addr = 0
 
-        self.gui_memory = GuiMemory(self)
+        self.audit_port = Memory.Port(Memory.PortType.AUDIT, self)
+        self.cpu_port = Memory.Port(Memory.PortType.CPU, self)
 
-    def __setitem__(self, index, value):
+    def __setitem__(self, index, value, port_type):
+        if port_type == Memory.PortType.AUDIT: # AUDIT can not change memory.
+            raise RuntimeError("An AUDIT port can not change memory.")
+
         self.last_addr = index
 
         if index == 0xFF02:
@@ -94,9 +96,8 @@ class Memory:
                 print("memory[{}] = {} ({})".format(hex(index), hex(value), str(chr(value))))
             self.physical_memory[index] = value
 
-    def __getitem__(self, index, from_gui=False):
-        if not from_gui:
-            # GUI should not mess with last_addr
+    def __getitem__(self, index, port_type):
+        if port_type == Memory.PortType.AUDIT:
             self.last_addr = index
 
         if index <= 0xFF and not self[Memory.REGISTER_BOOTLOADER_DISABLED]:

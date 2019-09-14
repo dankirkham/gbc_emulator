@@ -65,17 +65,17 @@ class LR35902:
         self.debugger = None
 
         # 8-bit registers
-        self.A = 0x00 # Accumulator
+        self.A = 0x01
+        self.F = 0xB0
         self.B = 0x00
-        self.C = 0x00
+        self.C = 0x13
         self.D = 0x00
-        self.E = 0x00
-        self.F = 0x00 # Flags register
-        self.H = 0x00
-        self.L = 0x00
+        self.E = 0xD8
+        self.H = 0x01
+        self.L = 0x4D
 
         # 16-bit registers
-        self.SP = 0x0000
+        self.SP = 0xFFFE
         self.PC = 0x0000
 
         # How long to wait for instruction to complete
@@ -705,7 +705,7 @@ class LR35902:
         if action != LR35902.JUMPED:
             self.PC += instruction.length_in_bytes
 
-        if self.debugger and self.PC in self.debugger.breakpoints:
+        if self.debugger and (self.PC in self.debugger.breakpoints):
             return LR35902.BREAKPOINT_HIT
 
         # Interrupt change
