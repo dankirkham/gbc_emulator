@@ -4,6 +4,7 @@ class Memory:
     class PortType(Enum):
         AUDIT = 0
         CPU = 1
+        TIMER = 2
 
     class Port:
         def __init__(self, port_type, memory):
@@ -81,6 +82,7 @@ class Memory:
 
         self.audit_port = Memory.Port(Memory.PortType.AUDIT, self)
         self.cpu_port = Memory.Port(Memory.PortType.CPU, self)
+        self.timer_port = Memory.Port(Memory.PortType.TIMER, self)
 
     def __setitem__(self, index, value, port_type):
         if port_type == Memory.PortType.AUDIT: # AUDIT can not change memory.
@@ -91,6 +93,8 @@ class Memory:
         if index == 0xFF02:
             if value == 0x81:
                 print(str(chr(self.physical_memory[0xFF01])), end = '')
+        elif (index == Memory.REGISTER_DIV) and (port_type == Memory.PortType.CPU):
+            self.physical_memory[index] = 0x00 # Zeros when written to by CPU.
         else:
             if self.verbose:
                 print("memory[{}] = {} ({})".format(hex(index), hex(value), str(chr(value))))
@@ -100,7 +104,7 @@ class Memory:
         if port_type == Memory.PortType.AUDIT:
             self.last_addr = index
 
-        if index <= 0xFF and not self[Memory.REGISTER_BOOTLOADER_DISABLED]:
+        if index <= 0xFF and not self.physical_memory[Memory.REGISTER_BOOTLOADER_DISABLED]:
             return Memory.BOOTLOADER[index]
         else:
             return self.physical_memory[index]

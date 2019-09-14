@@ -1,6 +1,7 @@
 from gbc_emulator.lr35902 import LR35902
 from gbc_emulator.memory import Memory
 from gbc_emulator.debugger import Debugger
+from gbc_emulator.timer import Timer
 from enum import Enum
 from time import time
 
@@ -10,6 +11,7 @@ class Gameboy:
     def __init__(self, attach_debugger=False, bootloader_enabled=True):
         self.memory = Memory()
         self.cpu = LR35902(self.memory.cpu_port)
+        self.timer = Timer(self.memory.timer_port)
 
         if attach_debugger:
             self.debugger = Debugger(self)
@@ -22,6 +24,7 @@ class Gameboy:
         self.running = False
 
     def cycle(self):
+        self.timer.clock()
         return self.cpu.clock()
 
     def run(self):
@@ -41,7 +44,7 @@ class Gameboy:
                     self.running = False
 
     def step(self):
-        while self.gameboy.cpu.wait != 0:
+        while self.cpu.wait != 0:
             self.cycle()
 
         return self.cycle()

@@ -642,7 +642,7 @@ class LR35902:
         # If the CPU is not stopped and interrupts are enabled, process
         # interrupts.
         # http://gbdev.gg8.se/wiki/articles/Interrupts
-        if (not self.state == LR35902.State.STOPPED) and self.interrupts["enabled"]:
+        if (not self.state == LR35902.State.STOPPED):
             # Check if interrupts are enabled and requested
             enabled_and_requested = (
                 self.memory[Memory.REGISTER_IE] & # Enabled
@@ -650,25 +650,27 @@ class LR35902:
             )
             for interrupt in range(5):
                 if enabled_and_requested & (1 << interrupt):
-                    # Reset Request Flag
-                    self.memory[Memory.REGISTER_IF] &= ~(1 << interrupt)
-
-                    # Disable global interrupts
-                    self.interrupts["enabled"] = False
-
-                    # Save program counter to stack
-                    self.SP -= 2
-                    self.memory[self.SP + 1] = ((self.PC) >> 8) & 0xFF
-                    self.memory[self.SP] = (self.PC) & 0xFF
-
-                    # Jump to Interrupt Vector
-                    self.PC = LR35902.INTERRUPT_VECTORS[interrupt]
-
-                    self.wait = 4 # Wait four more cycles
-
                     self.state = LR35902.State.RUNNING # CPU running again
 
-                    return # Only one interrupt at a time
+                    if self.interrupts["enabled"]:
+                        # Reset Request Flag
+                        self.memory[Memory.REGISTER_IF] &= ~(1 << interrupt)
+
+                        # Disable global interrupts
+                        self.interrupts["enabled"] = False
+
+                        # Save program counter to stack
+                        self.SP -= 2
+                        self.memory[self.SP + 1] = ((self.PC) >> 8) & 0xFF
+                        self.memory[self.SP] = (self.PC) & 0xFF
+
+                        # Jump to Interrupt Vector
+                        self.PC = LR35902.INTERRUPT_VECTORS[interrupt]
+
+                        self.wait = 4 # Wait four more cycles
+
+                        return # Only one interrupt at a time
+
 
 
         # Do nothing if CPU is not running
