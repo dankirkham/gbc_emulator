@@ -99,7 +99,7 @@ class Memory:
             # GUI should not mess with last_addr
             self.last_addr = index
 
-        if index <= 0xFF and self[Memory.REGISTER_BOOTLOADER_DISABLED]:
+        if index <= 0xFF and not self[Memory.REGISTER_BOOTLOADER_DISABLED]:
             return Memory.BOOTLOADER[index]
         else:
             return self.physical_memory[index]
