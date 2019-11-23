@@ -703,7 +703,9 @@ class LR35902:
             print("L: {}".format(hex(self.L)))
 
         # Execute
-        action = instruction.function and instruction.function(self)
+        action = None
+        if instruction.function:
+            action = instruction.function(self)
         self.wait = (instruction.duration_in_cycles / 4) - 1
         if action != LR35902.JUMPED:
             self.PC += instruction.length_in_bytes
