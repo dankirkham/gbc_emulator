@@ -7,21 +7,31 @@ class TestLR35902(unittest.TestCase):
         cpu = LR35902([])
 
     def test_clock(self):
-        memory = [
+        memory = [0] * 0x10000
+        new_memory = [
             0xEA,
             0x00,
             0x00
         ]
+
+        # Assign new memory
+        for val, i in enumerate(new_memory):
+            memory[val] = i
 
         cpu = LR35902(memory)
 
         cpu.clock()
 
     def test_ld_nn_n(self):
-        memory = [
+        memory = [0] * 0x10000
+        new_memory = [
             0x06,
             0x53
         ]
+
+        # Assign new memory
+        for val, i in enumerate(new_memory):
+            memory[val] = i
 
         cpu = LR35902(memory)
 
@@ -30,12 +40,17 @@ class TestLR35902(unittest.TestCase):
         self.assertEqual(cpu.B, 0x53)
 
     def test_cb_swap(self):
-        memory = [
+        memory = [0] * 0x10000
+        new_memory = [
             0x06,
             0x53,
             0xCB,
             0x30
         ]
+
+        # Assign new memory
+        for val, i in enumerate(new_memory):
+            memory[val] = i
 
         cpu = LR35902(memory)
 
