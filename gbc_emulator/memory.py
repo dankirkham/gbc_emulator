@@ -5,6 +5,7 @@ class Memory:
         AUDIT = 0
         CPU = 1
         TIMER = 2
+        PPU = 3
 
     class Port:
         def __init__(self, port_type, memory):
@@ -73,7 +74,7 @@ class Memory:
     # TODO: Sound Controller
 
     def __init__(self):
-        self.physical_memory = memory = [0] * 2**16
+        self.physical_memory = [0] * 2**16
         self.verbose = False
 
         # Last addr is used to mark the immediate value for rendering on the
@@ -83,6 +84,7 @@ class Memory:
         self.audit_port = Memory.Port(Memory.PortType.AUDIT, self)
         self.cpu_port = Memory.Port(Memory.PortType.CPU, self)
         self.timer_port = Memory.Port(Memory.PortType.TIMER, self)
+        self.ppu_port = Memory.Port(Memory.PortType.PPU, self)
 
     def __setitem__(self, index, value, port_type):
         if port_type == Memory.PortType.AUDIT: # AUDIT can not change memory.
@@ -101,10 +103,10 @@ class Memory:
             self.physical_memory[index] = value
 
     def __getitem__(self, index, port_type):
-        if port_type == Memory.PortType.AUDIT:
-            self.last_addr = index
-
-        if index <= 0xFF and not self.physical_memory[Memory.REGISTER_BOOTLOADER_DISABLED]:
-            return Memory.BOOTLOADER[index]
-        else:
-            return self.physical_memory[index]
+        # if port_type == Memory.PortType.AUDIT:
+        #     self.last_addr = index
+        #
+        # if index <= 0xFF and not self.physical_memory[Memory.REGISTER_BOOTLOADER_DISABLED]:
+        #     return Memory.BOOTLOADER[index]
+        # else:
+        return self.physical_memory[index]
