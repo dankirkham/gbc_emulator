@@ -186,32 +186,32 @@ def ld_l_h_between_registers(self):
 # Put value of memory at r2 into r1
 # r2 = src register pointing to memory
 # r1 = dst register
-def ld_hl_b_from_memory(self, dst=None):
+def ld_hl_b_from_memory(self):
     """0x46"""
     ptr = (self.H << 8) | self.L
     self.B = self.memory[ptr]
 
-def ld_hl_c_from_memory(self, dst=None):
+def ld_hl_c_from_memory(self):
     """0x4E"""
     ptr = (self.H << 8) | self.L
     self.C = self.memory[ptr]
 
-def ld_hl_d_from_memory(self, dst=None):
+def ld_hl_d_from_memory(self):
     """0x56"""
     ptr = (self.H << 8) | self.L
     self.D = self.memory[ptr]
 
-def ld_hl_e_from_memory(self, dst=None):
+def ld_hl_e_from_memory(self):
     """0x5E"""
     ptr = (self.H << 8) | self.L
     self.E = self.memory[ptr]
 
-def ld_hl_h_from_memory(self, dst=None):
+def ld_hl_h_from_memory(self):
     """0x66"""
     ptr = (self.H << 8) | self.L
     self.H = self.memory[ptr]
 
-def ld_hl_l_from_memory(self, dst=None):
+def ld_hl_l_from_memory(self):
     """0x6E"""
     ptr = (self.H << 8) | self.L
     self.L = self.memory[ptr]
@@ -221,27 +221,27 @@ def ld_hl_l_from_memory(self, dst=None):
 # Put value of r2 into memory at r1
 # r2 = src register
 # r1 = dst register pointing to memory
-def ld_hl_b_to_memory(self, src=None):
+def ld_hl_b_to_memory(self):
     """0x70"""
     self.memory[(self.H << 8) | self.L] = self.B
 
-def ld_hl_c_to_memory(self, src=None):
+def ld_hl_c_to_memory(self):
     """0x71"""
     self.memory[(self.H << 8) | self.L] = self.C
 
-def ld_hl_d_to_memory(self, src=None):
+def ld_hl_d_to_memory(self):
     """0x72"""
     self.memory[(self.H << 8) | self.L] = self.D
 
-def ld_hl_e_to_memory(self, src=None):
+def ld_hl_e_to_memory(self):
     """0x73"""
     self.memory[(self.H << 8) | self.L] = self.E
 
-def ld_hl_h_to_memory(self, src=None):
+def ld_hl_h_to_memory(self):
     """0x74"""
     self.memory[(self.H << 8) | self.L] = self.H
 
-def ld_hl_l_to_memory(self, src=None):
+def ld_hl_l_to_memory(self):
     """0x75"""
     self.memory[(self.H << 8) | self.L] = self.L
 
