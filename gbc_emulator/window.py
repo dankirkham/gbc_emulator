@@ -66,6 +66,12 @@ def render_fps(ctx, fps, x, y, width=100):
 
     return y + rect.height
 
+def render_rate(ctx, x, y, width=100):
+    rate, rect = ctx['font'].render(str(int(ctx['gameboy'].rate / 1048576 * 100)) + "%", ctx['highlight_color'])
+    ctx['screen'].blit(rate, (x + width - rect.width, y))
+
+    return y + rect.height
+
 def render_registers(ctx, x, y, width=100):
     registers = [
         {
@@ -170,18 +176,20 @@ def do_window(gameboy, done, scale=4, info_width=200):
 
     pygame.font.init()
 
-    font = pygame.freetype.Font(os.path.dirname(os.path.abspath(__file__)) + '/assets/Inconsolata-Regular.ttf', 16)
+    # font = pygame.freetype.Font(os.path.dirname(os.path.abspath(__file__)) + '/assets/Inconsolata-Regular.ttf', 16)
+    font = pygame.freetype.Font(os.path.dirname(os.path.abspath(__file__)) + '/assets/RobotoMono-Regular.ttf', 16)
     screen = pygame.display.set_mode(size)
 
     ctx = {
         "font": font,
         "screen": screen,
         "cpu": gameboy.cpu,
+        "gameboy": gameboy,
         "memory": gameboy.memory.audit_port,
         "padding": 9,
         "font_color": GAMEBOY_COLORS['light_green'],
         "highlight_color": (255, 255, 255),
-        "bg_color": GAMEBOY_COLORS['darkest_green']
+        "bg_color": GAMEBOY_COLORS['darkest_green'],
     }
 
     pygame.display.set_caption('Game Boy Emulator')
@@ -211,6 +219,7 @@ def do_window(gameboy, done, scale=4, info_width=200):
 
             fps = str(floor(1 / mean(frame_times)))
             last_y = render_fps(ctx, fps, SCREEN_WIDTH - info_width - TILEMAP_WIDTH, 0, info_width)
+            last_y = render_rate(ctx, SCREEN_WIDTH - info_width - TILEMAP_WIDTH, last_y, info_width)
             last_y = render_registers(ctx, SCREEN_WIDTH - info_width - TILEMAP_WIDTH, last_y, info_width)
             last_y = render_stack(ctx, SCREEN_WIDTH - info_width - TILEMAP_WIDTH, last_y, info_width)
             # last_y = render_immediate(ctx, SCREEN_WIDTH - info_width - TILEMAP_WIDTH, last_y, info_width)

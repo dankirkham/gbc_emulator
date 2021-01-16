@@ -26,4 +26,4 @@ def done():
 debugger_thread = threading.Thread(target=gameboy.debugger.cmdloop)
 debugger_thread.start()
 
-# do_window(gameboy, done)
+do_window(gameboy, done)

@@ -7,12 +7,15 @@ from gbc_emulator.ppu import PPU
 
 class Gameboy:
     CLOCK_PERIOD = 1 / 1048576
+    CLOCKS_PER_CHECK = 1000
 
     def __init__(self, attach_debugger=False, bootloader_enabled=True):
         self.memory = Memory()
         self.cpu = LR35902(self.memory.cpu_port)
         self.timer = Timer(self.memory.timer_port)
         self.ppu = PPU(self.memory.ppu_port)
+        self.rate = 0
+        self.clocks = 0
 
         if attach_debugger:
             self.debugger = Debugger(self)
@@ -38,10 +41,16 @@ class Gameboy:
         self.running = True
         while self.running:
             now = time()
-            if not now >= (last_time + Gameboy.CLOCK_PERIOD):
-                sleep(0) # Release the GIL
-            else:
-                last_time = now
+            if (
+                    self.clocks < Gameboy.CLOCKS_PER_CHECK or
+                    now >= (last_time + (Gameboy.CLOCK_PERIOD * Gameboy.CLOCKS_PER_CHECK))
+                ):
+                self.clocks += 1
+                if self.clocks >= Gameboy.CLOCKS_PER_CHECK:
+                    self.clocks = 0
+                    self.rate = 0.5 * self.rate + 0.5 * (Gameboy.CLOCKS_PER_CHECK / (now - last_time))
+                    last_time = now
+
                 cpu_result = self.cycle()
 
                 if self.debugger:

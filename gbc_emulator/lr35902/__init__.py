@@ -4,6 +4,7 @@ from gbc_emulator.memory import Memory
 from gbc_emulator.lr35902.instructions import load_store_move_8bit as lsm8
 from gbc_emulator.lr35902.instructions import load_16bit as l16
 from gbc_emulator.lr35902.instructions import alu_8bit as alu8
+from gbc_emulator.lr35902.instructions import nop
 from gbc_emulator.lr35902 import flags
 
 class LR35902:
@@ -157,7 +158,7 @@ class LR35902:
             LR35902.Instruction(alu8.dec_a_register, 1, 4, 'DEC A'), # 0x3D
             LR35902.Instruction(lsm8.ld_nn_n_a, 2, 8, 'LD A,d8'), # 0x3E
             LR35902.Instruction(lambda s: s.ccf(), 1, 4, 'CCF'), # 0x3F
-            LR35902.Instruction(None, 1, 4, 'LD B,B'), # 0x40
+            LR35902.Instruction(nop, 1, 4, 'LD B,B'), # 0x40
             LR35902.Instruction(lsm8.ld_b_c_between_registers, 1, 4, 'LD B,C'), # 0x41
             LR35902.Instruction(lsm8.ld_b_d_between_registers, 1, 4, 'LD B,D'), # 0x42
             LR35902.Instruction(lsm8.ld_b_e_between_registers, 1, 4, 'LD B,E'), # 0x43
@@ -166,7 +167,7 @@ class LR35902:
             LR35902.Instruction(lsm8.ld_hl_b_from_memory, 1, 8, 'LD B,(HL)'), # 0x46
             LR35902.Instruction(lsm8.ld_b_a, 1, 4, 'LD B,A'), # 0x47
             LR35902.Instruction(lsm8.ld_c_b_between_registers, 1, 4, 'LD C,B'), # 0x48
-            LR35902.Instruction(None, 1, 4, 'LD C,C'), # 0x49
+            LR35902.Instruction(nop, 1, 4, 'LD C,C'), # 0x49
             LR35902.Instruction(lsm8.ld_c_d_between_registers, 1, 4, 'LD C,D'), # 0x4A
             LR35902.Instruction(lsm8.ld_c_e_between_registers, 1, 4, 'LD C,E'), # 0x4B
             LR35902.Instruction(lsm8.ld_c_h_between_registers, 1, 4, 'LD C,H'), # 0x4C
@@ -175,7 +176,7 @@ class LR35902:
             LR35902.Instruction(lsm8.ld_c_a, 1, 4, 'LD C,A'), # 0x4F
             LR35902.Instruction(lsm8.ld_d_b_between_registers, 1, 4, 'LD D,B'), # 0x50
             LR35902.Instruction(lsm8.ld_d_c_between_registers, 1, 4, 'LD D,C'), # 0x51
-            LR35902.Instruction(None, 1, 4, 'LD D,D'), # 0x52
+            LR35902.Instruction(nop, 1, 4, 'LD D,D'), # 0x52
             LR35902.Instruction(lsm8.ld_d_e_between_registers, 1, 4, 'LD D,E'), # 0x53
             LR35902.Instruction(lsm8.ld_d_h_between_registers, 1, 4, 'LD D,H'), # 0x54
             LR35902.Instruction(lsm8.ld_d_l_between_registers, 1, 4, 'LD D,L'), # 0x55
@@ -184,7 +185,7 @@ class LR35902:
             LR35902.Instruction(lsm8.ld_e_b_between_registers, 1, 4, 'LD E,B'), # 0x58
             LR35902.Instruction(lsm8.ld_e_c_between_registers, 1, 4, 'LD E,C'), # 0x59
             LR35902.Instruction(lsm8.ld_e_d_between_registers, 1, 4, 'LD E,D'), # 0x5A
-            LR35902.Instruction(None, 1, 4, 'LD E,E'), # 0x5B
+            LR35902.Instruction(nop, 1, 4, 'LD E,E'), # 0x5B
             LR35902.Instruction(lsm8.ld_e_h_between_registers, 1, 4, 'LD E,H'), # 0x5C
             LR35902.Instruction(lsm8.ld_e_l_between_registers, 1, 4, 'LD E,L'), # 0x5D
             LR35902.Instruction(lsm8.ld_hl_e_from_memory, 1, 8, 'LD E,(HL)'), # 0x5E
@@ -193,7 +194,7 @@ class LR35902:
             LR35902.Instruction(lsm8.ld_h_c_between_registers, 1, 4, 'LD H,C'), # 0x61
             LR35902.Instruction(lsm8.ld_h_d_between_registers, 1, 4, 'LD H,D'), # 0x62
             LR35902.Instruction(lsm8.ld_h_e_between_registers, 1, 4, 'LD H,E'), # 0x63
-            LR35902.Instruction(None, 1, 4, 'LD H,H'), # 0x64
+            LR35902.Instruction(nop, 1, 4, 'LD H,H'), # 0x64
             LR35902.Instruction(lsm8.ld_h_l_between_registers, 1, 4, 'LD H,L'), # 0x65
             LR35902.Instruction(lsm8.ld_hl_h_from_memory, 1, 8, 'LD H,(HL)'), # 0x66
             LR35902.Instruction(lsm8.ld_h_a, 1, 4, 'LD H,A'), # 0x67
@@ -202,7 +203,7 @@ class LR35902:
             LR35902.Instruction(lsm8.ld_l_d_between_registers, 1, 4, 'LD L,D'), # 0x6A
             LR35902.Instruction(lsm8.ld_l_e_between_registers, 1, 4, 'LD L,E'), # 0x6B
             LR35902.Instruction(lsm8.ld_l_h_between_registers, 1, 4, 'LD L,H'), # 0x6C
-            LR35902.Instruction(None, 1, 4, 'LD L,L'), # 0x6D
+            LR35902.Instruction(nop, 1, 4, 'LD L,L'), # 0x6D
             LR35902.Instruction(lsm8.ld_hl_l_from_memory, 1, 8, 'LD L,(HL)'), # 0x6E
             LR35902.Instruction(lsm8.ld_l_a, 1, 4, 'LD L,A'), # 0x6F
             LR35902.Instruction(lsm8.ld_hl_b_to_memory, 1, 8, 'LD (HL),B'), # 0x70
@@ -220,7 +221,7 @@ class LR35902:
             LR35902.Instruction(lsm8.ld_a_h_between_registers, 1, 4, 'LD A,H'), # 0x7C
             LR35902.Instruction(lsm8.ld_a_l_between_registers, 1, 4, 'LD A,L'), # 0x7D
             LR35902.Instruction(lsm8.ld_a_hl_from_memory, 1, 8, 'LD A,(HL)'), # 0x7E
-            LR35902.Instruction(None, 1, 4, 'LD A,A'), # 0x7F
+            LR35902.Instruction(nop, 1, 4, 'LD A,A'), # 0x7F
             LR35902.Instruction(alu8.add_a_b_register, 1, 4, 'ADD A,B'), # 0x80
             LR35902.Instruction(alu8.add_a_c_register, 1, 4, 'ADD A,C'), # 0x81
             LR35902.Instruction(alu8.add_a_d_register, 1, 4, 'ADD A,D'), # 0x82
@@ -705,9 +706,7 @@ class LR35902:
             print("L: {}".format(hex(self.L)))
 
         # Execute
-        action = None
-        if instruction.function:
-            action = instruction.function(self)
+        action = instruction.function(self)
         self.wait = (instruction.duration_in_cycles / 4) - 1
         if action != LR35902.JUMPED:
             self.PC += instruction.length_in_bytes
