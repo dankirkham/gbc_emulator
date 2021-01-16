@@ -1,10 +1,10 @@
-import pygame
-import pygame.freetype
 from time import time, sleep
 import os.path
 from collections import deque
 from statistics import mean
 from math import floor, ceil
+import pygame
+import pygame.freetype
 
 GAMEBOY_PIXELS_X, GAMEBOY_PIXELS_Y = 160, 144
 
@@ -195,12 +195,12 @@ def do_window(gameboy, done, scale=4, info_width=200):
                 done()
 
         now = time()
-        if not (now >= (last_time + FRAME_PERIOD)):
+        if not now >= (last_time + FRAME_PERIOD):
             sleep(0) # Release the GIL
         else:
             # Save frame time
             frame_times.append(now - last_time)
-            if (len(frame_times) > 5):
+            if len(frame_times) > 5:
                 frame_times.popleft()
             last_time = now
 

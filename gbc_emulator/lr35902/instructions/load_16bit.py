@@ -2,19 +2,19 @@
 # Opcodes 0x01, 0x11, 0x21, 0x31
 # Loads 16-bit immediate value into 16-bit register.
 
-def ld_n_nn_bc(self, reg=None):
+def ld_n_nn_bc(self):
     self.B = self.memory[self.PC + 2]
     self.C = self.memory[self.PC + 1]
 
-def ld_n_nn_de(self, reg=None):
+def ld_n_nn_de(self):
     self.D = self.memory[self.PC + 2]
     self.E = self.memory[self.PC + 1]
 
-def ld_n_nn_hl(self, reg=None):
+def ld_n_nn_hl(self):
     self.H = self.memory[self.PC + 2]
     self.L = self.memory[self.PC + 1]
 
-def ld_n_nn_sp(self, reg=None):
+def ld_n_nn_sp(self):
     self.SP = (self.memory[self.PC + 2] << 8) | self.memory[self.PC + 1]
 
 def ld_sp_hl(self):

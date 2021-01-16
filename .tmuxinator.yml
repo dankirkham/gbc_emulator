@@ -1,0 +1,8 @@
+# ~/.tmuxinator/gbc_emulator
+
+name: gbc_emulator
+windows:
+  - nvim:
+    - nvim
+  - emu:
+    - git status

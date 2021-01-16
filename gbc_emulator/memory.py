@@ -94,7 +94,7 @@ class Memory:
 
         if index == 0xFF02:
             if value == 0x81:
-                print(str(chr(self.physical_memory[0xFF01])), end = '')
+                print(str(chr(self.physical_memory[0xFF01])), end='')
         elif (index == Memory.REGISTER_DIV) and (port_type == Memory.PortType.CPU):
             self.physical_memory[index] = 0x00 # Zeros when written to by CPU.
         else:

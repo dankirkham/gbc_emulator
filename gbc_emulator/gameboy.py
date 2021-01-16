@@ -1,10 +1,9 @@
+from time import time, sleep
 from gbc_emulator.lr35902 import LR35902
 from gbc_emulator.memory import Memory
 from gbc_emulator.debugger import Debugger
 from gbc_emulator.timer import Timer
 from gbc_emulator.ppu import PPU
-from enum import Enum
-from time import time, sleep
 
 class Gameboy:
     CLOCK_PERIOD = 1 / 1048576
@@ -39,7 +38,7 @@ class Gameboy:
         self.running = True
         while self.running:
             now = time()
-            if not (now >= (last_time + Gameboy.CLOCK_PERIOD)):
+            if not now >= (last_time + Gameboy.CLOCK_PERIOD):
                 sleep(0) # Release the GIL
             else:
                 last_time = now

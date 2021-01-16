@@ -32,7 +32,7 @@ class PPU:
 
                 if self.line >= 143:
                     # print('VBLANK')
-                    if (self.memory[Memory.REGISTER_IE] << LR35902.INTERRUPT_VBLANK):
+                    if self.memory[Memory.REGISTER_IE] << LR35902.INTERRUPT_VBLANK:
                         # print('VBLANK INTERRUPT')
                         self.memory[Memory.REGISTER_IF] |= (1 << LR35902.INTERRUPT_VBLANK)
                     self.mode = PPU.MODE_VBLANK

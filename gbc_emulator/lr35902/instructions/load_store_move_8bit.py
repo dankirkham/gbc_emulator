@@ -338,7 +338,7 @@ def ld_n_a_immediate(self):
 
     self.memory[addr] = self.A
 
-def ld_a_c(self):
+def ld_a_c_offset(self):
     """"GBCPUman.pdf page 70
     Opcode 0xF2
     Put value at address 0xFF00 + C into register A
@@ -346,7 +346,7 @@ def ld_a_c(self):
     addr = 0xFF00 + self.C
     self.A = self.memory[addr]
 
-def ld_c_a(self):
+def ld_c_a_offset(self):
     """"GBCPUman.pdf page 70
     Opcode 0xE2
     Put value of register A into memory at address 0xFF00 + C.

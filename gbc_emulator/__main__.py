@@ -1,10 +1,10 @@
 #!/usr/bin/env python
 
-from gbc_emulator.gameboy import Gameboy
-from gbc_emulator.window import do_window
 import argparse
 import threading
 import sys
+from gbc_emulator.gameboy import Gameboy
+from gbc_emulator.window import do_window
 
 parser = argparse.ArgumentParser()
 parser.add_argument('rom')
@@ -26,4 +26,4 @@ def done():
 debugger_thread = threading.Thread(target=gameboy.debugger.cmdloop)
 debugger_thread.start()
 
-do_window(gameboy, done)
+# do_window(gameboy, done)

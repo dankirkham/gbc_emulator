@@ -1,0 +1,2 @@
+[MESSAGES CONTROL]
+disable=missing-docstring,invalid-name,line-too-long,too-many-lines,inconsistent-return-statements,unexpected-special-method-signature

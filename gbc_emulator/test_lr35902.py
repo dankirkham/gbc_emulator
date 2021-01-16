@@ -1,10 +1,11 @@
-from gbc_emulator.lr35902 import LR35902
 import unittest
+from gbc_emulator.lr35902 import LR35902
 
 
 class TestLR35902(unittest.TestCase):
     def test_initialize(self):
-        cpu = LR35902([])
+        LR35902([])
+        self.assertEqual(1, 1)
 
     def test_clock(self):
         memory = [0] * 0x10000
@@ -21,6 +22,7 @@ class TestLR35902(unittest.TestCase):
         cpu = LR35902(memory)
 
         cpu.clock()
+        self.assertEqual(1, 1)
 
     def test_ld_nn_n(self):
         memory = [0] * 0x10000
