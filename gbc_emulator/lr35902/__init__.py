@@ -97,64 +97,64 @@ class LR35902:
             LR35902.Instruction(l16.ld_n_nn_bc, 3, 12, 'LD BC,d16'), # 0x01
             LR35902.Instruction(lsm8.ld_bc_a_pointer, 1, 8, 'LD (BC),A'), # 0x02
             LR35902.Instruction(lambda s: s.inc_nn(LR35902.REGISTER_BC), 1, 8, 'INC BC'), # 0x03
-            LR35902.Instruction(lambda s: s.inc_n_register(LR35902.REGISTER_B), 1, 4, 'INC B'), # 0x04
-            LR35902.Instruction(lambda s: s.dec_n_register(LR35902.REGISTER_B), 1, 4, 'DEC B'), # 0x05
+            LR35902.Instruction(alu8.inc_b_register, 1, 4, 'INC B'), # 0x04
+            LR35902.Instruction(alu8.dec_b_register, 1, 4, 'DEC B'), # 0x05
             LR35902.Instruction(lsm8.ld_nn_n_b, 2, 8, 'LD B,d8'), # 0x06
             LR35902.Instruction(lambda s: s.rlc(LR35902.REGISTER_A), 1, 4, 'RLCA'), # 0x07
             LR35902.Instruction(l16.ld_nn_sp, 3, 20, 'LD (a16),SP'), # 0x08
             LR35902.Instruction(lambda s: s.add_hl_n(LR35902.REGISTER_BC), 1, 8, 'ADD HL,BC'), # 0x09
             LR35902.Instruction(lsm8.ld_a_bc_from_memory, 1, 8, 'LD A,(BC)'), # 0x0A
             LR35902.Instruction(lambda s: s.dec_nn(LR35902.REGISTER_BC), 1, 8, 'DEC BC'), # 0x0B
-            LR35902.Instruction(lambda s: s.inc_n_register(LR35902.REGISTER_C), 1, 4, 'INC C'), # 0x0C
-            LR35902.Instruction(lambda s: s.dec_n_register(LR35902.REGISTER_C), 1, 4, 'DEC C'), # 0x0D
+            LR35902.Instruction(alu8.inc_c_register, 1, 4, 'INC C'), # 0x0C
+            LR35902.Instruction(alu8.dec_c_register, 1, 4, 'DEC C'), # 0x0D
             LR35902.Instruction(lsm8.ld_nn_n_c, 2, 8, 'LD C,d8'), # 0x0E
             LR35902.Instruction(lambda s: s.rrc(LR35902.REGISTER_A), 1, 4, 'RRCA'), # 0x0F
             LR35902.Instruction(lambda s: s.stop(), 2, 4, 'STOP 0'), # 0x10
             LR35902.Instruction(l16.ld_n_nn_de, 3, 12, 'LD DE,d16'), # 0x11
             LR35902.Instruction(lsm8.ld_de_a_pointer, 1, 8, 'LD (DE),A'), # 0x12
             LR35902.Instruction(lambda s: s.inc_nn(LR35902.REGISTER_DE), 1, 8, 'INC DE'), # 0x13
-            LR35902.Instruction(lambda s: s.inc_n_register(LR35902.REGISTER_D), 1, 4, 'INC D'), # 0x14
-            LR35902.Instruction(lambda s: s.dec_n_register(LR35902.REGISTER_D), 1, 4, 'DEC D'), # 0x15
+            LR35902.Instruction(alu8.inc_d_register, 1, 4, 'INC D'), # 0x14
+            LR35902.Instruction(alu8.dec_d_register, 1, 4, 'DEC D'), # 0x15
             LR35902.Instruction(lsm8.ld_nn_n_d, 2, 8, 'LD D,d8'), # 0x16
             LR35902.Instruction(lambda s: s.rl(LR35902.REGISTER_A), 1, 4, 'RLA'), # 0x17
             LR35902.Instruction(lambda s: s.jr_n(), 2, 12, 'JR r8'), # 0x18
             LR35902.Instruction(lambda s: s.add_hl_n(LR35902.REGISTER_DE), 1, 8, 'ADD HL,DE'), # 0x19
             LR35902.Instruction(lsm8.ld_a_de_from_memory, 1, 8, 'LD A,(DE)'), # 0x1A
             LR35902.Instruction(lambda s: s.dec_nn(LR35902.REGISTER_DE), 1, 8, 'DEC DE'), # 0x1B
-            LR35902.Instruction(lambda s: s.inc_n_register(LR35902.REGISTER_E), 1, 4, 'INC E'), # 0x1C
-            LR35902.Instruction(lambda s: s.dec_n_register(LR35902.REGISTER_E), 1, 4, 'DEC E'), # 0x1D
+            LR35902.Instruction(alu8.inc_e_register, 1, 4, 'INC E'), # 0x1C
+            LR35902.Instruction(alu8.dec_e_register, 1, 4, 'DEC E'), # 0x1D
             LR35902.Instruction(lsm8.ld_nn_n_e, 2, 8, 'LD E,d8'), # 0x1E
             LR35902.Instruction(lambda s: s.rr(LR35902.REGISTER_A), 1, 4, 'RRA'), # 0x1F
             LR35902.Instruction(lambda s: s.jr_cc_n(LR35902.CONDITION_NZ), 2, 8, 'JR NZ,r8'), # 0x20
             LR35902.Instruction(l16.ld_n_nn_hl, 3, 12, 'LD HL,d16'), # 0x21
             LR35902.Instruction(lsm8.ld_hl_a_increment, 1, 8, 'LD (HL+),A'), # 0x22
             LR35902.Instruction(lambda s: s.inc_nn(LR35902.REGISTER_HL), 1, 8, 'INC HL'), # 0x23
-            LR35902.Instruction(lambda s: s.inc_n_register(LR35902.REGISTER_H), 1, 4, 'INC H'), # 0x24
-            LR35902.Instruction(lambda s: s.dec_n_register(LR35902.REGISTER_H), 1, 4, 'DEC H'), # 0x25
+            LR35902.Instruction(alu8.inc_h_register, 1, 4, 'INC H'), # 0x24
+            LR35902.Instruction(alu8.dec_h_register, 1, 4, 'DEC H'), # 0x25
             LR35902.Instruction(lsm8.ld_nn_n_h, 2, 8, 'LD H,d8'), # 0x26
             LR35902.Instruction(lambda s: s.daa(), 1, 4, 'DAA'), # 0x27
             LR35902.Instruction(lambda s: s.jr_cc_n(LR35902.CONDITION_Z), 2, 8, 'JR Z,r8'), # 0x28
             LR35902.Instruction(lambda s: s.add_hl_n(LR35902.REGISTER_HL), 1, 8, 'ADD HL,HL'), # 0x29
             LR35902.Instruction(lsm8.ld_a_hl_increment, 1, 8, 'LD A,(HL+)'), # 0x2A
             LR35902.Instruction(lambda s: s.dec_nn(LR35902.REGISTER_HL), 1, 8, 'DEC HL'), # 0x2B
-            LR35902.Instruction(lambda s: s.inc_n_register(LR35902.REGISTER_L), 1, 4, 'INC L'), # 0x2C
-            LR35902.Instruction(lambda s: s.dec_n_register(LR35902.REGISTER_L), 1, 4, 'DEC L'), # 0x2D
+            LR35902.Instruction(alu8.inc_l_register, 1, 4, 'INC L'), # 0x2C
+            LR35902.Instruction(alu8.dec_l_register, 1, 4, 'DEC L'), # 0x2D
             LR35902.Instruction(lsm8.ld_nn_n_l, 2, 8, 'LD L,d8'), # 0x2E
             LR35902.Instruction(lambda s: s.cpl(), 1, 4, 'CPL'), # 0x2F
             LR35902.Instruction(lambda s: s.jr_cc_n(LR35902.CONDITION_NC), 2, 8, 'JR NC,r8'), # 0x30
             LR35902.Instruction(l16.ld_n_nn_sp, 3, 12, 'LD SP,d16'), # 0x31
             LR35902.Instruction(lsm8.ld_hl_a_decrement, 1, 8, 'LD (HL-),A'), # 0x32
             LR35902.Instruction(lambda s: s.inc_nn(LR35902.REGISTER_SP), 1, 8, 'INC SP'), # 0x33
-            LR35902.Instruction(lambda s: s.inc_n_memory(), 1, 12, 'INC (HL)'), # 0x34
-            LR35902.Instruction(lambda s: s.dec_n_memory(), 1, 12, 'DEC (HL)'), # 0x35
+            LR35902.Instruction(alu8.inc_n_memory, 1, 12, 'INC (HL)'), # 0x34
+            LR35902.Instruction(alu8.dec_n_memory, 1, 12, 'DEC (HL)'), # 0x35
             LR35902.Instruction(lsm8.ld_r1_r2_immediate_to_memory, 2, 12, 'LD (HL),d8'), # 0x36
             LR35902.Instruction(lambda s: s.scf(), 1, 4, 'SCF'), # 0x37
             LR35902.Instruction(lambda s: s.jr_cc_n(LR35902.CONDITION_C), 2, 8, 'JR C,r8'), # 0x38
             LR35902.Instruction(lambda s: s.add_hl_n(LR35902.REGISTER_SP), 1, 8, 'ADD HL,SP'), # 0x39
             LR35902.Instruction(lsm8.ld_a_hl_decrement, 1, 8, 'LD A,(HL-)'), # 0x3A
             LR35902.Instruction(lambda s: s.dec_nn(LR35902.REGISTER_SP), 1, 8, 'DEC SP'), # 0x3B
-            LR35902.Instruction(lambda s: s.inc_n_register(LR35902.REGISTER_A), 1, 4, 'INC A'), # 0x3C
-            LR35902.Instruction(lambda s: s.dec_n_register(LR35902.REGISTER_A), 1, 4, 'DEC A'), # 0x3D
+            LR35902.Instruction(alu8.inc_a_register, 1, 4, 'INC A'), # 0x3C
+            LR35902.Instruction(alu8.dec_a_register, 1, 4, 'DEC A'), # 0x3D
             LR35902.Instruction(lsm8.ld_nn_n_a, 2, 8, 'LD A,d8'), # 0x3E
             LR35902.Instruction(lambda s: s.ccf(), 1, 4, 'CCF'), # 0x3F
             LR35902.Instruction(None, 1, 4, 'LD B,B'), # 0x40

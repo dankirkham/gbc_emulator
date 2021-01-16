@@ -36,28 +36,28 @@ class Debugger(cmd.Cmd):
         else:
             print('Breakpoint {} does not exist.'.format(hex(bp)))
 
-    def do_bpl(self):
+    def do_bpl(self, arg):
         'List breakpoints.'
         for bp in self.breakpoints:
             print(hex(bp))
 
-    def do_n(self):
+    def do_n(self, arg):
         'Run next instruction.'
         cpu_result = self.gameboy.step()
 
         if cpu_result == LR35902.BREAKPOINT_HIT:
             print("Breakpoint hit")
 
-        self.do_p()
+        self.do_p(None)
 
-    def do_c(self):
+    def do_c(self, arg):
         'Continue to breakpoint.'
         self.gameboy.run()
 
         print("Breakpoint hit")
-        self.do_p()
+        self.do_p(None)
 
-    def do_p(self):
+    def do_p(self, arg):
         'Print CPU state'
         instruction, opcode = self.gameboy.cpu.fetch_and_decode()
 
@@ -82,7 +82,7 @@ class Debugger(cmd.Cmd):
         addr = int(arg, 0)
         print(hex(self.memory[addr]))
 
-    def do_EOF(self):
+    def do_EOF(self, arg):
         self.stop = True
 
         return True
