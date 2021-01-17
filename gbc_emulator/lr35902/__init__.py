@@ -4,7 +4,7 @@ from gbc_emulator.memory import Memory
 from gbc_emulator.lr35902.instructions import load_store_move_8bit as lsm8
 from gbc_emulator.lr35902.instructions import load_16bit as l16
 from gbc_emulator.lr35902.instructions import alu_8bit as alu8
-from gbc_emulator.lr35902.instructions import nop
+from gbc_emulator.lr35902.instructions.nop import nop
 from gbc_emulator.lr35902 import flags
 
 class LR35902:
@@ -62,8 +62,9 @@ class LR35902:
         'mnemonic'
         ])
 
-    def __init__(self, memory):
+    def __init__(self, memory, pubsub):
         self.memory = memory
+        self.pubsub = pubsub
 
         self.verbose = False
         self.debugger = None
@@ -101,7 +102,7 @@ class LR35902:
             LR35902.Instruction(alu8.inc_b_register, 1, 4, 'INC B'), # 0x04
             LR35902.Instruction(alu8.dec_b_register, 1, 4, 'DEC B'), # 0x05
             LR35902.Instruction(lsm8.ld_nn_n_b, 2, 8, 'LD B,d8'), # 0x06
-            LR35902.Instruction(lambda s: s.rlc(LR35902.REGISTER_A), 1, 4, 'RLCA'), # 0x07
+            LR35902.Instruction(lambda s: s.rlca(), 1, 4, 'RLCA'), # 0x07
             LR35902.Instruction(l16.ld_nn_sp, 3, 20, 'LD (a16),SP'), # 0x08
             LR35902.Instruction(lambda s: s.add_hl_n(LR35902.REGISTER_BC), 1, 8, 'ADD HL,BC'), # 0x09
             LR35902.Instruction(lsm8.ld_a_bc_from_memory, 1, 8, 'LD A,(BC)'), # 0x0A
@@ -109,7 +110,7 @@ class LR35902:
             LR35902.Instruction(alu8.inc_c_register, 1, 4, 'INC C'), # 0x0C
             LR35902.Instruction(alu8.dec_c_register, 1, 4, 'DEC C'), # 0x0D
             LR35902.Instruction(lsm8.ld_nn_n_c, 2, 8, 'LD C,d8'), # 0x0E
-            LR35902.Instruction(lambda s: s.rrc(LR35902.REGISTER_A), 1, 4, 'RRCA'), # 0x0F
+            LR35902.Instruction(lambda s: s.rrca(), 1, 4, 'RRCA'), # 0x0F
             LR35902.Instruction(lambda s: s.stop(), 2, 4, 'STOP 0'), # 0x10
             LR35902.Instruction(l16.ld_n_nn_de, 3, 12, 'LD DE,d16'), # 0x11
             LR35902.Instruction(lsm8.ld_de_a_pointer, 1, 8, 'LD (DE),A'), # 0x12
@@ -117,7 +118,7 @@ class LR35902:
             LR35902.Instruction(alu8.inc_d_register, 1, 4, 'INC D'), # 0x14
             LR35902.Instruction(alu8.dec_d_register, 1, 4, 'DEC D'), # 0x15
             LR35902.Instruction(lsm8.ld_nn_n_d, 2, 8, 'LD D,d8'), # 0x16
-            LR35902.Instruction(lambda s: s.rl(LR35902.REGISTER_A), 1, 4, 'RLA'), # 0x17
+            LR35902.Instruction(lambda s: s.rla(), 1, 4, 'RLA'), # 0x17
             LR35902.Instruction(lambda s: s.jr_n(), 2, 12, 'JR r8'), # 0x18
             LR35902.Instruction(lambda s: s.add_hl_n(LR35902.REGISTER_DE), 1, 8, 'ADD HL,DE'), # 0x19
             LR35902.Instruction(lsm8.ld_a_de_from_memory, 1, 8, 'LD A,(DE)'), # 0x1A
@@ -125,7 +126,7 @@ class LR35902:
             LR35902.Instruction(alu8.inc_e_register, 1, 4, 'INC E'), # 0x1C
             LR35902.Instruction(alu8.dec_e_register, 1, 4, 'DEC E'), # 0x1D
             LR35902.Instruction(lsm8.ld_nn_n_e, 2, 8, 'LD E,d8'), # 0x1E
-            LR35902.Instruction(lambda s: s.rr(LR35902.REGISTER_A), 1, 4, 'RRA'), # 0x1F
+            LR35902.Instruction(lambda s: s.rra(), 1, 4, 'RRA'), # 0x1F
             LR35902.Instruction(lambda s: s.jr_cc_n(LR35902.CONDITION_NZ), 2, 8, 'JR NZ,r8'), # 0x20
             LR35902.Instruction(l16.ld_n_nn_hl, 3, 12, 'LD HL,d16'), # 0x21
             LR35902.Instruction(lsm8.ld_hl_a_increment, 1, 8, 'LD (HL+),A'), # 0x22
@@ -235,13 +236,13 @@ class LR35902:
             LR35902.Instruction(alu8.adc_a_d_register, 1, 4, 'ADC A,D'), # 0x8A
             LR35902.Instruction(alu8.adc_a_e_register, 1, 4, 'ADC A,E'), # 0x8B
             LR35902.Instruction(alu8.adc_a_h_register, 1, 4, 'ADC A,H'), # 0x8C
-            LR35902.Instruction(alu8.add_a_l_register, 1, 4, 'ADC A,L'), # 0x8D
+            LR35902.Instruction(alu8.adc_a_l_register, 1, 4, 'ADC A,L'), # 0x8D
             LR35902.Instruction(alu8.adc_a_n_memory, 1, 8, 'ADC A,(HL)'), # 0x8E
             LR35902.Instruction(alu8.adc_a_a_register, 1, 4, 'ADC A,A'), # 0x8F
             LR35902.Instruction(alu8.sub_a_b_register, 1, 4, 'SUB B'), # 0x90
             LR35902.Instruction(alu8.sub_a_c_register, 1, 4, 'SUB C'), # 0x91
             LR35902.Instruction(alu8.sub_a_d_register, 1, 4, 'SUB D'), # 0x92
-            LR35902.Instruction(alu8.add_a_e_register, 1, 4, 'SUB E'), # 0x93
+            LR35902.Instruction(alu8.sub_a_e_register, 1, 4, 'SUB E'), # 0x93
             LR35902.Instruction(alu8.sub_a_h_register, 1, 4, 'SUB H'), # 0x94
             LR35902.Instruction(alu8.sub_a_l_register, 1, 4, 'SUB L'), # 0x95
             LR35902.Instruction(alu8.sub_a_n_memory, 1, 8, 'SUB (HL)'), # 0x96
@@ -652,28 +653,29 @@ class LR35902:
                 self.memory[Memory.REGISTER_IE] & # Enabled
                 self.memory[Memory.REGISTER_IF] # Requested
             )
-            for interrupt in range(5):
-                if enabled_and_requested & (1 << interrupt):
-                    self.state = LR35902.State.RUNNING # CPU running again
+            if enabled_and_requested:
+                for interrupt in range(5):
+                    if enabled_and_requested & (1 << interrupt):
+                        self.state = LR35902.State.RUNNING # CPU running again
 
-                    if self.interrupts["enabled"]:
-                        # Reset Request Flag
-                        self.memory[Memory.REGISTER_IF] &= ~(1 << interrupt)
+                        if self.interrupts["enabled"]:
+                            # Reset Request Flag
+                            self.memory[Memory.REGISTER_IF] &= ~(1 << interrupt)
 
-                        # Disable global interrupts
-                        self.interrupts["enabled"] = False
+                            # Disable global interrupts
+                            self.interrupts["enabled"] = False
 
-                        # Save program counter to stack
-                        self.SP -= 2
-                        self.memory[self.SP + 1] = ((self.PC) >> 8) & 0xFF
-                        self.memory[self.SP] = (self.PC) & 0xFF
+                            # Save program counter to stack
+                            self.SP -= 2
+                            self.memory[self.SP + 1] = ((self.PC) >> 8) & 0xFF
+                            self.memory[self.SP] = (self.PC) & 0xFF
 
-                        # Jump to Interrupt Vector
-                        self.PC = LR35902.INTERRUPT_VECTORS[interrupt]
+                            # Jump to Interrupt Vector
+                            self.PC = LR35902.INTERRUPT_VECTORS[interrupt]
 
-                        self.wait = 4 # Wait four more cycles
+                            self.wait = 4 # Wait four more cycles
 
-                        return # Only one interrupt at a time
+                            return # Only one interrupt at a time
 
 
 
@@ -706,8 +708,36 @@ class LR35902:
             print("L: {}".format(hex(self.L)))
 
         # Execute
-        action = instruction.function(self)
         self.wait = (instruction.duration_in_cycles / 4) - 1
+        action = instruction.function(self)
+
+        # Check registers
+        if (
+                self.A > 0xFF or
+                self.B > 0xFF or
+                self.C > 0xFF or
+                self.D > 0xFF or
+                self.E > 0xFF or
+                self.F > 0xFF or
+                self.H > 0xFF or
+                self.L > 0xFF or
+                self.A < 0x00 or
+                self.B < 0x00 or
+                self.C < 0x00 or
+                self.D < 0x00 or
+                self.E < 0x00 or
+                self.F < 0x00 or
+                self.H < 0x00 or
+                self.L < 0x00 or
+                self.PC > 0xFFFF or
+                self.SP > 0xFFFF or
+                self.PC < 0x0000 or
+                self.SP < 0x0000
+            ):
+            print("HALT")
+            self.state = LR35902.State.HALTED
+            return
+
         if action != LR35902.JUMPED:
             self.PC += instruction.length_in_bytes
 
@@ -741,20 +771,39 @@ class LR35902:
         else:
             raise RuntimeError('Invalid register "{}" specified!'.format(reg))
 
+        self.set_flag(flags.FLAG_N, False)
+        self.set_flag(flags.FLAG_C, ((hl_val & 0xFFFF) + val) > 0xFFFF)
+        self.set_flag(flags.FLAG_H, ((hl_val & 0xFFF) + (val & 0xFFF)) > 0xFFF)
+
         hl_val += val
 
         self.H = ((hl_val & 0xFF00) >> 8) & 0xFF
         self.L = hl_val & 0xFF
+
 
     def add_sp_n(self):
         """GBCPUman.pdf page 91
         Opcode 0xE8
         Add immediate byte to SP.
         """
-
         operand = self.memory[self.PC + 1]
+        if operand & 0x80:
+            # Negative, must convert with 2's complement
+            operand = -((~operand & 0xFF) + 1)
 
-        self.SP = (self.SP + operand) & 0xFFFF
+        result = (self.SP + operand) & 0xFFFF
+
+        self.set_flag(flags.FLAG_Z, False)
+        self.set_flag(flags.FLAG_N, False)
+
+        if operand >= 0:
+            self.set_flag(flags.FLAG_C, ((self.SP & 0xFF) + operand) > 0xFF)
+            self.set_flag(flags.FLAG_H, ((self.SP & 0xF) + (operand & 0xF)) > 0xF)
+        else:
+            self.set_flag(flags.FLAG_C, (result & 0xFF) <= (self.SP & 0xFF))
+            self.set_flag(flags.FLAG_H, (result & 0xF) <= (self.SP & 0xF))
+
+        self.SP = result
 
     def inc_nn(self, reg=None):
         """GBCPUman.pdf page 92
@@ -837,19 +886,19 @@ class LR35902:
             self.B = (((self.B & 0x0F) << 4) | ((self.B & 0xF0) >> 4)) & 0xFF
             self.set_zero(self.B)
         elif reg == LR35902.REGISTER_C:
-            self.C = (((self.C & 0x0F) << 4) | ((self.A & 0xF0) >> 4)) & 0xFF
+            self.C = (((self.C & 0x0F) << 4) | ((self.C & 0xF0) >> 4)) & 0xFF
             self.set_zero(self.C)
         elif reg == LR35902.REGISTER_D:
-            self.D = (((self.D & 0x0F) << 4) | ((self.A & 0xF0) >> 4)) & 0xFF
+            self.D = (((self.D & 0x0F) << 4) | ((self.D & 0xF0) >> 4)) & 0xFF
             self.set_zero(self.D)
         elif reg == LR35902.REGISTER_E:
-            self.E = (((self.E & 0x0F) << 4) | ((self.A & 0xF0) >> 4)) & 0xFF
+            self.E = (((self.E & 0x0F) << 4) | ((self.E & 0xF0) >> 4)) & 0xFF
             self.set_zero(self.E)
         elif reg == LR35902.REGISTER_H:
-            self.H = (((self.H & 0x0F) << 4) | ((self.A & 0xF0) >> 4)) & 0xFF
+            self.H = (((self.H & 0x0F) << 4) | ((self.H & 0xF0) >> 4)) & 0xFF
             self.set_zero(self.H)
         elif reg == LR35902.REGISTER_L:
-            self.L = (((self.L & 0x0F) << 4) | ((self.A & 0xF0) >> 4)) & 0xFF
+            self.L = (((self.L & 0x0F) << 4) | ((self.L & 0xF0) >> 4)) & 0xFF
             self.set_zero(self.L)
         else:
             raise RuntimeError('Invalid register "{}" specified!'.format(reg))
@@ -881,7 +930,7 @@ class LR35902:
                 self.A += 0x60
                 self.set_flag(flags.FLAG_C, True)
 
-            if ((self.F >> flags.FLAG_H) & 1) or (self.A & 0xF) > 0x9:
+            if ((self.F >> flags.FLAG_H) & 1) or ((self.A & 0xF) > 0x9):
                 self.A += 0x6
         else:
             # Last operation was a subtraction
@@ -889,6 +938,8 @@ class LR35902:
                 self.A -= 0x60
             if (self.F >> flags.FLAG_H) & 1:
                 self.A -= 0x06
+
+        self.A = self.A & 0xFF
 
         self.set_zero(self.A)
         self.set_flag(flags.FLAG_H, False)
@@ -961,9 +1012,25 @@ class LR35902:
             self.interrupts["change_in"] = 2
 
     # Rotates and Shifts
-    def rlc(self, reg=None):
+    def rlca(self):
         """GBCPUman.pdf page 99 & 101
         Opcode 0x07
+        Rotate reg left. Old bit 7 to carry flag. Don't touch zero flag.
+        """
+        value = self.A
+
+        # Reset flags
+        self.F = 0
+
+        # Old bit 7 to carry flag
+        if value & 0x80:
+            self.F |= (1 << flags.FLAG_C)
+
+        # Rotate
+        self.A = (value << 1) & 0xFE | (value & 0x80) >> 7
+
+    def rlc(self, reg=None):
+        """GBCPUman.pdf page 99 & 101
         0xCB Opcodes 0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x07
         Rotate reg left. Old bit 7 to carry flag.
         """
@@ -1025,6 +1092,32 @@ class LR35902:
         # Set Z flag if 0
         if self.memory[addr] == 0:
             self.F |= (1 << flags.FLAG_Z)
+
+    def rla(self):
+        """GBCPUman.pdf page 99 & 102
+        Opcode 0x17
+        Rotate register left through carry flag. Old bit 7 to carry flag.
+        Don't touch zero flag.
+        """
+        value = self.A
+
+        new_flags = 0
+
+        # Old bit 7 to carry flag
+        if value & 0x80:
+            new_flags |= (1 << flags.FLAG_C)
+
+        # Rotate
+        value = (value << 1) & 0xFE
+
+        # Old carry flag to bit 0
+        if self.F & (1 << flags.FLAG_C):
+            value = value | 1
+
+        # Update flags
+        self.F = new_flags
+
+        self.A = value
 
     def rl(self, reg=None):
         """GBCPUman.pdf page 99 & 102
@@ -1104,9 +1197,26 @@ class LR35902:
         # Update flags
         self.F = new_flags
 
-    def rrc(self, reg=None):
+    def rrca(self):
         """GBCPUman.pdf page 100 & 103
         Opcode 0x0F
+        Rotate register right. Old bit 0 to carry flag.
+        Do not touch zero flag
+        """
+        value = self.A
+
+        # Reset flags
+        self.F = 0
+
+        # Old bit 0 to carry flag
+        if value & 0x1:
+            self.F |= (1 << flags.FLAG_C)
+
+        # Rotate
+        self.A = ((value >> 1) & 0x7F) | ((value & 0x01) << 7)
+
+    def rrc(self, reg=None):
+        """GBCPUman.pdf page 100 & 103
         0xCB Opcodes 0x08, 0x09, 0x0A, 0x0B, 0x0C, 0x0D, 0x0F
         Rotate register right. Old bit 0 to carry flag.
         """
@@ -1169,9 +1279,32 @@ class LR35902:
         if self.memory[addr] == 0:
             self.F |= (1 << flags.FLAG_Z)
 
-    def rr(self, reg=None):
+    def rra(self):
         """GBCPUman.pdf page 100 & 104
         Opcode 0x1F
+        Rotate register right through carry flag. Old bit 0 to carry flag.
+        Don't touch zero flag.
+        """
+        value = self.A
+
+        new_flags = 0
+
+        # Old bit 0 to carry flag
+        if value & 0x1:
+            new_flags = (1 << flags.FLAG_C)
+
+        # Rotate
+        value = ((value >> 1) & 0x7F)
+
+        # Old carry flag to bit 7
+        if self.F & (1 << flags.FLAG_C):
+            value = value | 0x80
+
+        self.A = value
+        self.F = new_flags
+
+    def rr(self, reg=None):
+        """GBCPUman.pdf page 100 & 104
         0xCB Opcodes 0x18, 0x19, 0x1A, 0x1B, 0x1C, 0x1D, 0x1F
         Rotate register right through carry flag. Old bit 0 to carry flag.
         """
@@ -1273,7 +1406,7 @@ class LR35902:
 
         # Set carry flag
         if getattr(self, reg_attr) & 0x80:
-            self.F |= (1 << flags.FLAG_C)
+            new_flags |= (1 << flags.FLAG_C)
 
         # Shift left
         setattr(
@@ -1300,7 +1433,7 @@ class LR35902:
 
         # Set carry flag
         if self.memory[addr] & 0x80:
-            self.F |= (1 << flags.FLAG_C)
+            new_flags |= (1 << flags.FLAG_C)
 
         # Shift left
         self.memory[addr] = (self.memory[addr] << 1) & 0xFE
@@ -1338,7 +1471,7 @@ class LR35902:
 
         # Set carry flag
         if getattr(self, reg_attr) & 0x01:
-            self.F |= (1 << flags.FLAG_C)
+            new_flags |= (1 << flags.FLAG_C)
 
         # Shift Right
         setattr(
@@ -1366,7 +1499,7 @@ class LR35902:
 
         # Set carry flag
         if self.memory[addr] & 0x01:
-            self.F |= (1 << flags.FLAG_C)
+            new_flags |= (1 << flags.FLAG_C)
 
         # Shift Right
         self.memory[addr] = (self.memory[addr] & 0x80) | (self.memory[addr] >> 1) & 0x7F
@@ -1404,7 +1537,7 @@ class LR35902:
 
         # Set carry flag
         if getattr(self, reg_attr) & 0x01:
-            self.F |= (1 << flags.FLAG_C)
+            new_flags |= (1 << flags.FLAG_C)
 
         # Shift Right
         setattr(
@@ -1431,7 +1564,7 @@ class LR35902:
 
         # Set carry flag
         if self.memory[addr] & 0x01:
-            self.F |= (1 << flags.FLAG_C)
+            new_flags |= (1 << flags.FLAG_C)
 
         # Shift Right
         self.memory[addr] = (self.memory[addr] >> 1) & 0x7F
@@ -1694,11 +1827,12 @@ class LR35902:
         """
         # Save program counter to stack
         self.SP -= 2
-        self.memory[self.SP + 1] = (self.PC >> 8) & 0xFF
-        self.memory[self.SP] = self.PC & 0xFF
+        self.memory[self.SP + 1] = ((self.PC + 1) >> 8) & 0xFF
+        self.memory[self.SP] = (self.PC + 1) & 0xFF
 
         # Jump to address
-        self.PC += offset
+        self.PC = offset
+
         return LR35902.JUMPED
 
     def ret(self):

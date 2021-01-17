@@ -7,11 +7,11 @@ from gbc_emulator.ppu import PPU
 
 class Gameboy:
     CLOCK_PERIOD = 1 / 1048576
-    CLOCKS_PER_CHECK = 1000
+    CLOCKS_PER_CHECK = 10485 # 10 ms
 
-    def __init__(self, attach_debugger=False, bootloader_enabled=True):
-        self.memory = Memory()
-        self.cpu = LR35902(self.memory.cpu_port)
+    def __init__(self, pubsub, attach_debugger=False, bootloader_enabled=True):
+        self.memory = Memory(pubsub)
+        self.cpu = LR35902(self.memory.cpu_port, pubsub)
         self.timer = Timer(self.memory.timer_port)
         self.ppu = PPU(self.memory.ppu_port)
         self.rate = 0

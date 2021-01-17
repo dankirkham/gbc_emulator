@@ -384,11 +384,11 @@ def adc_a_l_register(self):
     new_flags = 0
 
     # Process half carry
-    if ((self.A & 0xF) + (addend & 0xF) + carry_bit) & 0x10:
+    if ((self.A & 0xF) + (addend & 0xF) + carry_bit) > 0xF:
         new_flags |= (1 << flags.FLAG_H)
 
     # Process carry
-    if ((self.A & 0xFF) + (addend & 0xFF) + carry_bit) & 0x100:
+    if (self.A + addend + carry_bit) > 0xFF:
         new_flags |= (1 << flags.FLAG_C)
 
     # Perform addition
@@ -706,18 +706,18 @@ def subc_a_a_register(self):
 
     # Twos complement operands
     addend = (~subtrahend + 1) & 0xFF
-    carry_bit = (~carry_bit + 1) & 0xFF
+    neg_carry_bit = (~carry_bit + 1) & 0xFF
 
     # Process half carry
-    if ((self.A & 0xF) + (addend & 0xF) + carry_bit) & 0x10:
+    if (self.A & 0xF) < ((subtrahend & 0xF) + (carry_bit & 0xF)):
         new_flags |= (1 << flags.FLAG_H)
 
     # Process carry
-    if ((self.A & 0xFF) + (addend & 0xFF) + carry_bit) & 0x100:
+    if self.A < (subtrahend + carry_bit):
         new_flags |= (1 << flags.FLAG_C)
 
     # Perform addition
-    self.A = (self.A + addend + carry_bit) & 0xFF
+    self.A = (self.A + addend + neg_carry_bit) & 0xFF
 
     # Process zero
     if self.A == 0:
@@ -736,18 +736,18 @@ def subc_a_b_register(self):
 
     # Twos complement operands
     addend = (~subtrahend + 1) & 0xFF
-    carry_bit = (~carry_bit + 1) & 0xFF
+    neg_carry_bit = (~carry_bit + 1) & 0xFF
 
     # Process half carry
-    if ((self.A & 0xF) + (addend & 0xF) + carry_bit) & 0x10:
+    if (self.A & 0xF) < ((subtrahend & 0xF) + (carry_bit & 0xF)):
         new_flags |= (1 << flags.FLAG_H)
 
     # Process carry
-    if ((self.A & 0xFF) + (addend & 0xFF) + carry_bit) & 0x100:
+    if self.A < (subtrahend + carry_bit):
         new_flags |= (1 << flags.FLAG_C)
 
     # Perform addition
-    self.A = (self.A + addend + carry_bit) & 0xFF
+    self.A = (self.A + addend + neg_carry_bit) & 0xFF
 
     # Process zero
     if self.A == 0:
@@ -766,18 +766,18 @@ def subc_a_c_register(self):
 
     # Twos complement operands
     addend = (~subtrahend + 1) & 0xFF
-    carry_bit = (~carry_bit + 1) & 0xFF
+    neg_carry_bit = (~carry_bit + 1) & 0xFF
 
     # Process half carry
-    if ((self.A & 0xF) + (addend & 0xF) + carry_bit) & 0x10:
+    if (self.A & 0xF) < ((subtrahend & 0xF) + (carry_bit & 0xF)):
         new_flags |= (1 << flags.FLAG_H)
 
     # Process carry
-    if ((self.A & 0xFF) + (addend & 0xFF) + carry_bit) & 0x100:
+    if self.A < (subtrahend + carry_bit):
         new_flags |= (1 << flags.FLAG_C)
 
     # Perform addition
-    self.A = (self.A + addend + carry_bit) & 0xFF
+    self.A = (self.A + addend + neg_carry_bit) & 0xFF
 
     # Process zero
     if self.A == 0:
@@ -796,18 +796,18 @@ def subc_a_d_register(self):
 
     # Twos complement operands
     addend = (~subtrahend + 1) & 0xFF
-    carry_bit = (~carry_bit + 1) & 0xFF
+    neg_carry_bit = (~carry_bit + 1) & 0xFF
 
     # Process half carry
-    if ((self.A & 0xF) + (addend & 0xF) + carry_bit) & 0x10:
+    if (self.A & 0xF) < ((subtrahend & 0xF) + (carry_bit & 0xF)):
         new_flags |= (1 << flags.FLAG_H)
 
     # Process carry
-    if ((self.A & 0xFF) + (addend & 0xFF) + carry_bit) & 0x100:
+    if self.A < (subtrahend + carry_bit):
         new_flags |= (1 << flags.FLAG_C)
 
     # Perform addition
-    self.A = (self.A + addend + carry_bit) & 0xFF
+    self.A = (self.A + addend + neg_carry_bit) & 0xFF
 
     # Process zero
     if self.A == 0:
@@ -826,18 +826,18 @@ def subc_a_e_register(self):
 
     # Twos complement operands
     addend = (~subtrahend + 1) & 0xFF
-    carry_bit = (~carry_bit + 1) & 0xFF
+    neg_carry_bit = (~carry_bit + 1) & 0xFF
 
     # Process half carry
-    if ((self.A & 0xF) + (addend & 0xF) + carry_bit) & 0x10:
+    if (self.A & 0xF) < ((subtrahend & 0xF) + (carry_bit & 0xF)):
         new_flags |= (1 << flags.FLAG_H)
 
     # Process carry
-    if ((self.A & 0xFF) + (addend & 0xFF) + carry_bit) & 0x100:
+    if self.A < (subtrahend + carry_bit):
         new_flags |= (1 << flags.FLAG_C)
 
     # Perform addition
-    self.A = (self.A + addend + carry_bit) & 0xFF
+    self.A = (self.A + addend + neg_carry_bit) & 0xFF
 
     # Process zero
     if self.A == 0:
@@ -856,18 +856,18 @@ def subc_a_h_register(self):
 
     # Twos complement operands
     addend = (~subtrahend + 1) & 0xFF
-    carry_bit = (~carry_bit + 1) & 0xFF
+    neg_carry_bit = (~carry_bit + 1) & 0xFF
 
     # Process half carry
-    if ((self.A & 0xF) + (addend & 0xF) + carry_bit) & 0x10:
+    if (self.A & 0xF) < ((subtrahend & 0xF) + (carry_bit & 0xF)):
         new_flags |= (1 << flags.FLAG_H)
 
     # Process carry
-    if ((self.A & 0xFF) + (addend & 0xFF) + carry_bit) & 0x100:
+    if self.A < (subtrahend + carry_bit):
         new_flags |= (1 << flags.FLAG_C)
 
     # Perform addition
-    self.A = (self.A + addend + carry_bit) & 0xFF
+    self.A = (self.A + addend + neg_carry_bit) & 0xFF
 
     # Process zero
     if self.A == 0:
@@ -886,18 +886,18 @@ def subc_a_l_register(self):
 
     # Twos complement operands
     addend = (~subtrahend + 1) & 0xFF
-    carry_bit = (~carry_bit + 1) & 0xFF
+    neg_carry_bit = (~carry_bit + 1) & 0xFF
 
     # Process half carry
-    if ((self.A & 0xF) + (addend & 0xF) + carry_bit) & 0x10:
+    if (self.A & 0xF) < ((subtrahend & 0xF) + (carry_bit & 0xF)):
         new_flags |= (1 << flags.FLAG_H)
 
     # Process carry
-    if ((self.A & 0xFF) + (addend & 0xFF) + carry_bit) & 0x100:
+    if self.A < (subtrahend + carry_bit):
         new_flags |= (1 << flags.FLAG_C)
 
     # Perform addition
-    self.A = (self.A + addend + carry_bit) & 0xFF
+    self.A = (self.A + addend + neg_carry_bit) & 0xFF
 
     # Process zero
     if self.A == 0:
@@ -922,18 +922,18 @@ def subc_a_n_memory(self):
 
     # Twos complement operands
     addend = (~subtrahend + 1) & 0xFF
-    carry_bit = (~carry_bit + 1) & 0xFF
+    neg_carry_bit = (~carry_bit + 1) & 0xFF
 
     # Process half carry
-    if ((self.A & 0xF) + (addend & 0xF) + carry_bit) & 0x10:
+    if (self.A & 0xF) < ((subtrahend & 0xF) + (carry_bit & 0xF)):
         new_flags |= (1 << flags.FLAG_H)
 
     # Process carry
-    if ((self.A & 0xFF) + (addend & 0xFF) + carry_bit) & 0x100:
+    if self.A < (subtrahend + carry_bit):
         new_flags |= (1 << flags.FLAG_C)
 
     # Perform addition
-    self.A = (self.A + addend + carry_bit) & 0xFF
+    self.A = (self.A + addend + neg_carry_bit) & 0xFF
 
     # Process zero
     if self.A == 0:
@@ -958,18 +958,18 @@ def subc_a_immediate(self):
 
     # Twos complement operands
     addend = (~subtrahend + 1) & 0xFF
-    carry_bit = (~carry_bit + 1) & 0xFF
+    neg_carry_bit = (~carry_bit + 1) & 0xFF
 
     # Process half carry
-    if ((self.A & 0xF) + (addend & 0xF) + carry_bit) & 0x10:
+    if (self.A & 0xF) < ((subtrahend & 0xF) + (carry_bit & 0xF)):
         new_flags |= (1 << flags.FLAG_H)
 
     # Process carry
-    if ((self.A & 0xFF) + (addend & 0xFF) + carry_bit) & 0x100:
+    if self.A < (subtrahend + carry_bit):
         new_flags |= (1 << flags.FLAG_C)
 
     # Perform addition
-    self.A = (self.A + addend + carry_bit) & 0xFF
+    self.A = (self.A + addend + neg_carry_bit) & 0xFF
 
     # Process zero
     if self.A == 0:
@@ -1063,7 +1063,7 @@ def and_a_e_register(self):
     self.F = new_flags
 
 def and_a_h_register(self):
-    operand = self.k
+    operand = self.H
 
     # H is always set
     new_flags = (1 << flags.FLAG_H)

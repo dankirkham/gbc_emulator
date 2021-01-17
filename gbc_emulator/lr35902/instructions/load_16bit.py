@@ -1,3 +1,6 @@
+from gbc_emulator.lr35902 import flags
+
+
 # GBCPUman.pdf page 76
 # Opcodes 0x01, 0x11, 0x21, 0x31
 # Loads 16-bit immediate value into 16-bit register.
@@ -37,10 +40,15 @@ def ld_hl_sp_n(self):
     self.H = (result >> 8) & 0xFF
     self.L = result & 0xFF
 
-    # TODO: Set C and H flags correctly.
-    # https://stackoverflow.com/a/7261149
-    # For now, just clear all flags
-    self.F = 0
+    self.set_flag(flags.FLAG_Z, False)
+    self.set_flag(flags.FLAG_N, False)
+
+    if n >= 0:
+        self.set_flag(flags.FLAG_C, ((self.SP & 0xFF) + n) > 0xFF)
+        self.set_flag(flags.FLAG_H, ((self.SP & 0xF) + (n & 0xF)) > 0xF)
+    else:
+        self.set_flag(flags.FLAG_C, (result & 0xFF) <= (self.SP & 0xFF))
+        self.set_flag(flags.FLAG_H, (result & 0xF) <= (self.SP & 0xF))
 
 def ld_nn_sp(self):
     """GBCPUman.pdf page 78

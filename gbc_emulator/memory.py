@@ -1,4 +1,5 @@
 from enum import Enum
+import time
 
 class Memory:
     class PortType(Enum):
@@ -73,9 +74,10 @@ class Memory:
 
     # TODO: Sound Controller
 
-    def __init__(self):
+    def __init__(self, pubsub):
         self.physical_memory = [0] * 2**16
         self.verbose = False
+        self.pubsub = pubsub
 
         # Last addr is used to mark the immediate value for rendering on the
         # GUI.
@@ -86,6 +88,8 @@ class Memory:
         self.timer_port = Memory.Port(Memory.PortType.TIMER, self)
         self.ppu_port = Memory.Port(Memory.PortType.PPU, self)
 
+        self.pubsub.publish("serial/control", "reset")
+
     def __setitem__(self, index, value, port_type):
         if port_type == Memory.PortType.AUDIT: # AUDIT can not change memory.
             raise RuntimeError("An AUDIT port can not change memory.")
@@ -94,7 +98,9 @@ class Memory:
 
         if index == 0xFF02:
             if value == 0x81:
-                print(str(chr(self.physical_memory[0xFF01])), end='')
+                char = str(chr(self.physical_memory[0xFF01]))
+                self.pubsub.publish("serial/out", char)
+
         elif (index == Memory.REGISTER_DIV) and (port_type == Memory.PortType.CPU):
             self.physical_memory[index] = 0x00 # Zeros when written to by CPU.
         else:

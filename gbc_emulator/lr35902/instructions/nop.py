@@ -1,2 +1,2 @@
-def nop():
+def nop(_):
     pass
